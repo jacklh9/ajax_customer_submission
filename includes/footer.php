@@ -1,0 +1,3 @@
+<!-- BEGIN FOOTER -->
+    </body>
+</html>
