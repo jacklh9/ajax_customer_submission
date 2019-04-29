@@ -52,10 +52,10 @@
     <br>
     <div class="row" id="submission-form-buttons">
         <div class="form-group col-xs-1">
-            <input type="submit" class="btn btn-primary button" name="upload" value="Submit All">
+            <input type="submit" class="btn btn-primary" name="upload" value="Save">
         </div>
         <div class="form-group col-xs-1">
-            <input type="button" class="btn button btn-cancel" value="Cancel">
+            <input type="button" class="btn" id="btn-cancel" value="Cancel">
         </div>
         <div class="col-xs-10"></div>
     </div>

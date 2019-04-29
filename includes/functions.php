@@ -1,7 +1,3 @@
-<?php
-include_once "db.php";
-?>
-
 <script>
 
 $(document).ready(function(){
@@ -26,7 +22,7 @@ $(document).ready(function(){
     });
 
     /* ************* UPLOAD FORM ******************* */
-    $('.btn-cancel').on('click', function(){
+    $('#btn-cancel').on('click', function(){
         console.log("inside btn-cancel");
         if(confirm("Are you sure you wish to cancel.\nALL changes made in the form WILL BE LOST!")){
             resetLogin();

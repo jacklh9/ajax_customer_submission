@@ -5,7 +5,7 @@
     </div>
 
     <div class="form-group">
-        <input type="submit" class="btn btn-primary button" name="login" value="Submit">
+        <input type="submit" class="btn btn-primary" name="login" value="Submit">
     </div>
 
 </form>
