@@ -16,10 +16,25 @@ $(document).ready(function(){
         var data = $(this).serialize();
 
         $.post(url, data, function(response){
-            $('#form-container').html(response);
+            $('#submission-form-row').html(response);
+            $('#login-user-form').hide();
         });
 
     });
+
+    $('#upload-user-form').submit(function(evt){
+        evt.preventDefault();
+    
+        var url = $(this).attr('action');
+        var data = $(this).serialize();
+
+        console.log("inside upload-user-form()");
+        // $.post(url, data, function(response){
+        //     $('#form-container').html(response);
+        // });
+
+    });
+
 
     /* ************* UPLOAD FORM ******************* */
     $('#btn-cancel').on('click', function(){

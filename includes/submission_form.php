@@ -61,3 +61,33 @@
     </div>
 
 </form>
+
+<script>
+    function resetLogin(){
+        $('#upload-user-form').hide();
+        $('#upload-user-form')[0].reset();
+        $('#login-user-form')[0].reset();
+        $('#login-user-form').show();
+    }
+
+    // CANCEL button
+    $('#btn-cancel').on('click', function(){
+        if(confirm("Are you sure you wish to cancel.\nALL changes made in the form WILL BE LOST!")){
+            resetLogin();
+        }
+    });
+
+    // SUBMIT button
+    $('#upload-user-form').submit(function(evt){
+        evt.preventDefault();
+    
+        var url = $(this).attr('action');
+        var data = $(this).serialize();
+
+        $.post(url, data, function(response){
+            $('#form-container').html(response);
+        });
+
+    });
+</script>
+
