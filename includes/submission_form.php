@@ -1,3 +1,7 @@
+<?php
+    global $MAX_ADDRESSES;
+    $states = array("AK", "CA", "TX");
+?>
 <form action="upload.php" id="upload-user-form" method="post">
 
     <?php if(!empty($cust_id)){
@@ -18,51 +22,42 @@
         <div class="col-xs-3"></div>
     </div>
     <div class="row" id='addresses-row'>
-        <div class="col-xs-3" id="address-1">
-            <input type="text" class="form-control" name="add0_street_line1" value="<?php echo $add[0]['street_line1']; ?>" placeholder="Street Line 1">
-            <input type="text" class="form-control" name="add0_street_line2" value="<?php echo $add[0]['street_line2']; ?>" placeholder="Street Line 2">
-            <input type="text" class="form-control" name="add0_city" value="<?php echo $add[0]['city']; ?>" placeholder="City">
-            <select name="add0_state">
-                <option value="">State</option>
-                <option value="AK">Alaska</option>
-                <option value="CA">California</option>
-                <option value="TX">Texas</option>
+<?php
+    for($i = 0; $i < $MAX_ADDRESSES; $i++){
+?>
+        <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
+            <h3>Address <?php echo $i+1; ?>:</h3>
+            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_street_line1" value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
+            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_street_line2" value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
+            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_city" value="<?php echo $add[$i]['city']; ?>" placeholder="City">
+            <select name="add" . <?php echo $i; ?> . "_state">
+                <option value="none">State</option>
+<?php
+            foreach($states as $state){
+                if ($state == $add[$i]['state']){
+                    echo "<option value='$state' selected>$state</option>";
+                } else {
+                    echo "<option value='$state'>$state</option>";
+                }
+            }
+?>
             </select>
-            <input type="text" class="form-control" name="add0_zip" value="<?php echo $add[0]['zip']; ?>" placeholder="ZIP">
+            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_zip" value="<?php echo $add[$i]['zip']; ?>" placeholder="ZIP">
         </div>
-        <div class="col-xs-3" id="address-2">
-        <input type="text" class="form-control" name="add1_street_line1" value="<?php echo $add[1]['street_line1']; ?>" placeholder="Street Line 1">
-            <input type="text" class="form-control" name="add1_street_line2" value="<?php echo $add[1]['street_line2']; ?>" placeholder="Street Line 2">
-            <input type="text" class="form-control" name="add1_city" value="<?php echo $add[1]['city']; ?>" placeholder="City">
-            <select name="add1_state">
-                <option value="">State</option>
-                <option value="AK">Alaska</option>
-                <option value="CA">California</option>
-                <option value="TX">Texas</option>
-            </select>
-            <input type="text" class="form-control" name="add1_zip" value="<?php echo $add[1]['zip']; ?>" placeholder="ZIP">
+<?php
+    } // end for-loop
+?>
+        <!-- div class="col-xs-1"></div -->
+    </div> <!-- row -->
+    <br>
+    <div class="row" id="submission-form-buttons">
+        <div class="form-group col-xs-1">
+            <input type="submit" class="btn btn-primary button" name="upload" value="Submit All">
         </div>
-        <div class="col-xs-3" id="address-3">
-        <input type="text" class="form-control" name="add2_street_line1" value="<?php echo $add[2]['street_line1']; ?>" placeholder="Street Line 1">
-            <input type="text" class="form-control" name="add2_street_line2" value="<?php echo $add[2]['street_line2']; ?>" placeholder="Street Line 2">
-            <input type="text" class="form-control" name="add2_city" value="<?php echo $add[2]['city']; ?>" placeholder="City">
-            <select name="add2_state">
-                <option value="">State</option>
-                <option value="AK">Alaska</option>
-                <option value="CA">California</option>
-                <option value="TX">Texas</option>
-            </select>
-            <input type="text" class="form-control" name="add2_zip" value="<?php echo $add[2]['zip']; ?>" placeholder="ZIP">
+        <div class="form-group col-xs-1">
+            <input type="button" class="btn button btn-cancel" value="Cancel">
         </div>
-    </div>
-
-    <div class="form-group">
-        <input type="button" class="btn button btn-cancel" value="Cancel">
-    </div>
-
-
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary button" name="upload" value="Submit">
+        <div class="col-xs-10"></div>
     </div>
 
 </form>

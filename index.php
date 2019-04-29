@@ -3,14 +3,21 @@
 <?php include "includes/functions.php"; ?>
 
 <div class="row">
-    <div id="notification-bar" class="col-xs-12 bg-success"></div>
+    <div id="notification-bar" class="bg-success"></div>
 </div>
 <div class="row">
-    <div id="form-container" class="col-xs-6">
-
-        <?php include "includes/login_form.php"; ?>
-        <?php include "includes/submission_form.php"; ?>
-
+    <div id="form-container">
+        <div class="row" id="login-form-row">
+            <div class="col-xs-3"></div>
+            <div class="col-xs-6">
+                <br>
+                <?php include "includes/login_form.php"; ?>
+            </div>
+            <div class="col-xs-3"></div>
+        </div> <!-- login-form-row -->
+        <div class="row" id="submission-form-row">
+            <?php include "includes/submission_form.php"; ?>
+        </div> <!-- submission-form-row -->
     </div>
 </div>
 
