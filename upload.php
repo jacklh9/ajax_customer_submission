@@ -26,7 +26,7 @@
 
         }
         $result_set = mysqli_query($connection, $query);
-        confirmQResult($update_result);
+        confirmQResult($result_set);
         $cust_id = get_cust_id($email);
 
         // Update/Insert Customer Addresses
@@ -40,7 +40,7 @@
             $zip = clean($_POST['add' . $i . '_zip']);
             $add_id = clean($_POST['add' . $i . '_id']);
 
-            if(empty($id)){
+            if(empty($add_id)){
             
                 // Insert Address
                 $query = "INSERT INTO addresses(street_line1, street_line2, city, state, zip, FK_cust_id) ";
@@ -57,7 +57,7 @@
                 $query .= "zip = '$zip'";
                 $query .= "WHERE id = $add_id";
             }
-            $result_set = mysqli_query($connection, $get_addresses_query);
+            $result_set = mysqli_query($connection, $query);
             confirmQResult($result_set);
         }
 
