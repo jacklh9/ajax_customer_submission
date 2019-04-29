@@ -16,7 +16,6 @@
             <div class="col-xs-3"></div>
         </div> <!-- login-form-row -->
         <div class="row" id="submission-form-row">
-            <!-- ?php include "includes/submission_form.php"; ? -->
         </div> <!-- submission-form-row -->
     </div>
 </div>
