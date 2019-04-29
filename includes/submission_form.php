@@ -1,6 +1,9 @@
 <form action="upload.php" id="upload-user-form" method="post">
 
-    <p>Customer# $cust_id</p>
+    <?php if(!empty($cust_id)){
+        echo "<p>Customer# {$cust_id}</p>";
+    }
+    ?>
 
     <div class="row" id="personal-info-row">
         <div class="col-xs-3"></div>
@@ -16,22 +19,40 @@
     </div>
     <div class="row" id='addresses-row'>
         <div class="col-xs-3" id="address-1">
-            <input type="text" class="form-control" name="street_line1" value="<?php echo $street_line1; ?>" placeholder="Street Line 1">
-            <input type="text" class="form-control" name="street_line2" value="<?php echo $street_line2; ?>" placeholder="Street Line 2">
-            <input type="text" class="form-control" name="city" value="<?php echo $city; ?>" placeholder="City">
-            <select name="state">
+            <input type="text" class="form-control" name="add1_street_line1" value="<?php echo $add1_street_line1; ?>" placeholder="Street Line 1">
+            <input type="text" class="form-control" name="add1_street_line2" value="<?php echo $add1_street_line2; ?>" placeholder="Street Line 2">
+            <input type="text" class="form-control" name="add1_city" value="<?php echo $add1_city; ?>" placeholder="City">
+            <select name="add1_state">
                 <option value="">State</option>
                 <option value="AK">Alaska</option>
                 <option value="CA">California</option>
                 <option value="TX">Texas</option>
             </select>
-            <input type="text" class="form-control" name="zip" value="<?php echo $city; ?>" placeholder="ZIP">
+            <input type="text" class="form-control" name="add1_zip" value="<?php echo $add1_zip; ?>" placeholder="ZIP">
         </div>
         <div class="col-xs-3" id="address-2">
-        address 2
+            <input type="text" class="form-control" name="add2_street_line1" value="<?php echo $add2_street_line1; ?>" placeholder="Street Line 1">
+            <input type="text" class="form-control" name="add2_street_line2" value="<?php echo $add2_street_line2; ?>" placeholder="Street Line 2">
+            <input type="text" class="form-control" name="add2_city" value="<?php echo $add2_city; ?>" placeholder="City">
+            <select name="add2_state">
+                <option value="">State</option>
+                <option value="AK">Alaska</option>
+                <option value="CA">California</option>
+                <option value="TX">Texas</option>
+            </select>
+            <input type="text" class="form-control" name="add2_zip" value="<?php echo $add2_zip; ?>" placeholder="ZIP">
         </div>
         <div class="col-xs-3" id="address-3">
-        address 3
+            <input type="text" class="form-control" name="add3_street_line1" value="<?php echo $add3_street_line1; ?>" placeholder="Street Line 1">
+            <input type="text" class="form-control" name="add3_street_line2" value="<?php echo $add3_street_line2; ?>" placeholder="Street Line 2">
+            <input type="text" class="form-control" name="add3_city" value="<?php echo $add3_city; ?>" placeholder="City">
+            <select name="add3_state">
+                <option value="">State</option>
+                <option value="AK">Alaska</option>
+                <option value="CA">California</option>
+                <option value="TX">Texas</option>
+            </select>
+            <input type="text" class="form-control" name="add3_zip" value="<?php echo $add3_zip; ?>" placeholder="ZIP">
         </div>
     </div>
 
