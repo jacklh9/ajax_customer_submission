@@ -9,6 +9,7 @@
     <div id="form-container" class="col-xs-6">
 
         <?php include "includes/login_form.php"; ?>
+        <?php include "includes/submission_form.php"; ?>
 
     </div>
 </div>
