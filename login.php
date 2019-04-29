@@ -10,7 +10,7 @@
         confirmQResult($result_set);
         $row = mysqli_fetch_assoc($result_set);
         $cust_id = $row['id'];
-        $first = (defined($row['first']) && !empty($row['first'])) ? $row['first'] : '';
+        $first = (empty($row['first'])) ? '' : $row['first'];
         $last = (empty($row['last'])) ? '' : $row['last'];
         $phone = (empty($row['phone'])) ? '' : $row['phone'];
 
@@ -34,7 +34,7 @@
 
     } else {
 
-        echo "<div id='notification-bar' class='bg-danger'>ERROR: Submission failed!</div>";
+        echo "<div id='notification-bar' class='bg-danger'>ERROR: Login failed!</div>";
 
     }
 

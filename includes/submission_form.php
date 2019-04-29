@@ -85,7 +85,11 @@
         var data = $(this).serialize();
 
         $.post(url, data, function(response){
-            $('#form-container').html(response);
+            $('#upload-user-form').hide();
+            $('#upload-user-form')[0].reset();
+            alert("Thank you. Your information has been successfully submitted.");
+            $('#login-user-form')[0].reset();
+            $('#login-user-form').show();
         });
 
     });
