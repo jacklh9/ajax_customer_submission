@@ -6,6 +6,12 @@
 
     <?php if(!empty($cust_id)){
         echo "<p>Customer# {$cust_id}</p>";
+
+        // This is an existing customer
+        $submit_type = 'Save';
+    } else {
+        // This is a new customer
+        $submit_type = 'Register';
     }
     ?>
 
@@ -27,6 +33,7 @@
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
             <h3>Address <?php echo $i+1; ?>:</h3>
+            <input type="hidden" class="form-control" name="add" . <?php echo $i; ?> . "_id" value="<?php echo $add[$i]['id']; ?>">
             <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_street_line1" value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
             <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_street_line2" value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
             <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_city" value="<?php echo $add[$i]['city']; ?>" placeholder="City">
@@ -51,13 +58,13 @@
     </div> <!-- row -->
     <br>
     <div class="row" id="submission-form-buttons">
-        <div class="form-group col-xs-1">
-            <input type="submit" class="btn btn-primary" name="upload" value="Save">
+        <div class="form-group col-xs-2">
+            <input type="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
         </div>
-        <div class="form-group col-xs-1">
+        <div class="form-group col-xs-2">
             <input type="button" class="btn" id="btn-cancel" value="Cancel">
         </div>
-        <div class="col-xs-10"></div>
+        <div class="col-xs-8"></div>
     </div>
 
 </form>
@@ -68,6 +75,10 @@
         $('#upload-user-form')[0].reset();
         $('#login-user-form')[0].reset();
         $('#login-user-form').show();
+    }
+
+    function thankYou(){
+        alert("Thank you. Your information has been successfully submitted.");
     }
 
     // CANCEL button
@@ -85,11 +96,10 @@
         var data = $(this).serialize();
 
         $.post(url, data, function(response){
-            $('#upload-user-form').hide();
-            $('#upload-user-form')[0].reset();
-            alert("Thank you. Your information has been successfully submitted.");
-            $('#login-user-form')[0].reset();
-            $('#login-user-form').show();
+            resetLogin();
+            thankYou();
+        }).fail(function(){
+            alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
         });
 
     });

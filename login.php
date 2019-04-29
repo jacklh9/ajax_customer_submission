@@ -21,6 +21,7 @@
         confirmQResult($result_set);
         for($i = 0; $i < $MAX_ADDRESSES; $i++){
             $row = mysqli_fetch_assoc($result_set);
+            $add[$i]['id'] = (empty($row['id'])) ? '' : $row['id'];
             $add[$i]['street_line1'] = (empty($row['street_line1'])) ? '' : $row['street_line1'];
             $add[$i]['street_line2'] = (empty($row['street_line2'])) ? '' : $row['street_line2'];
             $add[$i]['city'] = (empty($row['city'])) ? '' : $row['city'];

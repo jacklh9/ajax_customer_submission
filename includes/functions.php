@@ -1,11 +1,21 @@
 <?php include_once "db.php"; ?>
 <?php
 
+    function debug_to_console( $data ) {
+        $output = $data;
+        if ( is_array( $output ) )
+            $output = implode( ',', $output);
+    
+        echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
+    }
+    
     function get_cust_id($email){
+        global $connection;
         $get_cust_id_query = "SELECT id FROM customers WHERE email = '$email'";
         $result = mysqli_query($connection, $get_cust_id_query);
         confirmQResult($result);
-        return mysqli_fetch_assoc($result);
+        $row = mysqli_fetch_assoc($result);
+        return $row['id'];
     }
 
 ?>
