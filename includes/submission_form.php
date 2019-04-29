@@ -33,11 +33,11 @@
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
             <h3>Address <?php echo $i+1; ?>:</h3>
-            <input type="hidden" class="form-control" name="add" . <?php echo $i; ?> . "_id" value="<?php echo $add[$i]['id']; ?>">
-            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_street_line1" value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
-            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_street_line2" value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
-            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_city" value="<?php echo $add[$i]['city']; ?>" placeholder="City">
-            <select name="add" . <?php echo $i; ?> . "_state">
+            <input type="hidden" class="form-control" name='<?php echo "add{$i}_id"; ?>' value="<?php echo $add[$i]['id']; ?>">
+            <input type="text" class="form-control" name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
+            <input type="text" class="form-control" name='<?php echo "add{$i}_street_line2"; ?>' value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
+            <input type="text" class="form-control" name='<?php echo "add{$i}_city"; ?>' value="<?php echo $add[$i]['city']; ?>" placeholder="City">
+            <select name='<?php echo "add{$i}_state"; ?>'>
                 <option value="none">State</option>
 <?php
             foreach($states as $state){
@@ -49,7 +49,7 @@
             }
 ?>
             </select>
-            <input type="text" class="form-control" name="add" . <?php echo $i; ?> . "_zip" value="<?php echo $add[$i]['zip']; ?>" placeholder="ZIP">
+            <input type="text" class="form-control" name='<?php echo "add{$i}_zip"; ?>' value="<?php echo $add[$i]['zip']; ?>" placeholder="ZIP">
         </div>
 <?php
     } // end for-loop
@@ -70,6 +70,16 @@
 </form>
 
 <script>
+    var notificationTextDurationSecs = 300;
+
+    function notifyUser(response){
+        $('#notification-bar').text(response);
+        $('#notification-bar').show();
+        setTimeout(function(text){
+            $('#notification-bar').hide();
+        }, notificationTextDurationSecs * 1000); // 1 sec = 1000 milliseconds
+    }
+
     function resetLogin(){
         $('#upload-user-form').hide();
         $('#upload-user-form')[0].reset();
@@ -95,7 +105,9 @@
         var url = $(this).attr('action');
         var data = $(this).serialize();
 
+        // upload.php
         $.post(url, data, function(response){
+            notifyUser(response);
             resetLogin();
             thankYou();
         }).fail(function(){

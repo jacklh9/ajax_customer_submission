@@ -4,7 +4,7 @@
     if(isset($_POST['email'])){
         $email = clean($_POST['email']);
 
-        // Get customer personal info
+        // Get customer personal info from DB
         $get_cust_info_query = "SELECT * FROM customers WHERE email = '$email'";
         $result_set = mysqli_query($connection, $get_cust_info_query);
         confirmQResult($result_set);
@@ -14,7 +14,7 @@
         $last = (empty($row['last'])) ? '' : $row['last'];
         $phone = (empty($row['phone'])) ? '' : $row['phone'];
 
-        // Get customer addresses
+        // Get customer addresses from DB
         $MAX_ADDRESSES = 3;
         $get_addresses_query = "SELECT * FROM addresses WHERE FK_cust_id = '$cust_id' LIMIT {$MAX_ADDRESSES}";
         $result_set = mysqli_query($connection, $get_addresses_query);
