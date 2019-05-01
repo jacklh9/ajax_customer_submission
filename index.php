@@ -24,6 +24,11 @@
 $(document).ready(function(){
 
     var notificationTextDurationSecs = 3;
+
+    $.get('includes/show_registered_users.php', function(data){
+        $('#registered_users').html(data);
+    });
+
     $('#form-container').hide();
     $('#notification-bar').hide();
     $('#login-user-form').show();

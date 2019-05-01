@@ -38,4 +38,15 @@
         return $pic;
     }
 
+    function get_registered_users(){
+        global $connection;
+
+        $get_cust_query = "SELECT email FROM customers";
+        $result = mysqli_query($connection, $get_cust_query);
+        confirmQResult($result);
+        while($row = mysqli_fetch_assoc($result)){
+            echo "<li><a class='email' href='javascript:void(0)'>{$row['email']}</a></li>";
+        }
+    }
+
 ?>
