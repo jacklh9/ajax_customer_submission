@@ -17,9 +17,22 @@
         echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
     }
     
+    function delete_addresses_by_cust($id){
+        global $connection;
+
+        $query = "DELETE FROM addresses WHERE FK_cust_id = '$id'";
+        $result = mysqli_query($connection, $query);
+        if(!$result){
+            echo "Delete failed: " . mysqli_error($connection);
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
     function delete_cust($id){
         global $connection;
-        debug_to_console("Inside delete_cust with id: " . $id);
+
         $query = "DELETE FROM customers WHERE id = '$id'";
         $result = mysqli_query($connection, $query);
         if(!$result){

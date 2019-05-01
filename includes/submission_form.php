@@ -135,11 +135,12 @@
                 // Customer exists in DB, so purge from DB.
                 $.post("delete.php", {cust_id: cust_id}, function(response){
                     notifyUser("Customer# " + cust_id + " deleted.");
+                    resetLogin();
                 });
             } else {
                 notifyUser("Form data not submitted.");
+                resetLogin();
             }
-            resetLogin();
         }
     });
 
