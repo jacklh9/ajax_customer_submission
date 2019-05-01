@@ -48,13 +48,13 @@
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line2"; ?>' name='<?php echo "add{$i}_street_line2"; ?>' value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
             <input type="text" class="form-control" id='<?php echo "add{$i}_city"; ?>' name='<?php echo "add{$i}_city"; ?>' value="<?php echo $add[$i]['city']; ?>" placeholder="City">
             <select name='<?php echo "add{$i}_state"; ?>'>
-                <option value="">State</option>
+                <option id='add{$i}_state' value="">State</option>
 <?php
             foreach(STATES as $state){
                 if ($state == $add[$i]['state']){
-                    echo "<option id='add{$i}_state' value='$state' selected>$state</option>";
+                    echo "<option value='$state' selected>$state</option>";
                 } else {
-                    echo "<option id='add{$i}_state' value='$state'>$state</option>";
+                    echo "<option value='$state'>$state</option>";
                 }
             }
 ?>
@@ -121,6 +121,7 @@
             $('#add' + addr_num + '_street_line2').val("");
             $('#add' + addr_num + '_city').val("");
             $('#add' + addr_num + '_state').val("");
+            $('#add' + addr_num + '_state').text("State");
             $('#add' + addr_num + '_zip').val("");
         }
     });
