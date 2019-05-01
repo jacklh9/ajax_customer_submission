@@ -9,9 +9,11 @@
 
         // This is an existing customer
         $submit_type = 'Save';
+        $profile_path = PROFILE_PATH . "/" . get_cust_profile($cust_id);
     } else {
         // This is a new customer
         $submit_type = 'Register';
+        $profile_path = PROFILE_PATH . "/" . DEFAULT_IMAGE;
     }
     ?>
 
@@ -26,7 +28,7 @@
             </div>
         </div>
         <div class="col-xs-2" id="profile-info">
-            <img src="" width="200">
+            <img src='<?php echo "{$profile_path}"; ?>' width="200">
             <div class="form-group">
                 <input type="file" class="form-control" id="profile_pic">
             </div>

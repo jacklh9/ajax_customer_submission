@@ -70,7 +70,7 @@ function clean($string){
 }
 
 function confirmQResult($query_result){
-    global $connection; 
+    //global $connection; 
 
     if(!$query_result){
         die("QUERY FAILED: " . mysqli_error($connection));
@@ -79,7 +79,7 @@ function confirmQResult($query_result){
 
 // Quick Test (remove in prod)
 function test_query() {
-    global $connection;
+    //global $connection;
     $query = "SHOW TABLES";
     $result_set = mysqli_query($connection, $query);
 
