@@ -5,7 +5,7 @@
         echo "<p>Customer# {$cust_id}</p>";
 
         // This is an existing customer
-        $submit_type = 'Save';
+        $submit_type = 'Save All';
         $profile_path = PROFILE_PATH . "/" . get_cust_profile($cust_id);
     } else {
         // This is a new customer
@@ -40,23 +40,26 @@
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
             <h3>Address <?php echo $i+1; ?>:</h3>
+            <div class="form-group">
+                <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Clear Address">
+            </div>
             <input type="hidden" class="form-control" name='<?php echo "add{$i}_id"; ?>' value="<?php echo $add[$i]['id']; ?>">
-            <input type="text" class="form-control" name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
-            <input type="text" class="form-control" name='<?php echo "add{$i}_street_line2"; ?>' value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
-            <input type="text" class="form-control" name='<?php echo "add{$i}_city"; ?>' value="<?php echo $add[$i]['city']; ?>" placeholder="City">
+            <input type="text" class="form-control" id='<?php echo "add{$i}_street_line1"; ?>' name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
+            <input type="text" class="form-control" id='<?php echo "add{$i}_street_line2"; ?>' name='<?php echo "add{$i}_street_line2"; ?>' value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
+            <input type="text" class="form-control" id='<?php echo "add{$i}_city"; ?>' name='<?php echo "add{$i}_city"; ?>' value="<?php echo $add[$i]['city']; ?>" placeholder="City">
             <select name='<?php echo "add{$i}_state"; ?>'>
-                <option value="none">State</option>
+                <option value="">State</option>
 <?php
             foreach(STATES as $state){
                 if ($state == $add[$i]['state']){
-                    echo "<option value='$state' selected>$state</option>";
+                    echo "<option id='add{$i}_state' value='$state' selected>$state</option>";
                 } else {
-                    echo "<option value='$state'>$state</option>";
+                    echo "<option id='add{$i}_state' value='$state'>$state</option>";
                 }
             }
 ?>
             </select>
-            <input type="text" class="form-control" name='<?php echo "add{$i}_zip"; ?>' value="<?php echo $add[$i]['zip']; ?>" placeholder="ZIP">
+            <input type="text" class="form-control" id='<?php echo "add{$i}_zip"; ?>' name='<?php echo "add{$i}_zip"; ?>' value="<?php echo $add[$i]['zip']; ?>" placeholder="ZIP">
         </div>
 <?php
     } // end for-loop
@@ -72,13 +75,13 @@
         // Customer exists in DB, so display delete button
 ?>
             <div class="form-group col-xs-2">
-                <input type="button" class="btn" id="btn-delete" value="Delete">
+                <input type="button" class="btn" id="btn-delete" value="Delete User">
             </div>
 <?php
         }
 ?>
         <div class="form-group col-xs-2">
-            <input type="button" class="btn" id="btn-cancel" value="Cancel">
+            <input type="button" class="btn" id="btn-cancel" value="Cancel Changes">
         </div>
         <div class="col-xs-6"></div>
     </div>
@@ -102,6 +105,25 @@
         alert("Thank you. Your information has been successfully submitted.");
     }
 
+    // CANCEL button
+    $('#btn-cancel').on('click', function(){
+        if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
+            notifyUser("Form data not submitted.");
+            resetLogin();
+        }
+    });
+
+    // CLEAR ADDRESS button
+    $('.btn-clear-addr').on('click', function(){
+        if(confirm("Delete address?")){
+            addr_num = $(this).attr('rel');
+            $('#add' + addr_num + '_street_line1').val("");
+            $('#add' + addr_num + '_street_line2').val("");
+            $('#add' + addr_num + '_city').val("");
+            $('#add' + addr_num + '_state').val("");
+            $('#add' + addr_num + '_zip').val("");
+        }
+    });
 
     // DELETE button
     $('#btn-delete').on('click', function(){
@@ -116,15 +138,6 @@
             } else {
                 notifyUser("Form data not submitted.");
             }
-            resetLogin();
-        }
-    });
-
-
-    // CANCEL button
-    $('#btn-cancel').on('click', function(){
-        if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
-            notifyUser("Form data not submitted.");
             resetLogin();
         }
     });
