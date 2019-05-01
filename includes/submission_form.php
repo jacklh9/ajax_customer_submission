@@ -2,7 +2,7 @@
 <form action="upload.php" id="upload-user-form" method="post">
 
     <?php if(!empty($cust_id)){
-        echo "<p>Customer# <span id='cust_id'>{$cust_id}</span></p>";
+        echo "<p>Customer# {$cust_id}</p>";
 
         // This is an existing customer
         $submit_type = 'Save';
@@ -11,6 +11,7 @@
         // This is a new customer
         $submit_type = 'Register';
         $profile_path = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+        $cust_id = -1;
     }
     ?>
 
@@ -18,6 +19,7 @@
         <div class="col-xs-2"></div>
         <div id="personal-info" class="col-xs-6">
             <div class="form-group">
+                <input type="hidden" class="form-control" id="cust_id" name='cust_id' value="<?php echo $cust_id; ?>">
                 <input type="text" class="form-control" name="email" value="<?php echo $email; ?>" placeholder="Email">
                 <input type="text" class="form-control" name="first" value="<?php echo $first; ?>" placeholder="First Name">
                 <input type="text" class="form-control" name="last" value="<?php echo $last; ?>" placeholder="Last Name">
@@ -66,9 +68,15 @@
         <div class="form-group col-xs-2">
             <input type="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
         </div>
-        <div class="form-group col-xs-2">
-            <input type="button" class="btn" id="btn-delete" value="Delete">
-        </div>
+<?php   if($cust_id >= 0){
+        // Customer exists in DB, so display delete button
+?>
+            <div class="form-group col-xs-2">
+                <input type="button" class="btn" id="btn-delete" value="Delete">
+            </div>
+<?php
+        }
+?>
         <div class="form-group col-xs-2">
             <input type="button" class="btn" id="btn-cancel" value="Cancel">
         </div>
@@ -94,13 +102,20 @@
         alert("Thank you. Your information has been successfully submitted.");
     }
 
+
     // DELETE button
     $('#btn-delete').on('click', function(){
         if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
-            // if(empty($cust_id)){
-            //     // TODO
-            // }
-            // $.post("delete_user.php", {id: })
+            cust_id = $('#cust_id').val();
+            if(cust_id >= 0){
+
+                // Customer exists in DB, so purge from DB.
+                $.post("delete.php", {cust_id: cust_id}, function(response){
+                    notifyUser("Customer# " + cust_id + " deleted.");
+                });
+            } else {
+                notifyUser("Form data not submitted.");
+            }
             resetLogin();
         }
     });
@@ -109,6 +124,7 @@
     // CANCEL button
     $('#btn-cancel').on('click', function(){
         if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
+            notifyUser("Form data not submitted.");
             resetLogin();
         }
     });

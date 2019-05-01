@@ -27,8 +27,6 @@ $(document).ready(function(){
 
     /* ************* LOGIN FORM ******************* */
 
-    var notificationTextDurationSecs = 3;
-
     $('#form-container').hide();
     $('#notification-bar').hide();
     $('#login-user-form').show();
@@ -45,6 +43,7 @@ $(document).ready(function(){
         $.post(url, data, function(response){
             $('#submission-form-row').html(response);
             $('#login-user-form').hide();
+            $('#notification-bar').hide();
             $('#registered-users-list').hide();
         });
 
