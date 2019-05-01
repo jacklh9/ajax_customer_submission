@@ -1,4 +1,5 @@
 <?php include_once "includes/db.php"; ?>
+<?php include "includes/functions.php"; ?>
 <?php include "includes/header.php"; ?>
 
 <div class="row">
@@ -23,17 +24,18 @@
 
 $(document).ready(function(){
 
-    var notificationTextDurationSecs = 3;
+    <?php include "includes/js/functions.js"; ?>
 
-    $.get('includes/show_registered_users.php', function(data){
-        $('#registered_users').html(data);
-    });
+    /* ************* LOGIN FORM ******************* */
+
+    var notificationTextDurationSecs = 3;
 
     $('#form-container').hide();
     $('#notification-bar').hide();
     $('#login-user-form').show();
     $('#upload-user-form').hide();
     $('#form-container').show();
+    show_registered_users();
 
     $('#login-user-form').submit(function(evt){
         evt.preventDefault();
@@ -44,23 +46,11 @@ $(document).ready(function(){
         $.post(url, data, function(response){
             $('#submission-form-row').html(response);
             $('#login-user-form').hide();
+            $('#registered-users-list').hide();
         });
 
     });
 
-
-    /* ************* UPLOAD FORM ******************* */
-    
-
-    function notifyUser(response){
-        $('#notification-bar').text(response);
-        $('#notification-bar').show();
-        setTimeout(function(text){
-            $('#notification-bar').hide();
-        }, notificationTextDurationSecs * 1000); // 1 sec = 1000 milliseconds
-    }
-
-    
 
 });
 

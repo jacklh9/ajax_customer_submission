@@ -80,19 +80,14 @@
 <script>
     var notificationTextDurationSecs = 300;
 
-    function notifyUser(response){
-        $('#notification-bar').text(response);
-        $('#notification-bar').show();
-        setTimeout(function(text){
-            $('#notification-bar').hide();
-        }, notificationTextDurationSecs * 1000); // 1 sec = 1000 milliseconds
-    }
+    <?php include "includes/js/functions.js"; ?>
 
     function resetLogin(){
         $('#upload-user-form').hide();
         $('#upload-user-form')[0].reset();
         $('#login-user-form')[0].reset();
         $('#login-user-form').show();
+        show_registered_users();
     }
 
     function thankYou(){

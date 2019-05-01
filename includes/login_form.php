@@ -10,5 +10,5 @@
 
 </form>
 
-<div id="registered_users"></div>
+<div id="registered-users-list"></div>
 
