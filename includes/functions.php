@@ -17,6 +17,19 @@
         echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
     }
     
+    function delete_cust($id){
+        global $connection;
+        debug_to_console("Inside delete_cust with id: " . $id);
+        $query = "DELETE FROM customers WHERE id = '$id'";
+        $result = mysqli_query($connection, $query);
+        if(!$result){
+            echo "Delete failed: " . mysqli_error($connection);
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
     function get_cust_id($email){
         global $connection;
         $get_cust_id_query = "SELECT id FROM customers WHERE email = '$email'";
