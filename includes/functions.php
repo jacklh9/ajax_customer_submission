@@ -27,11 +27,15 @@
 
     function get_cust_profile($cust_id){
         global $connection;
+        $pic = DEFAULT_IMAGE;
         $get_cust_profile_query = "SELECT profile FROM customers WHERE id = '$cust_id'";
         $result = mysqli_query($connection, $get_cust_profile_query);
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
-        return $row['profile'];
+        if(!empty($row['profile'])){
+            $pic = $row['profile'];
+        }
+        return $pic;
     }
 
 ?>
