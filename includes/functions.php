@@ -3,6 +3,7 @@
     $constants['max_addresses'] = 3;
     $constants['profile_path'] = './images/profiles';
     $constants['default_image'] = 'default.png';
+    $constants['states'] = array("AK", "CA", "TX");
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);

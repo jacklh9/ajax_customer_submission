@@ -9,16 +9,15 @@
     <div id="form-container">
         <div class="row" id="login-form-row">
             <div class="col-xs-3"></div>
-            <div class="col-xs-6">
+            <div class="col-xs-6" id='login-form-col'>
                 <br>
                 <?php include "includes/login_form.php"; ?>
-            </div>
+            </div><!-- login-form-col -->
             <div class="col-xs-3"></div>
         </div> <!-- login-form-row -->
-        <div class="row" id="submission-form-row">
-        </div> <!-- submission-form-row -->
-    </div>
-</div>
+        <div class="row" id="submission-form-row"></div> <!-- submission-form-row -->
+    </div><!-- form-container -->
+</div><!-- row -->
 
 <script>
 

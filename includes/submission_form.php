@@ -1,11 +1,8 @@
 <?php include_once "includes/functions.php"; ?>
-<?php
-    $states = array("AK", "CA", "TX");
-?>
 <form action="upload.php" id="upload-user-form" method="post">
 
     <?php if(!empty($cust_id)){
-        echo "<p>Customer# {$cust_id}</p>";
+        echo "<p>Customer# <span id='cust_id'>{$cust_id}</span></p>";
 
         // This is an existing customer
         $submit_type = 'Save';
@@ -48,7 +45,7 @@
             <select name='<?php echo "add{$i}_state"; ?>'>
                 <option value="none">State</option>
 <?php
-            foreach($states as $state){
+            foreach(STATES as $state){
                 if ($state == $add[$i]['state']){
                     echo "<option value='$state' selected>$state</option>";
                 } else {
@@ -70,9 +67,12 @@
             <input type="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
         </div>
         <div class="form-group col-xs-2">
+            <input type="button" class="btn" id="btn-delete" value="Delete">
+        </div>
+        <div class="form-group col-xs-2">
             <input type="button" class="btn" id="btn-cancel" value="Cancel">
         </div>
-        <div class="col-xs-8"></div>
+        <div class="col-xs-6"></div>
     </div>
 
 </form>
@@ -94,9 +94,21 @@
         alert("Thank you. Your information has been successfully submitted.");
     }
 
+    // DELETE button
+    $('#btn-delete').on('click', function(){
+        if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
+            // if(empty($cust_id)){
+            //     // TODO
+            // }
+            // $.post("delete_user.php", {id: })
+            resetLogin();
+        }
+    });
+
+
     // CANCEL button
     $('#btn-cancel').on('click', function(){
-        if(confirm("Are you sure you wish to cancel.\nALL changes made in the form WILL BE LOST!")){
+        if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
             resetLogin();
         }
     });

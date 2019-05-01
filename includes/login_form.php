@@ -8,7 +8,7 @@
         <input type="submit" class="btn btn-primary" name="login" value="Login or Register">
     </div>
 
-</form>
+</form><!-- login-user-form -->
 
-<div id="registered-users-list"></div>
+<div id="registered-users-list"></div><!-- registered-users-list -->
 

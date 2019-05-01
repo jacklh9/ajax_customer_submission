@@ -15,8 +15,6 @@
 
 $(document).ready(function(){
     $('.email').on('click',function(){
-        console.log("var: " + $(this).text());
-
         $('#email').val($(this).text());
     });
 });
