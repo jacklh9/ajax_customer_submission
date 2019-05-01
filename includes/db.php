@@ -16,7 +16,7 @@ $connection = (defined('DB_PORT')) ? mysqli_connect(DB_HOST, DB_USER, DB_PASS, D
 function create_db_conn_constants(){
 
     // EXPECTED ENV VAR FORMAT: mysql://NEWUSER:NEWPASS@NEWHOST:3306/NEWDATABASE
-    $db_conn = getenv('DB_URL_COPY', true) ?: getenv('DB_URL_COPY');
+    $db_conn = getenv('JAWSDB_MARIA_URL', true) ?: getenv('JAWSDB_MARIA_URL');
 
     if(empty($db_conn)) {
 
