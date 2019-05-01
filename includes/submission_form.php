@@ -1,6 +1,5 @@
 <?php include_once "includes/functions.php"; ?>
 <?php
-    global $MAX_ADDRESSES;
     $states = array("AK", "CA", "TX");
 ?>
 <form action="upload.php" id="upload-user-form" method="post">
@@ -36,7 +35,7 @@
     </div>
     <div class="row" id='addresses-row'>
 <?php
-    for($i = 0; $i < $MAX_ADDRESSES; $i++){
+    for($i = 0; $i < MAX_ADDRESSES; $i++){
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
             <h3>Address <?php echo $i+1; ?>:</h3>

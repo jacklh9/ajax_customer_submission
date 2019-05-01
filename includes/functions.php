@@ -1,8 +1,11 @@
 <?php include_once "db.php"; ?>
 <?php
-    // GLOBAL VARS
-    $MAX_ADDRESSES = 3;
-    
+    $constants['max_addresses'] = 3;
+    $constants['profile_path'] = '/images/profiles';
+
+    foreach($constants as $key => $value){
+        define(strtoupper($key), $value);
+    }
 
     function debug_to_console( $data ) {
         $output = $data;

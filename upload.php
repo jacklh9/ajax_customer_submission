@@ -31,9 +31,8 @@
         $cust_id = get_cust_id($email);
 
         // Update/Insert Customer Addresses
-        global $MAX_ADDRESSES;
 
-        for($i = 0; $i < $MAX_ADDRESSES; $i++){
+        for($i = 0; $i < MAX_ADDRESSES; $i++){
             $street_line1 = (isset($_POST['add' . $i . '_street_line1'])) ? clean($_POST['add' . $i . '_street_line1']) : '';
             $street_line2 = (isset($_POST['add' . $i . '_street_line2'])) ? clean($_POST['add' . $i . '_street_line2']) : '';
             $city =         (isset($_POST['add' . $i . '_city'])) ? clean($_POST['add' . $i . '_city']) : '';

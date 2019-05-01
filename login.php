@@ -1,5 +1,5 @@
 <?php include_once "includes/db.php"; ?>
-<?php include "includes/functions.php"; ?>
+<?php include_once "includes/functions.php"; ?>
 <?php
 
     if(isset($_POST['email'])){
@@ -16,11 +16,10 @@
         $phone = (empty($row['phone'])) ? '' : $row['phone'];
 
         // Get customer addresses from DB
-        global $MAX_ADDRESSES;
-        $get_addresses_query = "SELECT * FROM addresses WHERE FK_cust_id = '$cust_id' LIMIT {$MAX_ADDRESSES}";
+        $get_addresses_query = "SELECT * FROM addresses WHERE FK_cust_id = '$cust_id' LIMIT " . MAX_ADDRESSES;
         $result_set = mysqli_query($connection, $get_addresses_query);
         confirmQResult($result_set);
-        for($i = 0; $i < $MAX_ADDRESSES; $i++){
+        for($i = 0; $i < MAX_ADDRESSES; $i++){
             $row = mysqli_fetch_assoc($result_set);
             $add[$i]['id'] = (empty($row['id'])) ? '' : $row['id'];
             $add[$i]['street_line1'] = (empty($row['street_line1'])) ? '' : $row['street_line1'];
