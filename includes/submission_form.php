@@ -1,3 +1,4 @@
+<?php include_once "includes/functions.php"; ?>
 <?php
     global $MAX_ADDRESSES;
     $states = array("AK", "CA", "TX");
@@ -16,7 +17,7 @@
     ?>
 
     <div class="row" id="personal-info-row">
-        <div class="col-xs-3"></div>
+        <div class="col-xs-2"></div>
         <div id="personal-info" class="col-xs-6">
             <div class="form-group">
                 <input type="text" class="form-control" name="email" value="<?php echo $email; ?>" placeholder="Email">
@@ -25,7 +26,13 @@
                 <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>" placeholder="Primary Phone">
             </div>
         </div>
-        <div class="col-xs-3"></div>
+        <div class="col-xs-2" id="profile-info">
+            <img src="" width="200">
+            <div class="form-group">
+                <input type="file" class="form-control" id="profile_pic">
+            </div>
+        </div>
+        <div class="col-xs-2"></div>
     </div>
     <div class="row" id='addresses-row'>
 <?php

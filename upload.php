@@ -1,5 +1,5 @@
 <?php include_once "includes/db.php"; ?>
-<?php include "includes/functions.php"; ?>
+<?php include_once "includes/functions.php"; ?>
 <?php
 
     if(isset($_POST['email'])){
@@ -31,7 +31,7 @@
         $cust_id = get_cust_id($email);
 
         // Update/Insert Customer Addresses
-        $MAX_ADDRESSES = 3;
+        global $MAX_ADDRESSES;
 
         for($i = 0; $i < $MAX_ADDRESSES; $i++){
             $street_line1 = (isset($_POST['add' . $i . '_street_line1'])) ? clean($_POST['add' . $i . '_street_line1']) : '';

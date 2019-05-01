@@ -1,4 +1,5 @@
 <?php include_once "includes/db.php"; ?>
+<?php include "includes/functions.php"; ?>
 <?php
 
     if(isset($_POST['email'])){
@@ -15,7 +16,7 @@
         $phone = (empty($row['phone'])) ? '' : $row['phone'];
 
         // Get customer addresses from DB
-        $MAX_ADDRESSES = 3;
+        global $MAX_ADDRESSES;
         $get_addresses_query = "SELECT * FROM addresses WHERE FK_cust_id = '$cust_id' LIMIT {$MAX_ADDRESSES}";
         $result_set = mysqli_query($connection, $get_addresses_query);
         confirmQResult($result_set);

@@ -1,5 +1,8 @@
 <?php include_once "db.php"; ?>
 <?php
+    // GLOBAL VARS
+    $MAX_ADDRESSES = 3;
+    
 
     function debug_to_console( $data ) {
         $output = $data;
