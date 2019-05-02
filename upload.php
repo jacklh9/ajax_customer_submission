@@ -82,7 +82,7 @@
             // because image extensions can vary; therefore,
             // we always delete the old image as a matter
             // of good housekeeping.
-            delete_cust_profile_pic($cust_id);
+            delete_profile_pic($cust_id);
             move_uploaded_file($tmp_file, $destination);
             update_profile_pic_filename($basename, $cust_id);
         }
