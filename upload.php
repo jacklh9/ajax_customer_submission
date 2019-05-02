@@ -66,17 +66,21 @@
         // Update/Insert Profile Pic
         if($_FILES['profile_pic']){
             
-            $tmp_file = clean($_FILES['profile_pic']['tmp_name']);
+            $tmp_file = $_FILES['profile_pic']['tmp_name'];
+            $filename = $_FILES['profile_pic']['name'];
 
-            // Since we cannot guarantee that a customer won't happen to have the same
-            // filename as another, we pre-pend the customer ID to avoid 
-            // filename collisions.
-            $basename = $cust_id . "." . clean(basename($_FILES['userfile']['name']));
-            $destination = PROFILE_PATH . "/ " . $basename;
+            // deal with non ASCII characters by setting the locale first
+            setlocale(LC_ALL,'en_US.UTF-8');
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+            // NAMING CONVENTION: id.ext
+            $basename = $cust_id . "." . $ext;
+            $destination = PROFILE_PATH . "/" . $basename;
 
             // Although move_uploaded_file() overwrites files,
-            // we have no guarantee it's the same filename;
-            // therefore, we always delete the old image as a matter
+            // we have no guarantee it's the same filename
+            // because image extensions can vary; therefore,
+            // we always delete the old image as a matter
             // of good housekeeping.
             delete_cust_profile_pic($cust_id);
             move_uploaded_file($tmp_file, $destination);

@@ -46,7 +46,7 @@
     function delete_cust_profile_pic($cust_id){
         $filename = get_cust_profile_pic($cust_id);
         if(!empty($filename) && $filename != DEFAULT_IMAGE){
-            return unlink($filename);
+            return unlink(PROFILE_PATH . "/" . $filename);
         } else {
             // Customer didn't have a profile.
             // Default pic was in use.
@@ -89,9 +89,10 @@
     }
 
     function update_profile_pic_filename($basename){
+        global $connection;
         $query = "UPDATE customers SET profile = '$basename'";
         $result = mysqli_query($connection, $query);
-        confirmQRequest($result);
+        confirmQResult($result);
     }
 
 ?>
