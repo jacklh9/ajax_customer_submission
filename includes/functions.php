@@ -48,8 +48,8 @@
         if(!empty($filename) && $filename != DEFAULT_IMAGE){
             return unlink(PROFILE_PATH . "/" . $filename);
         } else {
-            // Customer didn't have a profile.
-            // Default pic was in use.
+            // Customer didn't have a profile pic;
+            // default pic was in use.
             // So effectively their profile is already deleted.
             return TRUE;
         }
@@ -88,9 +88,9 @@
         }
     }
 
-    function update_profile_pic_filename($basename){
+    function update_profile_pic_filename($basename, $cust_id){
         global $connection;
-        $query = "UPDATE customers SET profile = '$basename'";
+        $query = "UPDATE customers SET profile = '$basename' WHERE id = $cust_id";
         $result = mysqli_query($connection, $query);
         confirmQResult($result);
     }
