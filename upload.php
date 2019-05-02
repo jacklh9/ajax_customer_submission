@@ -3,7 +3,8 @@
 <?php
 
     if(isset($_POST['email'])){
-        // echo "Inside upload.php: " . print_r($_POST);
+        
+        //echo "Inside upload.php: " . print_r($_POST);
         $email = clean($_POST['email']);
         $first = (isset($_POST['first'])) ? clean($_POST['first']) : '';
         $last = (isset($_POST['last'])) ? clean($_POST['last']) : '';
@@ -60,6 +61,30 @@
             }
             $result_set = mysqli_query($connection, $query);
             confirmQResult($result_set);
+        }
+
+        // Update/Insert Profile Pic
+        if($_FILES['profile_pic']){
+            
+            $tmp_file = $_FILES['profile_pic']['tmp_name'];
+            $filename = $_FILES['profile_pic']['name'];
+
+            // deal with non ASCII characters by setting the locale first
+            setlocale(LC_ALL,'en_US.UTF-8');
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+            // NAMING CONVENTION: id.ext
+            $basename = $cust_id . "." . $ext;
+            $destination = PROFILE_PATH . "/" . $basename;
+
+            // Although move_uploaded_file() overwrites files,
+            // we have no guarantee it's the same filename
+            // because image extensions can vary; therefore,
+            // we always delete the old image as a matter
+            // of good housekeeping.
+            delete_cust_profile_pic($cust_id);
+            move_uploaded_file($tmp_file, $destination);
+            update_profile_pic_filename($basename);
         }
 
     } else {

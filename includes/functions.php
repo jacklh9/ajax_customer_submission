@@ -43,6 +43,18 @@
         }
     }
 
+    function delete_cust_profile_pic($cust_id){
+        $filename = get_cust_profile_pic($cust_id);
+        if(!empty($filename) && $filename != DEFAULT_IMAGE){
+            return unlink(PROFILE_PATH . "/" . $filename);
+        } else {
+            // Customer didn't have a profile.
+            // Default pic was in use.
+            // So effectively their profile is already deleted.
+            return TRUE;
+        }
+    }
+
     function get_cust_id($email){
         global $connection;
         $get_cust_id_query = "SELECT id FROM customers WHERE email = '$email'";
@@ -52,7 +64,7 @@
         return $row['id'];
     }
 
-    function get_cust_profile($cust_id){
+    function get_cust_profile_pic($cust_id){
         global $connection;
         $pic = DEFAULT_IMAGE;
         $get_cust_profile_query = "SELECT profile FROM customers WHERE id = '$cust_id'";
@@ -74,6 +86,13 @@
         while($row = mysqli_fetch_assoc($result)){
             echo "<li><a class='email' href='javascript:void(0)'>{$row['email']}</a></li>";
         }
+    }
+
+    function update_profile_pic_filename($basename){
+        global $connection;
+        $query = "UPDATE customers SET profile = '$basename'";
+        $result = mysqli_query($connection, $query);
+        confirmQResult($result);
     }
 
 ?>
