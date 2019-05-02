@@ -64,7 +64,7 @@
         }
 
         // Update/Insert Profile Pic
-        if($_FILES['profile_pic']){
+        if(!empty($_FILES['profile_pic']['name'])){
             
             $tmp_file = $_FILES['profile_pic']['tmp_name'];
             $filename = $_FILES['profile_pic']['name'];
@@ -84,7 +84,7 @@
             // of good housekeeping.
             delete_cust_profile_pic($cust_id);
             move_uploaded_file($tmp_file, $destination);
-            update_profile_pic_filename($basename);
+            update_profile_pic_filename($basename, $cust_id);
         }
 
     } else {
