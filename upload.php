@@ -2,7 +2,7 @@
 <?php include_once "includes/functions.php"; ?>
 <?php
 
-    if(isset($_POST['email']) && !empty($_POST['email'])){
+    if(isset($_POST['email']) && !empty(clean($_POST['email']))){
         
         //echo "Inside upload.php: " . print_r($_POST);
         $email = clean($_POST['email']);
