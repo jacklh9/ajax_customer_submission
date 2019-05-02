@@ -30,6 +30,7 @@
         }
     }
 
+
     function delete_cust($id){
         global $connection;
 
@@ -43,7 +44,7 @@
         }
     }
 
-    function delete_cust_profile_pic($cust_id){
+    function delete_profile_pic($cust_id){
         $filename = get_cust_profile_pic($cust_id);
         if(!empty($filename) && $filename != DEFAULT_IMAGE){
             return unlink(PROFILE_PATH . "/" . $filename);
