@@ -1,12 +1,12 @@
 <?php include_once "includes/functions.php"; ?>
-<form action="upload.php" id="upload-user-form" method="post">
+<form action="upload.php" id="upload-user-form" method="post" enctype="multipart/form-data">
 
     <?php if(!empty($cust_id)){
         echo "<p>Customer# {$cust_id}</p>";
 
         // This is an existing customer
         $submit_type = 'Save All';
-        $profile_path = PROFILE_PATH . "/" . get_cust_profile($cust_id);
+        $profile_path = PROFILE_PATH . "/" . get_cust_profile_pic($cust_id);
     } else {
         // This is a new customer
         $submit_type = 'Register';
@@ -29,7 +29,7 @@
         <div class="col-xs-2" id="profile-info">
             <img src='<?php echo "{$profile_path}"; ?>' width="200">
             <div class="form-group">
-                <input type="file" class="form-control" id="profile_pic">
+                <input type="file" class="form-control" id="profile_pic" name="profile_pic">
             </div>
         </div>
         <div class="col-xs-2"></div>

@@ -3,7 +3,8 @@
 <?php
 
     if(isset($_POST['email'])){
-        // echo "Inside upload.php: " . print_r($_POST);
+        
+        //echo "Inside upload.php: " . print_r($_POST);
         $email = clean($_POST['email']);
         $first = (isset($_POST['first'])) ? clean($_POST['first']) : '';
         $last = (isset($_POST['last'])) ? clean($_POST['last']) : '';
@@ -60,6 +61,26 @@
             }
             $result_set = mysqli_query($connection, $query);
             confirmQResult($result_set);
+        }
+
+        // Update/Insert Profile Pic
+        if($_FILES['profile_pic']){
+            
+            $tmp_file = clean($_FILES['profile_pic']['tmp_name']);
+
+            // Since we cannot guarantee that a customer won't happen to have the same
+            // filename as another, we pre-pend the customer ID to avoid 
+            // filename collisions.
+            $basename = $cust_id . "." . clean(basename($_FILES['userfile']['name']));
+            $destination = PROFILE_PATH . "/ " . $basename;
+
+            // Although move_uploaded_file() overwrites files,
+            // we have no guarantee it's the same filename;
+            // therefore, we always delete the old image as a matter
+            // of good housekeeping.
+            delete_cust_profile_pic($cust_id);
+            move_uploaded_file($tmp_file, $destination);
+            update_profile_pic_filename($basename);
         }
 
     } else {
