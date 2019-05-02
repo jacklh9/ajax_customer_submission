@@ -29,9 +29,9 @@
         </div>
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-2" id="profile-info">
-            <img id='profile-pic' src='<?php echo "{$profile_path}"; ?>' width="200">
+            <img id='profile-pic' src='<?php echo "{$profile_path}"; ?>' width="200" height="200">
             <div class="form-group">
-                <input type="file" class="form-control" name="profile_pic">
+                <input type="file" class="form-control" name="profile_pic" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
