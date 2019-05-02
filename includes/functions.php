@@ -17,43 +17,66 @@
         echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
     }
     
-    function delete_addresses_by_cust($id){
+    function delete_addresses_by_cust($cust_id){
         global $connection;
-
-        $query = "DELETE FROM addresses WHERE FK_cust_id = '$id'";
+        $success = FALSE;
+        $query = "DELETE FROM addresses WHERE FK_cust_id = $cust_id";
         $result = mysqli_query($connection, $query);
         if(!$result){
             echo "Delete failed: " . mysqli_error($connection);
-            return FALSE;
         } else {
-            return TRUE;
+            $success = TRUE;
         }
+        return $success;
     }
 
 
-    function delete_cust($id){
+    function delete_cust($cust_id){
         global $connection;
-
-        $query = "DELETE FROM customers WHERE id = '$id'";
+        $success = FALSE;
+        $query = "DELETE FROM customers WHERE id = $cust_id";
         $result = mysqli_query($connection, $query);
         if(!$result){
             echo "Delete failed: " . mysqli_error($connection);
-            return FALSE;
         } else {
-            return TRUE;
+            $success = TRUE;
         }
+        return $success;
+    }
+
+    function delete_cust_and_related($cust_id){
+        $success = FALSE;
+        if (delete_addresses_by_cust($cust_id) 
+            && delete_profile_pic($cust_id) 
+            && delete_cust($cust_id)){
+            $success = TRUE;
+        }
+        return $success;
     }
 
     function delete_profile_pic($cust_id){
+
+        $success = FALSE;
         $filename = get_cust_profile_pic($cust_id);
         if(!empty($filename) && $filename != DEFAULT_IMAGE){
-            return unlink(PROFILE_PATH . "/" . $filename);
+
+            // Remove DB profile pic reference
+            global $connection;
+            $query = "UPDATE customers SET profile = '' WHERE id = $cust_id";
+            $result = mysqli_query($connection, $query);
+            if($result){
+
+                // Delete profile pic
+                $success = unlink(PROFILE_PATH . "/" . $filename);
+            }
+
         } else {
             // Customer didn't have a profile pic;
             // default pic was in use.
             // So effectively their profile is already deleted.
-            return TRUE;
+            $success = TRUE;
         }
+        return $success;
     }
 
     function get_cust_id($email){
@@ -80,13 +103,21 @@
 
     function get_registered_users(){
         global $connection;
-
         $get_cust_query = "SELECT email FROM customers";
         $result = mysqli_query($connection, $get_cust_query);
         confirmQResult($result);
         while($row = mysqli_fetch_assoc($result)){
             echo "<li><a class='email' href='javascript:void(0)'>{$row['email']}</a></li>";
         }
+    }
+
+    function has_profile_pic($cust_id){
+        global $connection;
+        $query = "SELECT profile FROM customers WHERE id = $cust_id";
+        $result = mysqli_query($connection, $query);
+        confirmQResult($result);
+        $row = mysqli_fetch_assoc($result);
+        return !empty($row['profile']);
     }
 
     function update_profile_pic_filename($basename, $cust_id){
