@@ -2,16 +2,27 @@
 <?php include "includes/functions.php"; ?>
 <?php
 
-if(isset($_POST['cust_id'])){
+$success = FALSE;
 
-    // Delete Customer    
+if(isset($_POST['cust_id'])){
     $cust_id = clean($_POST['cust_id']);
-    if(delete_addresses_by_cust($cust_id)){
-        if(delete_profile_pic($cust_id)){
-            delete_cust($cust_id);
-        }
+
+    switch($_POST['action']){
+
+        case 'delete-user':
+            echo delete_cust_and_related($cust_id);
+            
+            $success = delete_cust_and_related($cust_id);
+            break;
+
+        case 'delete-profile-pic':
+            $success = delete_profile_pic($cust_id);
+            break;
+
+        default:
+            break;
     }
 }
 
-
+echo $success;
 ?>

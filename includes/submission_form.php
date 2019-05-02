@@ -15,6 +15,7 @@
     }
     ?>
 
+    <!-- ************* PERSONAL INFO ********************* -->
     <div class="row" id="personal-info-row">
         <div class="col-xs-2"></div>
         <div id="personal-info" class="col-xs-6">
@@ -26,15 +27,25 @@
                 <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>" placeholder="Primary Phone">
             </div>
         </div>
+        <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-2" id="profile-info">
-            <img src='<?php echo "{$profile_path}"; ?>' width="200">
+            <img id='profile-pic' src='<?php echo "{$profile_path}"; ?>' width="200">
             <div class="form-group">
-                <!-- input type="file" class="form-control" id="profile_pic" name="profile_pic" -->
-                <input type="file" name="profile_pic" >
+                <input type="file" class="form-control" name="profile_pic">
             </div>
+<?php       
+            if($cust_id >= 0 && has_profile_pic($cust_id)){
+?>
+                <div class="form-group">
+                    <input type="button" class="btn" id="btn-delete-profile-pic" value="Delete Pic">
+                </div>
+<?php
+            }
+?>
         </div>
         <div class="col-xs-2"></div>
     </div>
+    <!-- ************* ADDRESSES ********************* -->
     <div class="row" id='addresses-row'>
 <?php
     for($i = 0; $i < MAX_ADDRESSES; $i++){
@@ -76,7 +87,7 @@
         // Customer exists in DB, so display delete button
 ?>
             <div class="form-group col-xs-2">
-                <input type="button" class="btn" id="btn-delete" value="Delete User">
+                <input type="button" class="btn" id="btn-delete-user" value="Delete User">
             </div>
 <?php
         }
@@ -127,20 +138,42 @@
         }
     });
 
-    // DELETE button
-    $('#btn-delete').on('click', function(){
+    // DELETE USER button
+    $('#btn-delete-user').on('click', function(){
         if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
             cust_id = $('#cust_id').val();
             if(cust_id >= 0){
 
                 // Customer exists in DB, so purge from DB.
-                $.post("delete.php", {cust_id: cust_id}, function(response){
-                    notifyUser("Customer# " + cust_id + " deleted.");
+                $.post("delete.php", {cust_id: cust_id, action: 'delete-user'}, function(status){
+                    if(status.localeCompare("1")){
+                        notifyUser("Customer# " + cust_id + " deleted.");
+                    } else {
+                        notifyUser("Error attempting to delete customer# " + cust_id + ": " + status);
+                    }
                     resetLogin();
                 });
             } else {
                 notifyUser("Form data not submitted.");
                 resetLogin();
+            }
+        }
+    });
+
+    // DELETE PROFILE PIC button
+    $('#btn-delete-profile-pic').on('click', function(){
+        if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved.")){
+            cust_id = $('#cust_id').val();
+            if(cust_id >= 0){
+                // Customer exists in DB, so purge from DB.
+                $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
+                    if(status.localeCompare("1")){
+                        profile_path = '<?php echo PROFILE_PATH . "/" . DEFAULT_IMAGE; ?>'
+                        $('#profile-pic').attr('src', profile_path);
+                    } else {
+                        notifyUser("Error deleting profile pic: " + status);
+                    }
+                });
             }
         }
     });
