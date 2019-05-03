@@ -1,23 +1,42 @@
 <?php include_once "includes/functions.php"; ?>
 <form action="upload.php" id="upload-user-form" method="post" enctype="multipart/form-data">
 
-    <?php if(!empty($cust_id)){
-        echo "<p>Customer# {$cust_id}</p>";
-
-        // This is an existing customer
-        $submit_type = 'Save All';
-        $profile_path = PROFILE_PATH . "/" . get_cust_profile_pic($cust_id);
-    } else {
-        // This is a new customer
-        $submit_type = 'Register';
-        $profile_path = PROFILE_PATH . "/" . DEFAULT_IMAGE;
-        $cust_id = -1;
-    }
-    ?>
-
-    <!-- ************* PERSONAL INFO ********************* -->
     <div class="row" id="personal-info-row">
-        <div class="col-xs-2"></div>
+        <!-- *********** SUBMISSION CONTROLS **************  -->
+        <div id="submission-controls" class="col-xs-3">
+<?php 
+            if(!empty($cust_id)){
+                echo "<p>Customer# {$cust_id}</p>";
+
+                // This is an existing customer
+                $submit_type = 'Save All';
+                $profile_path = PROFILE_PATH . "/" . get_cust_profile_pic($cust_id);
+            } else {
+                // This is a new customer
+                $submit_type = 'Register';
+                $profile_path = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+                $cust_id = -1;
+            }
+?>          
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
+            </div>
+            <div class="form-group">
+                <input type="button" class="btn" id="btn-cancel" value="Cancel Changes"><br>
+            </div>
+
+<?php      if($cust_id >= 0){
+                // Customer exists in DB, so display delete button
+?>
+                <div class="form-group">
+                    <input type="button" class="btn" id="btn-delete-user" value="Delete User"><br>
+                </div>
+<?php
+            }
+?>
+       </div><!-- submission-controls -->
+       <!-- *********** END: SUBMISSION CONTROLS **************  -->
+       <!-- ************* BEGIN: PERSONAL INFO ********************* -->
         <div id="personal-info" class="col-xs-6">
             <div class="form-group">
                 <input type="hidden" class="form-control" id="cust_id" name='cust_id' value="<?php echo $cust_id; ?>">
@@ -26,12 +45,12 @@
                 <input type="text" class="form-control" name="last" value="<?php echo $last; ?>" placeholder="Last Name">
                 <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>" placeholder="Primary Phone">
             </div>
-        </div>
+        </div><!-- personal-info -->
         <!-- ************* PROFILE PIC ********************* -->
-        <div class="col-xs-2" id="profile-info">
+        <div class="col-xs-3" id="profile-info">
             <img id='profile-pic' src='<?php echo "{$profile_path}"; ?>' width="200" height="200">
             <div class="form-group">
-                <input type="file" class="form-control" name="profile_pic" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
+                <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
@@ -42,16 +61,17 @@
 <?php
             }
 ?>
-        </div>
+        </div><!-- profile-info -->
         <div class="col-xs-2"></div>
-    </div>
+    </div><!-- row: personal-info -->
+    <!-- ************* END: PERSONAL INFO ROW ********************* -->
     <!-- ************* ADDRESSES ********************* -->
     <div class="row" id='addresses-row'>
 <?php
     for($i = 0; $i < MAX_ADDRESSES; $i++){
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
-            <h3>Address <?php echo $i+1; ?>:</h3>
+            <h4>Address <?php echo $i+1; ?>:</h4>
             <div class="form-group">
                 <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Clear Address">
             </div>
@@ -77,28 +97,18 @@
 <?php
     } // end for-loop
 ?>
-        <!-- div class="col-xs-1"></div -->
     </div> <!-- row -->
     <br>
-    <div class="row" id="submission-form-buttons">
-        <div class="form-group col-xs-2">
-            <input type="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
-        </div>
-<?php   if($cust_id >= 0){
-        // Customer exists in DB, so display delete button
-?>
-            <div class="form-group col-xs-2">
-                <input type="button" class="btn" id="btn-delete-user" value="Delete User">
+    <!-- ************************ DOCUMENTS **************************************************************** -->
+    <div class="row" id="documents-container">
+        <div class="col-xs-12">
+            <h4>Documents:</h4>
+            <input type="file" class="form-control" name="documents" accept="application/pdf" multiple>
+            <div id="documents-list">
             </div>
-<?php
-        }
-?>
-        <div class="form-group col-xs-2">
-            <input type="button" class="btn" id="btn-cancel" value="Cancel Changes">
-        </div>
-        <div class="col-xs-6"></div>
-    </div>
 
+        </div>
+    </div><!-- documents-container -->
 </form>
 
 <script>
