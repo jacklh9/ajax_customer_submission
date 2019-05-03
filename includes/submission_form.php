@@ -10,7 +10,7 @@
 
                 // This is an existing customer
                 $submit_type = 'Save All';
-                $profile_path = PROFILE_PATH . "/" . get_cust_profile_pic($cust_id);
+                $profile_path = PROFILE_PATH . "/" . get_profile_pic($cust_id);
             } else {
                 // This is a new customer
                 $submit_type = 'Register';
@@ -102,18 +102,43 @@
     <!-- ************************ DOCUMENTS **************************************************************** -->
     <div class="row" id="documents-container">
         <div class="col-xs-12">
-            <h4>Documents:</h4>
-            <input type="file" class="form-control" name="documents" accept="application/pdf" multiple>
-            <div id="documents-list">
-            </div>
-
-        </div>
+<?php
+            if(!empty($cust_id)){
+?>
+                <h4>Documents:</h4>
+                <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                <br>
+                <div id="documents-list">
+                    <table id="documents-table" class='table table-hover table-bordered table-striped'>
+                        <thead class='thead-dark'>
+                            <tr>
+                                <td>Filename</td>
+                                <td>Date Uploaded</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+<?php
+                            $docs = get_documents($cust_id);
+                            foreach($docs as $doc){
+                                echo "<tr>";
+                                echo "  <td>{$doc['filename']}</td>";
+                                echo "  <td>{$doc['date']}</td>";
+                                echo "  <td><a rel='{$doc['id']}' href='javascript:void(0)'>Delete</a></td>";
+                                echo "</tr>";
+                            }
+?>
+                        </tbody>
+                    </table>
+                </div><!-- documents-list -->
+<?php
+            } // end if-!empty-cust_id
+?>
+        </div><!-- col-xs-12 -->
     </div><!-- documents-container -->
-</form>
+</form><!-- ********************************* END FORM ************************************ -->
 
 <script>
-    var notificationTextDurationSecs = 300;
-
     <?php include "includes/js/functions.js"; ?>
 
     function resetLogin(){
@@ -192,24 +217,7 @@
     // SUBMIT button
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
-    
         var url = $(this).attr('action');
-        //var formData = $(this).serialize();
-
-        // // Display the key/value pairs
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0]+ ', ' + pair[1]); 
-        // }
-
-        /* **** upload.php ***** */
-        // $.post(url, formData, function(response){
-        //     notifyUser(response);
-        //     resetLogin();
-        //     thankYou();
-        // }).fail(function(){
-        //     alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-        // });
-
         var formData = new FormData(this);
         $.ajax({
             url: url,
@@ -223,6 +231,8 @@
             cache: false,
             contentType: false,
             processData: false
+        }).fail(function(){
+            alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
         });
 
 

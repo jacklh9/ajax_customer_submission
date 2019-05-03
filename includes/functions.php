@@ -1,12 +1,40 @@
 <?php include_once "db.php"; ?>
 <?php
+
+    //////////////////////////////////////////////////
+    //
+    // CONSTANTS
+    //
+    /////////////////////////////////////////////////
+
+    $constants['date_format'] = 'd-m-y';
+    $constants['documents_path'] = './docs';
+    $constants['default_image'] = 'default.png';
     $constants['max_addresses'] = 3;
     $constants['profile_path'] = './images/profiles';
-    $constants['default_image'] = 'default.png';
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);
+    }
+
+    //////////////////////////////////////////////////
+    //
+    // FUNCTIONS
+    //
+    /////////////////////////////////////////////////
+
+    function add_document($tmp_name, $filename, $cust_id){
+        global $connection;
+        $destination = DOCUMENTS_PATH . "/{$cust_id}." . clean($filename);
+        //$date = date(DATE_FORMAT);
+        $date = now();
+        if(move_uploaded_file($tmp_name, $destination)){
+            $query = "INSERT INTO documents(filename, date, FK_cust_id) ";
+            $query .= "VALUE('{$destination}', '{$date}', $cust_id)";
+            $result = mysqli_query($connection, $query);
+            confirmQResult($result);
+        }
     }
 
     function debug_to_console( $data ) {
@@ -57,7 +85,7 @@
     function delete_profile_pic($cust_id){
 
         $success = FALSE;
-        $filename = get_cust_profile_pic($cust_id);
+        $filename = get_profile_pic($cust_id);
         if(!empty($filename) && $filename != DEFAULT_IMAGE){
 
             // Remove DB profile pic reference
@@ -81,18 +109,36 @@
 
     function get_cust_id($email){
         global $connection;
-        $get_cust_id_query = "SELECT id FROM customers WHERE email = '$email'";
-        $result = mysqli_query($connection, $get_cust_id_query);
+        $query = "SELECT id FROM customers WHERE email = '$email'";
+        $result = mysqli_query($connection, $query);
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         return $row['id'];
     }
 
-    function get_cust_profile_pic($cust_id){
+    function get_documents($cust_id){
+        global $connection;
+        $query = "SELECT * FROM documents WHERE FK_cust_id = $cust_id";
+        $result = mysqli_query($connection, $query);
+        confirmQResult($result);
+        $list = array();
+        while($row = mysqli_fetch_assoc($result)){
+            // REGEX EXAMPLE: /30.(Test_PDF.pdf)/  
+            // for customer# 30.
+            // (.+) should match "Test_PDF.pdf"
+            $pattern = '/^' . $cust_id . '\.' . '(.+)$/U';
+            preg_match($pattern, basename($row['filename']), $match_list);
+            $row['filename'] = $match_list[1];
+            array_push($list, $row);
+        }
+        return $list;
+    }
+
+    function get_profile_pic($cust_id){
         global $connection;
         $pic = DEFAULT_IMAGE;
-        $get_cust_profile_query = "SELECT profile FROM customers WHERE id = '$cust_id'";
-        $result = mysqli_query($connection, $get_cust_profile_query);
+        $query = "SELECT profile FROM customers WHERE id = '$cust_id'";
+        $result = mysqli_query($connection, $query);
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         if(!empty($row['profile'])){
@@ -103,8 +149,8 @@
 
     function get_registered_users(){
         global $connection;
-        $get_cust_query = "SELECT email FROM customers";
-        $result = mysqli_query($connection, $get_cust_query);
+        $query = "SELECT email FROM customers";
+        $result = mysqli_query($connection, $query);
         confirmQResult($result);
         while($row = mysqli_fetch_assoc($result)){
             echo "<li><a class='email' href='javascript:void(0)'>{$row['email']}</a></li>";
@@ -118,6 +164,27 @@
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         return !empty($row['profile']);
+    }
+
+
+    /* 
+        PURPOSE: Re-arranges uploaded files array from PHP to a more sensible array to 
+        traverse using foreach.
+        SOURCE: https://www.php.net/manual/en/features.file-upload.multiple.php (phpuser at gmail dot com)
+    */
+    function reArrayFiles(&$file_post) {
+
+        $file_ary = array();
+        $file_count = count($file_post['name']);
+        $file_keys = array_keys($file_post);
+    
+        for ($i=0; $i<$file_count; $i++) {
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $file_post[$key][$i];
+            }
+        }
+    
+        return $file_ary;
     }
 
     function update_profile_pic_filename($basename, $cust_id){
