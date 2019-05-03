@@ -123,6 +123,12 @@
         confirmQResult($result);
         $list = array();
         while($row = mysqli_fetch_assoc($result)){
+            // REGEX EXAMPLE: /30.(Test_PDF.pdf)/  
+            // for customer# 30.
+            // (.+) should match "Test_PDF.pdf"
+            $pattern = '/^' . $cust_id . '\.' . '(.+)$/U';
+            preg_match($pattern, basename($row['filename']), $match_list);
+            $row['filename'] = $match_list[1];
             array_push($list, $row);
         }
         return $list;

@@ -109,8 +109,8 @@
                 <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
                 <br>
                 <div id="documents-list">
-                    <table id="documents-table" class='table table-hover table-bordered'>
-                        <thead>
+                    <table id="documents-table" class='table table-hover table-bordered table-striped'>
+                        <thead class='thead-dark'>
                             <tr>
                                 <td>Filename</td>
                                 <td>Date Uploaded</td>
