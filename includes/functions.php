@@ -7,7 +7,7 @@
     //
     /////////////////////////////////////////////////
 
-    $constants['date_format'] = 'd-m-y';
+    $constants['date_format'] = 'm-d-Y H:i:s';
     $constants['documents_path'] = './docs';
     $constants['default_image'] = 'default.png';
     $constants['max_addresses'] = 3;
@@ -27,8 +27,7 @@
     function add_document($tmp_name, $filename, $cust_id){
         global $connection;
         $destination = DOCUMENTS_PATH . "/{$cust_id}." . clean($filename);
-        //$date = date(DATE_FORMAT);
-        $date = now();
+        $date = date(DATE_FORMAT);
         if(move_uploaded_file($tmp_name, $destination)){
             $query = "INSERT INTO documents(filename, date, FK_cust_id) ";
             $query .= "VALUE('{$destination}', '{$date}', $cust_id)";
