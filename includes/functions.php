@@ -1,12 +1,39 @@
 <?php include_once "db.php"; ?>
 <?php
+
+    //////////////////////////////////////////////////
+    //
+    // CONSTANTS
+    //
+    /////////////////////////////////////////////////
+
+    $constants['date_format'] = 'd-m-y';
+    $constants['documents_path'] = './docs';
+    $constants['default_image'] = 'default.png';
     $constants['max_addresses'] = 3;
     $constants['profile_path'] = './images/profiles';
-    $constants['default_image'] = 'default.png';
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);
+    }
+
+    //////////////////////////////////////////////////
+    //
+    // FUNCTIONS
+    //
+    /////////////////////////////////////////////////
+
+    function add_document($tmp_name, $filename, $cust_id){
+        global $connection;
+        $destination = DOCUMENTS_PATH . "/{$cust_id}." . clean($filename);
+        $date = date(DATE_FORMAT);
+        if(move_uploaded_file($tmp_name, $destination)){
+            $query = "INSERT INTO documents(filename, date, FK_cust_id) ";
+            $query .= "VALUE('{$destination}', '{$date}', $cust_id)";
+            $result = mysqli_query($connection, $query);
+            confirmQResult($result);
+        }
     }
 
     function debug_to_console( $data ) {
@@ -118,6 +145,27 @@
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         return !empty($row['profile']);
+    }
+
+
+    /* 
+        PURPOSE: Re-arranges uploaded files array from PHP to a more sensible array to 
+        traverse using foreach.
+        SOURCE: https://www.php.net/manual/en/features.file-upload.multiple.php (phpuser at gmail dot com)
+    */
+    function reArrayFiles(&$file_post) {
+
+        $file_ary = array();
+        $file_count = count($file_post['name']);
+        $file_keys = array_keys($file_post);
+    
+        for ($i=0; $i<$file_count; $i++) {
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $file_post[$key][$i];
+            }
+        }
+    
+        return $file_ary;
     }
 
     function update_profile_pic_filename($basename, $cust_id){

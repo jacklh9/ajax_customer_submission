@@ -4,7 +4,6 @@
 
     if(isset($_POST['email']) && !empty(clean($_POST['email']))){
         
-        //echo "Inside upload.php: " . print_r($_POST);
         $email = clean($_POST['email']);
         $first = (isset($_POST['first'])) ? clean($_POST['first']) : '';
         $last = (isset($_POST['last'])) ? clean($_POST['last']) : '';
@@ -87,9 +86,13 @@
             update_profile_pic_filename($basename, $cust_id);
         }
 
-        if(isset($_FILES['documents'])){
-            foreach($_FILES['documents']['name'] as $doc){
-                echo "$doc <br>";
+        if ($_FILES['documents']) {
+            $file_ary = reArrayFiles($_FILES['documents']);
+        
+            foreach ($file_ary as $file) {
+                add_document($file['tmp_name'], 
+                    $file['name'],
+                    $cust_id);
             }
         }
 

@@ -112,8 +112,6 @@
 </form>
 
 <script>
-    var notificationTextDurationSecs = 300;
-
     <?php include "includes/js/functions.js"; ?>
 
     function resetLogin(){
