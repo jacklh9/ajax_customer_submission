@@ -68,22 +68,7 @@
             $tmp_file = $_FILES['profile_pic']['tmp_name'];
             $filename = clean($_FILES['profile_pic']['name']);
 
-            // deal with non ASCII characters by setting the locale first
-            setlocale(LC_ALL,'en_US.UTF-8');
-            $ext = pathinfo($filename, PATHINFO_EXTENSION);
-
-            // NAMING CONVENTION: id.ext
-            $basename = $cust_id . "." . $ext;
-            $destination = PROFILE_PATH . "/" . $basename;
-
-            // Although move_uploaded_file() overwrites files,
-            // we have no guarantee it's the same filename
-            // because image extensions can vary; therefore,
-            // we always delete the old image as a matter
-            // of good housekeeping.
-            delete_profile_pic($cust_id);
-            move_uploaded_file($tmp_file, $destination);
-            update_profile_pic_filename($basename, $cust_id);
+            update_profile_pic($tmp_file, $filename, $cust_id);
         }
 
         // Process document uploads if at least one exists
@@ -92,9 +77,7 @@
             $file_ary = reArrayFiles($_FILES['documents']);
         
             foreach ($file_ary as $file) {
-                add_document($file['tmp_name'], 
-                    $file['name'],
-                    $cust_id);
+                add_document($file['tmp_name'], $file['name'], $cust_id);
             }
         }
 
