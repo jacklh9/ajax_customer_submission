@@ -198,9 +198,7 @@
 
     // DELETE PROFILE PIC button
     $('#btn-delete-profile-pic').on('click', function(){
-        if(confirm("Deleting of profile pic from Amazon S3 not yet implemented.\nClick any button to close this window.")){
-            // TODO           
-        }
+        alert("Deleting of profile pic from Amazon S3 not yet implemented.");
         // if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved.")){
         //     cust_id = $('#cust_id').val();
         //     if(cust_id >= 0){
@@ -221,18 +219,20 @@
     $('.link-del-doc').on('click', function(){
         doc_id = $(this).attr('rel');
         filename = $(this).closest('td').prev('td').prev('td').text();
-        if(confirm("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
-            // TODO
-        }
+        alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+        // if(confirm("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
+        //     // TODO
+        // }
     });
 
     // VIEW DOC link
     $('.link-view-doc').on('click', function(){
         doc_id = $(this).attr('rel');
         filename = $(this).text();
-        if(confirm("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
-            // TODO
-        }
+        alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+        // if(confirm()){
+        //     // TODO
+        // }
     });
 
     // SUBMIT button
