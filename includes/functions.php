@@ -1,4 +1,5 @@
 <?php include_once "db.php"; ?>
+<?php include_once "s3.php"; ?>
 <?php
 
     //////////////////////////////////////////////////
@@ -7,7 +8,7 @@
     //
     /////////////////////////////////////////////////
 
-    $constants['date_format'] = 'm-d-Y H:i:s';
+    $constants['date_format'] = 'Y-m-d H:i:s';
     $constants['documents_path'] = './docs';
     $constants['default_image'] = 'default.png';
     $constants['max_addresses'] = 3;
@@ -26,13 +27,27 @@
 
     function add_document($tmp_name, $filename, $cust_id){
         global $connection;
-        $destination = DOCUMENTS_PATH . "/{$cust_id}." . clean($filename);
-        $date = date(DATE_FORMAT);
-        if(move_uploaded_file($tmp_name, $destination)){
-            $query = "INSERT INTO documents(filename, date, FK_cust_id) ";
-            $query .= "VALUE('{$destination}', '{$date}', $cust_id)";
+
+        // deal with non ASCII characters by setting the locale first
+        setlocale(LC_ALL,'en_US.UTF-8');
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+        // NAMING CONVENTION: id_datetime.ext
+        // We use the datetime as the filename, not using the user's filename
+        // for security reasons and to ensure unique filenames (along with
+        // the customer ID and sleeping for 1 second).
+        sleep(1);
+        $datetime = date(DATE_FORMAT);
+        $filesystem_filename = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
+        $db_filename = $filename;
+
+        if(move_uploaded_file($tmp_name, $filesystem_filename)){
+            $query = "INSERT INTO documents(filename, datetime, FK_cust_id) ";
+            $query .= "VALUE('{$db_filename}', '{$datetime}', $cust_id)";
             $result = mysqli_query($connection, $query);
             confirmQResult($result);
+        } else {
+            echo "ERROR: Unable to rename {$tmp_name} as {$filesystem_filename}.";
         }
     }
 
@@ -122,12 +137,6 @@
         confirmQResult($result);
         $list = array();
         while($row = mysqli_fetch_assoc($result)){
-            // REGEX EXAMPLE: /30.(Test_PDF.pdf)/  
-            // for customer# 30.
-            // (.+) should match "Test_PDF.pdf"
-            $pattern = '/^' . $cust_id . '\.' . '(.+)$/U';
-            preg_match($pattern, basename($row['filename']), $match_list);
-            $row['filename'] = $match_list[1];
             array_push($list, $row);
         }
         return $list;

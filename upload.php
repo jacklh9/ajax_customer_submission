@@ -66,7 +66,7 @@
         if(!empty($_FILES['profile_pic']['name'])){
             
             $tmp_file = $_FILES['profile_pic']['tmp_name'];
-            $filename = $_FILES['profile_pic']['name'];
+            $filename = clean($_FILES['profile_pic']['name']);
 
             // deal with non ASCII characters by setting the locale first
             setlocale(LC_ALL,'en_US.UTF-8');
@@ -86,7 +86,9 @@
             update_profile_pic_filename($basename, $cust_id);
         }
 
-        if ($_FILES['documents']) {
+        // Process document uploads if at least one exists
+        if(!empty($_FILES['documents']['name'][0])) {
+
             $file_ary = reArrayFiles($_FILES['documents']);
         
             foreach ($file_ary as $file) {

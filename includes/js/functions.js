@@ -8,7 +8,7 @@ function show_registered_users(){
 }
 
 function notifyUser(response){
-    var notificationTextDurationSecs = 5;
+    var notificationTextDurationSecs = 10;
 
     $('#notification-bar').text(response);
     $('#notification-bar').show();

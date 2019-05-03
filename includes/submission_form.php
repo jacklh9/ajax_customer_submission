@@ -123,7 +123,7 @@
                             foreach($docs as $doc){
                                 echo "<tr>";
                                 echo "  <td>{$doc['filename']}</td>";
-                                echo "  <td>{$doc['date']}</td>";
+                                echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td><a rel='{$doc['id']}' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }
@@ -217,6 +217,7 @@
     // SUBMIT button
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
+        notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
         $.ajax({
