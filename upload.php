@@ -86,7 +86,9 @@
             update_profile_pic_filename($basename, $cust_id);
         }
 
-        if ($_FILES['documents']) {
+        // Process document uploads if at least one exists
+        if(!empty($_FILES['documents']['name'][0])) {
+
             $file_ary = reArrayFiles($_FILES['documents']);
         
             foreach ($file_ary as $file) {
