@@ -122,9 +122,9 @@
                             $docs = get_documents($cust_id);
                             foreach($docs as $doc){
                                 echo "<tr>";
-                                echo "  <td>{$doc['filename']}</td>";
+                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' href='javascript:void(0)'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
-                                echo "  <td><a rel='{$doc['id']}' href='javascript:void(0)'>Delete</a></td>";
+                                echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }
 ?>
@@ -198,19 +198,40 @@
 
     // DELETE PROFILE PIC button
     $('#btn-delete-profile-pic').on('click', function(){
-        if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved.")){
-            cust_id = $('#cust_id').val();
-            if(cust_id >= 0){
-                // Customer exists in DB, so purge from DB.
-                $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
-                    if(status.localeCompare("1")){
-                        profile_path = '<?php echo PROFILE_PATH . "/" . DEFAULT_IMAGE; ?>'
-                        $('#profile-pic').attr('src', profile_path);
-                    } else {
-                        notifyUser("Error deleting profile pic: " + status);
-                    }
-                });
-            }
+        if(confirm("Deleting of profile pic from Amazon S3 not yet implemented.\nClick any button to close this window.")){
+            // TODO           
+        }
+        // if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved.")){
+        //     cust_id = $('#cust_id').val();
+        //     if(cust_id >= 0){
+        //         // Customer exists in DB, so purge from DB.
+        //         $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
+        //             if(status.localeCompare("1")){
+        //                 profile_path = '<?php echo PROFILE_PATH . "/" . DEFAULT_IMAGE; ?>'
+        //                 $('#profile-pic').attr('src', profile_path);
+        //             } else {
+        //                 notifyUser("Error deleting profile pic: " + status);
+        //             }
+        //         });
+        //     }
+        // }
+    });
+
+    // DELETE DOC link
+    $('.link-del-doc').on('click', function(){
+        doc_id = $(this).attr('rel');
+        filename = $(this).closest('td').prev('td').prev('td').text();
+        if(confirm("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
+            // TODO
+        }
+    });
+
+    // VIEW DOC link
+    $('.link-view-doc').on('click', function(){
+        doc_id = $(this).attr('rel');
+        filename = $(this).text();
+        if(confirm("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
+            // TODO
         }
     });
 

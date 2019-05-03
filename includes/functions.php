@@ -69,7 +69,7 @@
 
             // store in an Amazon S3 bucket
             try {
-                // FIXME: do not use 'name' for upload (that's the original filename from the user's computer)
+                // NOTE: do not use 'name' for upload (that's the original filename from the user's computer)
                 $upload = $s3->upload($bucket, $filesystem_filename, fopen($tmp_name, 'rb'), 'public-read');
                 $success = TRUE;
             } catch(Exception $e) {
@@ -221,6 +221,25 @@
         }
     
         return $file_ary;
+    }
+
+    function update_profile_pic($timp_file, $filename, $cust_id){
+        // deal with non ASCII characters by setting the locale first
+        setlocale(LC_ALL,'en_US.UTF-8');
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+        // NAMING CONVENTION: id.ext
+        $basename = $cust_id . "." . $ext;
+        $destination = PROFILE_PATH . "/" . $basename;
+
+        // Although move_uploaded_file() overwrites files,
+        // we have no guarantee it's the same filename
+        // because image extensions can vary; therefore,
+        // we always delete the old image as a matter
+        // of good housekeeping.
+        delete_profile_pic($cust_id);
+        move_uploaded_file($tmp_file, $destination);
+        update_profile_pic_filename($basename, $cust_id);
     }
 
     function update_profile_pic_filename($basename, $cust_id){
