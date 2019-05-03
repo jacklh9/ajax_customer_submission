@@ -38,17 +38,44 @@
         // the customer ID and sleeping for 1 second).
         sleep(1);
         $datetime = date(DATE_FORMAT);
-        $filesystem_filename = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
-        $db_filename = $filename;
+        $storage_filename = "{$cust_id}_{$datetime}.{$ext}";
 
-        if(move_uploaded_file($tmp_name, $filesystem_filename)){
+        if(add_document_to_storage($tmp_name, $storage_filename, $cust_id)){
             $query = "INSERT INTO documents(filename, datetime, FK_cust_id) ";
-            $query .= "VALUE('{$db_filename}', '{$datetime}', $cust_id)";
+            $query .= "VALUE('{$filename}', '{$datetime}', $cust_id)";
             $result = mysqli_query($connection, $query);
             confirmQResult($result);
         } else {
-            echo "ERROR: Unable to rename {$tmp_name} as {$filesystem_filename}.";
+            if(empty($bucket)){
+                echo "ERROR: Unable to rename {$tmp_name} as {$filesystem_filename}.";
+            } else {
+                echo "ERROR: Unable to save to S3 bucket '{$bucket}'.";
+            }
         }
+    }
+
+    function add_document_to_storage($tmp_name, $filename, $cust_id){
+        global $bucket;
+        global $s3;
+        $success = FALSE;
+        $filesystem_filename = DOCUMENTS_PATH . "/" . $filename;
+
+        if(empty($bucket)){
+
+            // store on local server filesystem
+            $success = move_uploaded_file($tmp_name, $filesystem_filename);
+        } else {
+
+            // store in an Amazon S3 bucket
+            try {
+                // FIXME: do not use 'name' for upload (that's the original filename from the user's computer)
+                $upload = $s3->upload($bucket, $filename, fopen($tmp_name, 'rb'), 'public-read');
+                $success = TRUE;
+            } catch(Exception $e) {
+                $success=FALSE;
+            }
+        }
+        return $success;
     }
 
     function debug_to_console( $data ) {
