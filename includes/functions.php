@@ -33,6 +33,8 @@
             $query .= "VALUE('{$destination}', '{$date}', $cust_id)";
             $result = mysqli_query($connection, $query);
             confirmQResult($result);
+        } else {
+            echo "Unable to save document";
         }
     }
 
