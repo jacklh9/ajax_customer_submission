@@ -217,6 +217,7 @@
     // SUBMIT button
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
+        notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
         $.ajax({

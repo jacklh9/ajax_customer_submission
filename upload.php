@@ -66,7 +66,7 @@
         if(!empty($_FILES['profile_pic']['name'])){
             
             $tmp_file = $_FILES['profile_pic']['tmp_name'];
-            $filename = $_FILES['profile_pic']['name'];
+            $filename = clean($_FILES['profile_pic']['name']);
 
             // deal with non ASCII characters by setting the locale first
             setlocale(LC_ALL,'en_US.UTF-8');
