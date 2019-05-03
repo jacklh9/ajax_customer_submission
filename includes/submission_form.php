@@ -59,8 +59,9 @@
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line1"; ?>' name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line2"; ?>' name='<?php echo "add{$i}_street_line2"; ?>' value="<?php echo $add[$i]['street_line2']; ?>" placeholder="Street Line 2">
             <input type="text" class="form-control" id='<?php echo "add{$i}_city"; ?>' name='<?php echo "add{$i}_city"; ?>' value="<?php echo $add[$i]['city']; ?>" placeholder="City">
-            <select name='<?php echo "add{$i}_state"; ?>'>
-                <option id='add{$i}_state' value="">State</option>
+            <select id='<?php echo "add{$i}_state"; ?>' name='<?php echo "add{$i}_state"; ?>'>
+
+                <option value="">State</option><!------ initial value                -->
 <?php
             foreach(STATES as $state){
                 if ($state == $add[$i]['state']){
@@ -133,8 +134,8 @@
             $('#add' + addr_num + '_street_line2').val("");
             $('#add' + addr_num + '_city').val("");
             $('#add' + addr_num + '_state').val("");
-            $('#add' + addr_num + '_state').text("State");
             $('#add' + addr_num + '_zip').val("");
+            $('#add' + addr_num + '_state').prop('selectedIndex',0);
         }
     });
 
