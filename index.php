@@ -1,5 +1,5 @@
 <?php include_once "includes/db.php"; ?>
-<?php include "includes/functions.php"; ?>
+<?php include_once "includes/functions.php"; ?>
 <?php include "includes/header.php"; ?>
 
 <div class="row">
