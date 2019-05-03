@@ -10,7 +10,7 @@
 
                 // This is an existing customer
                 $submit_type = 'Save All';
-                $profile_path = PROFILE_PATH . "/" . get_cust_profile_pic($cust_id);
+                $profile_path = PROFILE_PATH . "/" . get_profile_pic($cust_id);
             } else {
                 // This is a new customer
                 $submit_type = 'Register';
@@ -102,14 +102,41 @@
     <!-- ************************ DOCUMENTS **************************************************************** -->
     <div class="row" id="documents-container">
         <div class="col-xs-12">
-            <h4>Documents:</h4>
-            <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
-            <div id="documents-list">
-            </div>
-
-        </div>
+<?php
+            if(!empty($cust_id)){
+?>
+                <h4>Documents:</h4>
+                <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                <br>
+                <div id="documents-list">
+                    <table id="documents-table" class='table table-hover table-bordered'>
+                        <thead>
+                            <tr>
+                                <td>Filename</td>
+                                <td>Date Uploaded</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+<?php
+                            $docs = get_documents($cust_id);
+                            foreach($docs as $doc){
+                                echo "<tr>";
+                                echo "  <td>{$doc['filename']}</td>";
+                                echo "  <td>{$doc['date']}</td>";
+                                echo "  <td><a rel='{$doc['id']}' href='javascript:void(0)'>Delete</a></td>";
+                                echo "</tr>";
+                            }
+?>
+                        </tbody>
+                    </table>
+                </div><!-- documents-list -->
+<?php
+            } // end if-!empty-cust_id
+?>
+        </div><!-- col-xs-12 -->
     </div><!-- documents-container -->
-</form>
+</form><!-- ********************************* END FORM ************************************ -->
 
 <script>
     <?php include "includes/js/functions.js"; ?>

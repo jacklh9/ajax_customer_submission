@@ -27,7 +27,8 @@
     function add_document($tmp_name, $filename, $cust_id){
         global $connection;
         $destination = DOCUMENTS_PATH . "/{$cust_id}." . clean($filename);
-        $date = date(DATE_FORMAT);
+        //$date = date(DATE_FORMAT);
+        $date = now();
         if(move_uploaded_file($tmp_name, $destination)){
             $query = "INSERT INTO documents(filename, date, FK_cust_id) ";
             $query .= "VALUE('{$destination}', '{$date}', $cust_id)";
@@ -84,7 +85,7 @@
     function delete_profile_pic($cust_id){
 
         $success = FALSE;
-        $filename = get_cust_profile_pic($cust_id);
+        $filename = get_profile_pic($cust_id);
         if(!empty($filename) && $filename != DEFAULT_IMAGE){
 
             // Remove DB profile pic reference
@@ -108,18 +109,30 @@
 
     function get_cust_id($email){
         global $connection;
-        $get_cust_id_query = "SELECT id FROM customers WHERE email = '$email'";
-        $result = mysqli_query($connection, $get_cust_id_query);
+        $query = "SELECT id FROM customers WHERE email = '$email'";
+        $result = mysqli_query($connection, $query);
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         return $row['id'];
     }
 
-    function get_cust_profile_pic($cust_id){
+    function get_documents($cust_id){
+        global $connection;
+        $query = "SELECT * FROM documents WHERE FK_cust_id = $cust_id";
+        $result = mysqli_query($connection, $query);
+        confirmQResult($result);
+        $list = array();
+        while($row = mysqli_fetch_assoc($result)){
+            array_push($list, $row);
+        }
+        return $list;
+    }
+
+    function get_profile_pic($cust_id){
         global $connection;
         $pic = DEFAULT_IMAGE;
-        $get_cust_profile_query = "SELECT profile FROM customers WHERE id = '$cust_id'";
-        $result = mysqli_query($connection, $get_cust_profile_query);
+        $query = "SELECT profile FROM customers WHERE id = '$cust_id'";
+        $result = mysqli_query($connection, $query);
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         if(!empty($row['profile'])){
@@ -130,8 +143,8 @@
 
     function get_registered_users(){
         global $connection;
-        $get_cust_query = "SELECT email FROM customers";
-        $result = mysqli_query($connection, $get_cust_query);
+        $query = "SELECT email FROM customers";
+        $result = mysqli_query($connection, $query);
         confirmQResult($result);
         while($row = mysqli_fetch_assoc($result)){
             echo "<li><a class='email' href='javascript:void(0)'>{$row['email']}</a></li>";
