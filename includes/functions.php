@@ -27,6 +27,7 @@
 
     function add_document($tmp_name, $filename, $cust_id){
         global $connection;
+        global $bucket;
 
         // deal with non ASCII characters by setting the locale first
         setlocale(LC_ALL,'en_US.UTF-8');
