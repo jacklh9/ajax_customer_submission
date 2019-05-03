@@ -70,7 +70,7 @@
             // store in an Amazon S3 bucket
             try {
                 // FIXME: do not use 'name' for upload (that's the original filename from the user's computer)
-                $upload = $s3->upload($bucket, $filename, fopen($tmp_name, 'rb'), 'public-read');
+                $upload = $s3->upload($bucket, $filesystem_filename, fopen($tmp_name, 'rb'), 'public-read');
                 $success = TRUE;
             } catch(Exception $e) {
                 $success=FALSE;
