@@ -87,6 +87,12 @@
             update_profile_pic_filename($basename, $cust_id);
         }
 
+        if(isset($_FILES['documents'])){
+            foreach($_FILES['documents']['name'] as $doc){
+                echo "$doc <br>";
+            }
+        }
+
     } else {
 
         die("Error saving data: email address is required.");

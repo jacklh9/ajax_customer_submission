@@ -103,7 +103,7 @@
     <div class="row" id="documents-container">
         <div class="col-xs-12">
             <h4>Documents:</h4>
-            <input type="file" class="form-control" name="documents" accept="application/pdf" multiple>
+            <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
             <div id="documents-list">
             </div>
 
@@ -192,24 +192,7 @@
     // SUBMIT button
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
-    
         var url = $(this).attr('action');
-        //var formData = $(this).serialize();
-
-        // // Display the key/value pairs
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0]+ ', ' + pair[1]); 
-        // }
-
-        /* **** upload.php ***** */
-        // $.post(url, formData, function(response){
-        //     notifyUser(response);
-        //     resetLogin();
-        //     thankYou();
-        // }).fail(function(){
-        //     alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-        // });
-
         var formData = new FormData(this);
         $.ajax({
             url: url,
@@ -223,6 +206,8 @@
             cache: false,
             contentType: false,
             processData: false
+        }).fail(function(){
+            alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
         });
 
 
