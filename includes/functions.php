@@ -117,7 +117,7 @@
 
     function delete_document_from_db($doc_id){
         global $connection;
-        $query = "DELETE from documents WHERE id = $doc_id";
+        $query = "DELETE from documents WHERE id = {$doc_id}";
         $result = mysqli_query($connection, $query);
         if(confirmQResult($result)){
             $success = TRUE;
@@ -169,7 +169,7 @@
     // 'FK_cust_id' = customer id (foreign key)
     function get_document($doc_id){
         global $connection;
-        $query = "SELECT * FROM documents WHERE doc_id = $doc_id";
+        $query = "SELECT * FROM documents WHERE id = {$doc_id}";
         $result = mysqli_query($connection, $query);
         if(confirmQResult($result)){
             $row = mysqli_fetch_assoc($result);
