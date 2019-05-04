@@ -246,7 +246,6 @@
         return !empty($row['profile']);
     }
 
-
     function is_email_inuse_by_another($email, $cust_id){
         global $connection;
         $inuse = TRUE;
@@ -274,7 +273,7 @@
         // For this demo, let's just rely on the client-side
         // javascript. Of course we would never do this in prod.
         if(strlen($email) <= MAX_EMAIL_LEN){
-            $success = TRUE;        }
+            $success = TRUE;
         }
         return $success;
     }
