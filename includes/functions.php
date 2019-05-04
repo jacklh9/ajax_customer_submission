@@ -97,7 +97,6 @@
         $doc = get_document($doc_id);
         $fullpath_doc = $doc['path'];
 
-        debug_to_console("Inside delete_document()");
         // Determine if S3 env
         if(is_S3()){
 
