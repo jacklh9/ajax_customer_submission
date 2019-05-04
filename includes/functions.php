@@ -181,7 +181,7 @@
     // 'filename' = original user filename
     // 'datetime' = datetime file uploaded (and used for internal filename)
     // 'path' = internal full-path filename
-    // 'tmp_url'  = temp url to object (SEE: S3.php for OBJECT_TIMEOUT value)
+    // 'tmp_url'  = temp url to object (SEE: S3.php for OBJECT_TIMEOUT value) if S3, else same as 'path'
     // 'url' = permanent url to object [NOT YET IMPLEMENTED]
     // 'FK_cust_id' = customer id (foreign key)
     function get_document($doc_id){
@@ -191,7 +191,7 @@
         if(confirmQResult($result)){
             $row = mysqli_fetch_assoc($result);
             $row['path'] = get_document_location($row['filename'], $row['datetime'], $row['FK_cust_id']);
-            $row['tmp_url'] = S3_get_temp_file_url($row['path']);
+            $row['tmp_url'] = (is_S3())? S3_get_temp_file_url($row['path']) : $row['path'];
             return $row;
         }
     }
@@ -206,13 +206,14 @@
     // Returns array of documents owned by $cust_id
     function get_documents($cust_id){
         global $connection;
-        $query = "SELECT * FROM documents WHERE FK_cust_id = $cust_id";
+        $query = "SELECT id FROM documents WHERE FK_cust_id = $cust_id";
         $result = mysqli_query($connection, $query);
         confirmQResult($result);
         $list = array();
         while($row = mysqli_fetch_assoc($result)){
-            $row['path'] = get_document_location($row['filename'], $row['datetime'], $cust_id);
-            array_push($list, $row);
+            $doc_id = $row['id'];
+            $doc = get_document($doc_id);
+            array_push($list, $doc);
         }
         return $list;
     }
