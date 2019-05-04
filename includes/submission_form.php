@@ -1,4 +1,5 @@
 <?php include_once "includes/functions.php"; ?>
+<?php include_once "s3.php"; ?>
 <form action="upload.php" id="upload-user-form" method="post" enctype="multipart/form-data">
 
     <div class="row" id="personal-info-row">
