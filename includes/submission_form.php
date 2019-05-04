@@ -265,12 +265,12 @@
                     // email is available
                     $('input#submit').show();
                     $('input#disabled-submit').hide();
-                    notifyUser("TEST STATUS OK: " + status);  // TODO: this is only a test
+                    notifyUser("TEST STATUS OK: '" + status + "'");  // TODO: this is only a test
                 } else {
                     // email address already in use
                     $('input#submit').hide();
                     $('input#disabled-submit').show();
-                    notifyUser("ERROR: " + status);
+                    notifyUser("ERROR: '" + status + "'");
                 }
             });
         });
