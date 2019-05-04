@@ -264,7 +264,7 @@
         }
 
         $('input#disabled-submit').on('click', function(){
-            notifyUser("Unable to submit: bad email address");
+            notifyUser("Unable to submit: bad email address or already in use.");
         });
 
         // VALIDATE EMAIL not in use
@@ -274,7 +274,7 @@
             var cust_id = $('#cust_id').val();
 
             if(is_valid_email(email)){
-
+                notifyUser(""); // Clear any past transgressions
                 $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
                     if($.trim(status) === "1"){
                         // email is available
