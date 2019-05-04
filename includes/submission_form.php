@@ -253,11 +253,14 @@
         // ******************************** VALIDATIONS ******************************************
 
         // Initial state of the submit buttons
+        var messageEnterValidEmail = "Enter valid email address";
         deny_submit();
 
         var email = $('input#email').val();
         if(is_valid_email(email)){
             allow_submit();
+        } else {
+            notifyUser(messageEnterValidEmail);
         }
 
         $('input#disabled-submit').on('click', function(){
@@ -273,17 +276,19 @@
             if(is_valid_email(email)){
 
                 $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
-                    if(status.localeCompare("1")){
+                    if($.trim(status) === "1"){
                         // email is available
                         allow_submit();
                     } else {
                         // email address already in use
-                        notifyUser("ERROR: '" + status + "'");
+                        notifyUser("ERROR: Email address in use.");
                     }
                 })
                 .fail(function(){
                     notifyUser("ERROR: Unable to communicate with the server.");
                 });
+            } else {
+                notifyUser(messageEnterValidEmail);
             }
         });
 
