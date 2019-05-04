@@ -267,14 +267,15 @@
         // VALIDATE EMAIL not in use
         $('input#email').keyup(function(){
             deny_submit(); // We do this here to avoid race condition
-            var email = $('#email').val();
+            var email = $(this).val();
             var cust_id = $('#cust_id').val();
+
             if(is_valid_email(email)){
+
                 $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
                     if(status.localeCompare("1")){
                         // email is available
                         allow_submit();
-                        notifyUser("TEST STATUS OK: '" + status + "'");  // TODO: this is only a test
                     } else {
                         // email address already in use
                         notifyUser("ERROR: '" + status + "'");

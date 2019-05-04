@@ -9,6 +9,7 @@
                 $cust_id = clean($_POST['cust_id']);
                 $email = clean($_POST['email']);
                 // TODO: validate email not in use with diff cust_id
+                $success = TRUE; // TODO: debugging only
                 break;
             
             default:
