@@ -1,4 +1,19 @@
 <?php
+
+    //////////////////////////////////////////////////
+    //
+    // CONSTANTS
+    //
+    /////////////////////////////////////////////////
+
+    unset($constants);
+    $constants['region'] = 'us-west-1';
+    $constants['sdk_version'] = 'latest';
+
+    foreach($constants as $key => $value){
+        define(strtoupper($key), $value);
+    }
+
     use Aws\S3\S3Client;
     use Aws\S3\Exception\S3Exception;
 
@@ -8,8 +23,8 @@
 
         // this will simply read AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env vars
         $s3 = new S3Client([
-            'version'  => 'latest',
-            'region'   => 'us-west-1',
+            'version'  => SDK_VERSION,
+            'region'   => REGION,
         ]);
     }
 
