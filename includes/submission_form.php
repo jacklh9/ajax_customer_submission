@@ -10,11 +10,11 @@
 
                 // This is an existing customer
                 $submit_type = 'Save All';
-                $profile_path = PROFILE_PATH . "/" . get_profile_pic($cust_id);
+                $profile_path = get_profile_pic($cust_id);
             } else {
                 // This is a new customer
                 $submit_type = 'Register';
-                $profile_path = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+                $profile_path = get_profile_pic_default();
                 $cust_id = -1;
             }
 ?>          

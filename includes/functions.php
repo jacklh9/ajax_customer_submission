@@ -89,12 +89,11 @@
     }
 
     function delete_profile_pic($cust_id){
-        $success = FALSE;
         $fullpath_image = get_profile_pic($cust_id);
-        $fullpath_default = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+        $fullpath_default = get_profile_pic_default();
 
         // Determine if cust has an actual profile pic or just the default one
-        if(!empty($fullpath_image) && ($fullpath_image != $fullpath_default)){
+        if(!empty($fullpath_image) && (basename($fullpath_image) != basename($fullpath_default))){
 
             // Cust has a profile pic.
             // Remove DB profile pic reference
@@ -137,7 +136,7 @@
     function get_file_extension($filename){
         // deal with non ASCII characters by setting the locale first
         setlocale(LC_ALL,'en_US.UTF-8');
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        return pathinfo($filename, PATHINFO_EXTENSION);
     }
 
     function get_profile_pic($cust_id){
@@ -151,6 +150,11 @@
             $pic = $row['profile'];
         }
         return $pic;
+    }
+
+    function get_profile_pic_default(){
+        $default_image = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+        return $default_image;
     }
 
     function get_registered_users(){
@@ -177,12 +181,20 @@
 
         if(empty($bucket)){
             // Purge from local filesystem
-
+            if (unlink($fullpath_name)){
+                $success = TRUE;
+            } else {
+                $success = FALSE;
+                echo "ERROR: Unable to delete file '{$fullpath_name}'";
+            };
         } else {
             /// Purge from Amazon S3 bucket
             global $s3;
             // TODO: implement purging of any filename from S3 bucket
+
+            // Don't forget to get a $success status
         }
+        return $success;
     }
 
     /* 
@@ -231,7 +243,7 @@
 
     function update_profile_pic($tmp_file, $filename, $cust_id){
         $ext = get_file_extension($filename);
-
+        
         // NAMING CONVENTION: id.ext
         $safe_name = $cust_id . "." . $ext;
         $fullpath_image = PROFILE_PATH . "/" . $safe_name;
