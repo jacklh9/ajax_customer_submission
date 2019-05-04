@@ -11,13 +11,12 @@
 
                 // This is an existing customer
                 $submit_type = 'Save All';
-                $profile_path = get_profile_pic($cust_id);
             } else {
                 // This is a new customer
                 $submit_type = 'Register';
-                $profile_path = get_profile_pic_default();
                 $cust_id = -1;
             }
+            $profile_pic = get_profile_pic_url($cust_id);
 ?>          
             <div class="form-group">
                 <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
@@ -53,7 +52,7 @@
         </div><!-- personal-info -->
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-3" id="profile-info">
-            <img id='profile-pic' src='<?php echo "{$profile_path}"; ?>' width="200" height="200">
+            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' width="200" height="200">
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
             </div>

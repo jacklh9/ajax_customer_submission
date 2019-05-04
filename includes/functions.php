@@ -15,6 +15,7 @@
     $constants['max_addresses'] = 3;
     $constants['max_email_len'] = 255;
     $constants['profile_path'] = './profiles';
+    $constants['sleep_between_doc_saves'] = 1;  // MUST be 1 sec at the MINIMUM 
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
 
     foreach($constants as $key => $value){
@@ -39,7 +40,7 @@
         //
         // NOTE: In the future we can reimplement using milliseconds for even faster processing
         // as long as the database datetime is setup for milliseconds as well. 
-        sleep(1);
+        sleep(SLEEP_BETWEEN_DOC_SAVES);
         $datetime = date(DATE_FORMAT);
         $ext = get_file_extension($orig_filename);
         $doc_internal_fullpath = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
@@ -191,7 +192,7 @@
         if(confirmQResult($result)){
             $row = mysqli_fetch_assoc($result);
             $row['path'] = get_document_location($row['filename'], $row['datetime'], $row['FK_cust_id']);
-            $row['tmp_url'] = (is_S3())? S3_get_temp_file_url($row['path']) : $row['path'];
+            $row['tmp_url'] = (is_S3()) ? S3_get_temp_file_url($row['path']) : $row['path'];
             return $row;
         }
     }
@@ -239,6 +240,11 @@
             $pic = get_profile_pic_default();
         }
         return $pic;
+    }
+
+    function get_profile_pic_url($cust_id){
+        $pic = get_profile_pic($cust_id);
+        return (is_S3()) ? S3_get_temp_file_url($pic) : $pic;
     }
 
     function get_profile_pic_default(){
