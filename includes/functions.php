@@ -27,55 +27,19 @@
 
     function add_document($tmp_name, $filename, $cust_id){
         global $connection;
-        global $bucket;
-
-        // deal with non ASCII characters by setting the locale first
-        setlocale(LC_ALL,'en_US.UTF-8');
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
         // NAMING CONVENTION: id_datetime.ext
-        // We use the datetime as the filename, not using the user's filename
-        // for security reasons and to ensure unique filenames (along with
-        // the customer ID and sleeping for 1 second).
+        // We use the customer ID and datetime as the filename and NOT the user's original filename
+        // for security reasons. This ensures valid, safe filenames. 
+        // We also sleep for 1 second to ensure no two files have the same datetime filename.
+        // NOTE: In the future we can reimplement with microseconds for faster processing.
         sleep(1);
         $datetime = date(DATE_FORMAT);
-        $storage_filename = "{$cust_id}_{$datetime}.{$ext}";
+        $ext = get_file_extension($filename);
+        $fullpath_doc = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
 
-        if(add_document_to_storage($tmp_name, $storage_filename, $cust_id)){
-            $query = "INSERT INTO documents(filename, datetime, FK_cust_id) ";
-            $query .= "VALUE('{$filename}', '{$datetime}', $cust_id)";
-            $result = mysqli_query($connection, $query);
-            confirmQResult($result);
-        } else {
-            if(empty($bucket)){
-                echo "ERROR: Unable to rename {$tmp_name} as {$filesystem_filename}.";
-            } else {
-                echo "ERROR: Unable to save to S3 bucket '{$bucket}'.";
-            }
-        }
-    }
-
-    function add_document_to_storage($tmp_name, $filename, $cust_id){
-        global $bucket;
-        global $s3;
-        $success = FALSE;
-        $filesystem_filename = DOCUMENTS_PATH . "/" . $filename;
-
-        if(empty($bucket)){
-
-            // store on local server filesystem
-            $success = move_uploaded_file($tmp_name, $filesystem_filename);
-        } else {
-
-            // store in an Amazon S3 bucket
-            try {
-                // NOTE: do not use 'name' for upload (that's the original filename from the user's computer)
-                $upload = $s3->upload($bucket, $filesystem_filename, fopen($tmp_name, 'rb'), 'public-read');
-                $success = TRUE;
-            } catch(Exception $e) {
-                $success=FALSE;
-            }
-        }
+        $success = save_to_storage($tmp_file, $fullpath_doc, $cust_id)
+            &&  update_db_doc_info('document', $fullpath_doc, $cust_id, $datetime);
         return $success;
     }
 
@@ -170,6 +134,12 @@
         return $list;
     }
 
+    function get_file_extension($filename){
+        // deal with non ASCII characters by setting the locale first
+        setlocale(LC_ALL,'en_US.UTF-8');
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    }
+
     function get_profile_pic($cust_id){
         global $connection;
         $pic = DEFAULT_IMAGE;
@@ -223,30 +193,68 @@
         return $file_ary;
     }
 
+    function save_to_storage($tmp_name, $filename, $cust_id){
+        global $bucket;
+        global $s3;
+        $success = FALSE;
+
+        if(empty($bucket)){
+
+            // store on local server filesystem
+            $success = move_uploaded_file($tmp_name, $filename);
+        } else {
+
+            // store in an Amazon S3 bucket
+            try {
+                // NOTE: do not use 'name' for upload (that's the original filename from the user's computer)
+                $upload = $s3->upload($bucket, $filename, fopen($tmp_name, 'rb'), 'public-read');
+                $success = TRUE;
+            } catch(Exception $e) {
+                $success=FALSE;
+            }
+        }
+        return $success;
+    }
+
     function update_profile_pic($timp_file, $filename, $cust_id){
-        // deal with non ASCII characters by setting the locale first
-        setlocale(LC_ALL,'en_US.UTF-8');
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $ext = get_file_extension($filename);
 
         // NAMING CONVENTION: id.ext
-        $basename = $cust_id . "." . $ext;
-        $destination = PROFILE_PATH . "/" . $basename;
+        $safe_name = $cust_id . "." . $ext;
+        $fullpath_image = PROFILE_PATH . "/" . $safe_name;
 
         // Although move_uploaded_file() overwrites files,
         // we have no guarantee it's the same filename
         // because image extensions can vary; therefore,
         // we always delete the old image as a matter
         // of good housekeeping.
-        delete_profile_pic($cust_id);
-        move_uploaded_file($tmp_file, $destination);
-        update_profile_pic_filename($basename, $cust_id);
+        $success = delete_profile_pic($cust_id)
+            &&  save_to_storage($tmp_file, $fullpath_image, $cust_id)
+            &&  update_db_doc_info('profile', $fullpath_image, $cust_id);
+        return $success;
     }
 
-    function update_profile_pic_filename($basename, $cust_id){
+    // $type = 'profile' | 'document'
+    // $datetime is optional (used for type 'document')
+    function update_db_doc_info($type, $filename, $cust_id, $datetime){
         global $connection;
-        $query = "UPDATE customers SET profile = '$basename' WHERE id = $cust_id";
+        
+        switch($type){
+            case 'profile':
+                $query = "UPDATE customers SET profile = '$filename' WHERE id = $cust_id";
+                break;
+            case 'document':
+                $query = "INSERT INTO documents(filename, datetime, FK_cust_id) VALUES ('{$filename}', '{$datetime}', $cust_id)";
+                break;
+            default:
+                echo "'{$type}' is not a valid 'type' parameter in update_db_info()";
+                return FALSE;
+        }
         $result = mysqli_query($connection, $query);
-        confirmQResult($result);
+        if(!result){
+            echo "Error saving file '{$filename}' to database: " . mysqli_error($connection);
+        }
+        return $result;
     }
 
 ?>
