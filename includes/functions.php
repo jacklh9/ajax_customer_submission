@@ -192,7 +192,7 @@
         if(confirmQResult($result)){
             $row = mysqli_fetch_assoc($result);
             $row['path'] = get_document_location($row['filename'], $row['datetime'], $row['FK_cust_id']);
-            $row['tmp_url'] = (is_S3())? S3_get_temp_file_url($row['path']) : $row['path'];
+            $row['tmp_url'] = (is_S3()) ? S3_get_temp_file_url($row['path']) : $row['path'];
             return $row;
         }
     }
@@ -240,6 +240,11 @@
             $pic = get_profile_pic_default();
         }
         return $pic;
+    }
+
+    function get_profile_pic_url($cust_id){
+        $pic = get_profile_pic($cust_id);
+        return (is_S3()) ? S3_get_temp_file_url($pic) : $pic;
     }
 
     function get_profile_pic_default(){
