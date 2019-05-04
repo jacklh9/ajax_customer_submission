@@ -71,7 +71,7 @@
         return $result;
     }
 
-    function S3_get_temporary_object_url($remote_fullpath_destination){
+    function S3_get_temp_file_url($remote_fullpath_destination){
         global $bucket;
         global $client;
       
