@@ -10,7 +10,7 @@
 
     $constants['date_format'] = 'Y-m-d H:i:s';
     $constants['documents_path'] = './docs';
-    $constants['default_image'] = 'default.png';
+    $constants['default_image'] = './images/default.png';
     $constants['max_addresses'] = 3;
     $constants['profile_path'] = './profiles';
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
@@ -141,19 +141,23 @@
 
     function get_profile_pic($cust_id){
         global $connection;
-        $pic = DEFAULT_IMAGE;
+
         $query = "SELECT profile FROM customers WHERE id = '$cust_id'";
         $result = mysqli_query($connection, $query);
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         if(!empty($row['profile'])){
+            // User's own profile image
             $pic = $row['profile'];
+        } else {
+            // User doesn't have one, so use default
+            $pic = get_profile_pic_default();
         }
         return $pic;
     }
 
     function get_profile_pic_default(){
-        $default_image = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+        $default_image = DEFAULT_IMAGE;
         return $default_image;
     }
 

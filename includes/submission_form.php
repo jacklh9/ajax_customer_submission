@@ -198,21 +198,22 @@
 
     // DELETE PROFILE PIC button
     $('#btn-delete-profile-pic').on('click', function(){
-        alert("Deleting of profile pic from Amazon S3 not yet implemented.");
-        // if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved.")){
-        //     cust_id = $('#cust_id').val();
-        //     if(cust_id >= 0){
-        //         // Customer exists in DB, so purge from DB.
-        //         $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
-        //             if(status.localeCompare("1")){
-        //                 profile_path = '<?php echo PROFILE_PATH . "/" . DEFAULT_IMAGE; ?>'
-        //                 $('#profile-pic').attr('src', profile_path);
-        //             } else {
-        //                 notifyUser("Error deleting profile pic: " + status);
-        //             }
-        //         });
-        //     }
-        // }
+        
+        if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved immediately.")){
+            cust_id = $('#cust_id').val();
+            if(cust_id >= 0){
+                // Customer exists in DB, so purge from DB.
+                $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
+                    if(status.localeCompare("1")){
+                        profile_path = '<?php echo get_profile_pic_default(); ?>';
+                        $('#profile-pic').attr('src', profile_path);
+                        notifyUser("Default profile path = " + profile_path);
+                    } else {
+                        notifyUser("Error deleting profile pic: " + status);
+                    }
+                });
+            }
+        }
     });
 
     // DELETE DOC link
