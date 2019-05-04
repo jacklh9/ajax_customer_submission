@@ -20,7 +20,11 @@
 ?>          
             <div class="form-group">
                 <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
+
+                <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
+                <input type="button" id="disabled-submit" class="btn" name="disabled-upload" value="<?php echo $submit_type; ?>"><br>
             </div>
+
             <div class="form-group">
                 <input type="button" class="btn" id="btn-cancel" value="Cancel Changes"><br>
             </div>
@@ -139,161 +143,171 @@
 </form><!-- ********************************* END FORM ************************************ -->
 
 <script>
-    <?php include "includes/js/functions.js"; ?>
+    $(document).ready(function(){
+        <?php include "includes/js/functions.js"; ?>
 
-    function resetLogin(){
-        $('#upload-user-form').hide();
-        $('#upload-user-form')[0].reset();
-        $('#login-user-form')[0].reset();
-        $('#login-user-form').show();
-        show_registered_users();
-    }
-    
-    // POST-SUBMISSION
-    function thankYou(){
-        alert("Thank you. Your information has been successfully submitted.");
-    }
+        // Initial state of the submit buttons
+        // For purpose, see "validate" function(s) below.
+        $('input#submit').show();
+        $('input#disabled-submit').hide();
 
-    // CANCEL button
-    $('#btn-cancel').on('click', function(){
-        if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
-            notifyUser("Form data not submitted.");
-            resetLogin();
+        function resetLogin(){
+            $('#upload-user-form').hide();
+            $('#upload-user-form')[0].reset();
+            $('#login-user-form')[0].reset();
+            $('#login-user-form').show();
+            show_registered_users();
         }
-    });
 
-    // CLEAR ADDRESS button
-    $('.btn-clear-addr').on('click', function(){
-        if(confirm("Delete address?")){
-            var addr_num = $(this).attr('rel');
-            $('#add' + addr_num + '_street_line1').val("");
-            $('#add' + addr_num + '_street_line2').val("");
-            $('#add' + addr_num + '_city').val("");
-            $('#add' + addr_num + '_state').val("");
-            $('#add' + addr_num + '_zip').val("");
-            $('#add' + addr_num + '_state').prop('selectedIndex',0);
+        // POST-SUBMISSION
+        function thankYou(){
+            alert("Thank you. Your information has been successfully submitted.");
         }
-    });
 
-    // DELETE USER button
-    $('#btn-delete-user').on('click', function(){
-        if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
-            var cust_id = $('#cust_id').val();
-            if(cust_id >= 0){
-
-                // Customer exists in DB, so purge from DB.
-                $.post("delete.php", {cust_id: cust_id, action: 'delete-user'}, function(status){
-                    if(status.localeCompare("1")){
-                        notifyUser("Customer# " + cust_id + " deleted.");
-                    } else {
-                        notifyUser("Error attempting to delete customer# " + cust_id + ": " + status);
-                    }
-                    resetLogin();
-                });
-            } else {
+        // CANCEL button
+        $('#btn-cancel').on('click', function(){
+            if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
                 notifyUser("Form data not submitted.");
                 resetLogin();
             }
-        }
-    });
+        });
 
-    // DELETE PROFILE PIC button
-    $('#btn-delete-profile-pic').on('click', function(){
-        
-        if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved immediately.")){
-            var cust_id = $('#cust_id').val();
-            if(cust_id >= 0){
-                // Customer exists in DB, so purge from DB.
-                $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
-                    if(status.localeCompare("1")){
-                        var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                            $('#profile-pic').attr('src', profile_path);
-                    } else {
-                        notifyUser("Error deleting profile pic: " + status);
-                    }
-                });
+        // CLEAR ADDRESS button
+        $('.btn-clear-addr').on('click', function(){
+            if(confirm("Delete address?")){
+                var addr_num = $(this).attr('rel');
+                $('#add' + addr_num + '_street_line1').val("");
+                $('#add' + addr_num + '_street_line2').val("");
+                $('#add' + addr_num + '_city').val("");
+                $('#add' + addr_num + '_state').val("");
+                $('#add' + addr_num + '_zip').val("");
+                $('#add' + addr_num + '_state').prop('selectedIndex',0);
             }
-        }
-    });
+        });
 
-    // DELETE DOC link
-    $('.link-del-doc').on('click', function(){
-        var doc_id = $(this).attr('rel');
-        var filename = $(this).closest('td').prev('td').prev('td').text();
-        var is_S3 = "<?php echo is_S3(); ?>";
-        if(is_S3.localeCompare("")){
+        // DELETE USER button
+        $('#btn-delete-user').on('click', function(){
+            if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
+                var cust_id = $('#cust_id').val();
+                if(cust_id >= 0){
 
-            // S3 env
-            alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-
-        } else {
-
-            // non-S3 env
-            if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
-                // Purge doc from DB and from filesystem
-                $.post("delete.php", {doc_id: doc_id, action: 'delete-document'}, function(status){
-                    if(status.localeCompare("1")){
-                        // Successfully deleted document
-                        var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                                                $('tr#doc-' + doc_id).hide();
-                        notifyUser("Successfuly deleted document '" + filename + "'");
-                    } else {
-                        notifyUser("Error deleting document '" + filename + "': " + status);
-                    }
-                });
+                    // Customer exists in DB, so purge from DB.
+                    $.post("delete.php", {cust_id: cust_id, action: 'delete-user'}, function(status){
+                        if(status.localeCompare("1")){
+                            notifyUser("Customer# " + cust_id + " deleted.");
+                        } else {
+                            notifyUser("Error attempting to delete customer# " + cust_id + ": " + status);
+                        }
+                        resetLogin();
+                    });
+                } else {
+                    notifyUser("Form data not submitted.");
+                    resetLogin();
+                }
             }
-        }
-    });
+        });
 
+        // DELETE PROFILE PIC button
+        $('#btn-delete-profile-pic').on('click', function(){
+            
+            if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved immediately.")){
+                var cust_id = $('#cust_id').val();
+                if(cust_id >= 0){
+                    // Customer exists in DB, so purge from DB.
+                    $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
+                        if(status.localeCompare("1")){
+                            var profile_path = '<?php echo get_profile_pic_default(); ?>';
+                                $('#profile-pic').attr('src', profile_path);
+                        } else {
+                            notifyUser("Error deleting profile pic: " + status);
+                        }
+                    });
+                }
+            }
+        });
 
-    // VALIDATE EMAIL not in use
-    $('#email').keyup(function(){
-        var email = $('#email').val();
-        var cust_id = $('#cust_id').val();
-        $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
-            if(status.localeCompare("1")){
-                // email is available
-                $('#submit').show();
+        // DELETE DOC link
+        $('.link-del-doc').on('click', function(){
+            var doc_id = $(this).attr('rel');
+            var filename = $(this).closest('td').prev('td').prev('td').text();
+            var is_S3 = "<?php echo is_S3(); ?>";
+            if(is_S3.localeCompare("")){
+
+                // S3 env
+                alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+
             } else {
-                // email address already in use
-                $('#submit').hide();
-                notifyUser("ERROR: " + status);
+
+                // non-S3 env
+                if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
+                    // Purge doc from DB and from filesystem
+                    $.post("delete.php", {doc_id: doc_id, action: 'delete-document'}, function(status){
+                        if(status.localeCompare("1")){
+                            // Successfully deleted document
+                            var profile_path = '<?php echo get_profile_pic_default(); ?>';
+                                                    $('tr#doc-' + doc_id).hide();
+                            notifyUser("Successfuly deleted document '" + filename + "'");
+                        } else {
+                            notifyUser("Error deleting document '" + filename + "': " + status);
+                        }
+                    });
+                }
             }
         });
-    });
 
-    // // VIEW DOC link
-    // $('.link-view-doc').on('click', function(){
-    //     var doc_id = $(this).attr('rel');
-    //     var filename = $(this).text();
-    //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-    //     // if(confirm()){
-    //            //... 
-    //     // }
-    // });
 
-    // SUBMIT button
-    $('#upload-user-form').submit(function(evt){
-        evt.preventDefault();
-        notifyUser("Saving data...");
-        var url = $(this).attr('action');
-        var formData = new FormData(this);
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                notifyUser(response);
-                resetLogin();
-                thankYou();
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        }).fail(function(){
-            alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
+        // VALIDATE EMAIL not in use
+        $('input#email').keyup(function(){
+            var email = $('#email').val();
+            var cust_id = $('#cust_id').val();
+            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
+                if(status.localeCompare("1")){
+                    // email is available
+                    $('input#submit').show();
+                    $('input#disabled-submit').hide();
+                    notifyUser("TEST STATUS OK: " + status);  // TODO: this is only a test
+                } else {
+                    // email address already in use
+                    $('input#submit').hide();
+                    $('input#disabled-submit').show();
+                    notifyUser("ERROR: " + status);
+                }
+            });
         });
 
+        // // VIEW DOC link
+        // $('.link-view-doc').on('click', function(){
+        //     var doc_id = $(this).attr('rel');
+        //     var filename = $(this).text();
+        //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+        //     // if(confirm()){
+        //            //... 
+        //     // }
+        // });
+
+        // SUBMIT button
+        $('#upload-user-form').submit(function(evt){
+            evt.preventDefault();
+            notifyUser("Saving data...");
+            var url = $(this).attr('action');
+            var formData = new FormData(this);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    notifyUser(response);
+                    resetLogin();
+                    thankYou();
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            }).fail(function(){
+                alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
+            });
+
+        });
     });
 </script>
 

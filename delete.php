@@ -10,8 +10,6 @@ if(isset($_POST['action'])){
 
         case 'delete-user':
             $cust_id = clean($_POST['cust_id']);
-            echo delete_cust_and_related($cust_id);
-            
             $success = delete_cust_and_related($cust_id);
             break;
 

@@ -16,5 +16,5 @@
                 break;
         }
     }
-    return $success;
+    echo $success;
 ?>
