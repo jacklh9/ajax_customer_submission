@@ -172,7 +172,7 @@
         return !empty($row['profile']);
     }
 
-    purge_from_storage($fullpath_name){
+    function purge_from_storage($fullpath_name){
         global $bucket;
 
         if(empty($bucket)){
