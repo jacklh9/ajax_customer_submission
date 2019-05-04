@@ -62,6 +62,7 @@
                 'Bucket'     => $bucket,
                 'Key'        => $remote_fullpath_destination,
                 'SourceFile' => $local_fullpath_source,
+                'ACL'        => 'public-read',
             ));
         } catch(Exception $e) {
             echo $e->getResponse();
