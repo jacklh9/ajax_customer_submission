@@ -37,7 +37,7 @@ $(document).ready(function(){
 
     // DELETE USER button
     $('#btn-delete-user').on('click', function(){
-        if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
+        if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved to the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
             var cust_id = $('#cust_id').val();
             if(cust_id >= 0){
 
