@@ -9,7 +9,7 @@
     unset($constants);
     $constants['region'] = 'us-west-1';
     $constants['sdk_version'] = 'latest';
-    $constants['object_timeout'] = '5';     // minutes TODO: increase to 10
+    $constants['object_timeout'] = '+5 minutes';     // minutes TODO: increase to 10
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);
