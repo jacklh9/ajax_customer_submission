@@ -12,7 +12,7 @@
     $constants['documents_path'] = './docs';
     $constants['default_image'] = 'default.png';
     $constants['max_addresses'] = 3;
-    $constants['profile_path'] = './images/profiles';
+    $constants['profile_path'] = './profiles';
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
 
     foreach($constants as $key => $value){
@@ -38,7 +38,7 @@
         $ext = get_file_extension($filename);
         $fullpath_doc = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
 
-        $success = save_to_storage($tmp_file, $fullpath_doc, $cust_id)
+        $success = save_to_storage($tmp_file, $fullpath_doc)
             &&  update_db_doc_info('document', $fullpath_doc, $cust_id, $datetime);
         return $success;
     }
@@ -89,25 +89,25 @@
     }
 
     function delete_profile_pic($cust_id){
-
         $success = FALSE;
-        $filename = get_profile_pic($cust_id);
-        if(!empty($filename) && $filename != DEFAULT_IMAGE){
+        $fullpath_image = get_profile_pic($cust_id);
+        $fullpath_default = PROFILE_PATH . "/" . DEFAULT_IMAGE;
 
+        // Determine if cust has an actual profile pic or just the default one
+        if(!empty($fullpath_image) && ($fullpath_image != $fullpath_default)){
+
+            // Cust has a profile pic.
             // Remove DB profile pic reference
-            global $connection;
-            $query = "UPDATE customers SET profile = '' WHERE id = $cust_id";
-            $result = mysqli_query($connection, $query);
-            if($result){
-
+            // and remove image file.
+            $success = update_db_doc_info('profile', '', $cust_id)
                 // Delete profile pic
-                $success = unlink(PROFILE_PATH . "/" . $filename);
-            }
+                && purge_from_storage($fullpath_image); 
 
         } else {
+
             // Customer didn't have a profile pic;
-            // default pic was in use.
-            // So effectively their profile is already deleted.
+            // Default pic was in use.
+            // So effectively their profile pic is already deleted.
             $success = TRUE;
         }
         return $success;
@@ -172,6 +172,18 @@
         return !empty($row['profile']);
     }
 
+    purge_from_storage($fullpath_name){
+        global $bucket;
+
+        if(empty($bucket)){
+            // Purge from local filesystem
+
+        } else {
+            /// Purge from Amazon S3 bucket
+            global $s3;
+            // TODO: implement purging of any filename from S3 bucket
+        }
+    }
 
     /* 
         PURPOSE: Re-arranges uploaded files array from PHP to a more sensible array to 
@@ -193,9 +205,8 @@
         return $file_ary;
     }
 
-    function save_to_storage($tmp_name, $filename, $cust_id){
+    function save_to_storage($tmp_name, $filename){
         global $bucket;
-        global $s3;
         $success = FALSE;
 
         if(empty($bucket)){
@@ -206,6 +217,8 @@
 
             // store in an Amazon S3 bucket
             try {
+                global $s3;
+
                 // NOTE: do not use 'name' for upload (that's the original filename from the user's computer)
                 $upload = $s3->upload($bucket, $filename, fopen($tmp_name, 'rb'), 'public-read');
                 $success = TRUE;
@@ -216,7 +229,7 @@
         return $success;
     }
 
-    function update_profile_pic($timp_file, $filename, $cust_id){
+    function update_profile_pic($tmp_file, $filename, $cust_id){
         $ext = get_file_extension($filename);
 
         // NAMING CONVENTION: id.ext
@@ -229,14 +242,19 @@
         // we always delete the old image as a matter
         // of good housekeeping.
         $success = delete_profile_pic($cust_id)
-            &&  save_to_storage($tmp_file, $fullpath_image, $cust_id)
+            &&  save_to_storage($tmp_file, $fullpath_image)
             &&  update_db_doc_info('profile', $fullpath_image, $cust_id);
         return $success;
     }
 
     // $type = 'profile' | 'document'
     // $datetime is optional (used for type 'document')
-    function update_db_doc_info($type, $filename, $cust_id, $datetime){
+    // update_db_doc_info(string $type, string $filename, int $cust_id, [datetime]):bool
+    function update_db_doc_info(){
+        $type = func_get_arg(0);
+        $filename = func_get_arg(1);
+        $cust_id = func_get_arg(2);
+
         global $connection;
         
         switch($type){
@@ -244,6 +262,7 @@
                 $query = "UPDATE customers SET profile = '$filename' WHERE id = $cust_id";
                 break;
             case 'document':
+                $datetime = func_get_arg(3);
                 $query = "INSERT INTO documents(filename, datetime, FK_cust_id) VALUES ('{$filename}', '{$datetime}', $cust_id)";
                 break;
             default:
@@ -251,7 +270,7 @@
                 return FALSE;
         }
         $result = mysqli_query($connection, $query);
-        if(!result){
+        if(!$result){
             echo "Error saving file '{$filename}' to database: " . mysqli_error($connection);
         }
         return $result;
