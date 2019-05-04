@@ -146,11 +146,6 @@
     $(document).ready(function(){
         <?php include "includes/js/functions.js"; ?>
 
-        // Initial state of the submit buttons
-        // For purpose, see "validate" function(s) below.
-        $('input#submit').show();
-        $('input#disabled-submit').hide();
-
         function resetLogin(){
             $('#upload-user-form').hide();
             $('#upload-user-form')[0].reset();
@@ -255,6 +250,15 @@
             }
         });
 
+        // ******************************** VALIDATIONS ******************************************
+
+        // Initial state of the submit buttons
+        deny_submit();
+
+        var email = $('input#email').val();
+        if(is_valid_email(email)){
+            allow_submit();
+        }
 
         // VALIDATE EMAIL not in use
         $('input#email').keyup(function(){
@@ -263,18 +267,39 @@
             $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
                 if(status.localeCompare("1")){
                     // email is available
-                    $('input#submit').show();
-                    $('input#disabled-submit').hide();
+                    allow_submit();
                     notifyUser("TEST STATUS OK: '" + status + "'");  // TODO: this is only a test
                 } else {
                     // email address already in use
-                    $('input#submit').hide();
-                    $('input#disabled-submit').show();
+                    deny_submit();
                     notifyUser("ERROR: '" + status + "'");
                 }
             });
         });
 
+        function allow_submit(){
+                $('input#disabled-submit').hide();
+                $('input#submit').show();
+        }
+
+        function deny_submit(){
+                $('input#submit').hide();
+                $('input#disabled-submit').show();
+        }
+
+        // SOURCE: https://www.w3resource.com/javascript/form/email-validation.php
+        function is_valid_email(email) {
+            var success = (false);
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+                success = (true);
+            }
+            return success;
+        }
+
+
+        // ******************************** END VALIDATIONS ******************************************
+
+        
         // // VIEW DOC link
         // $('.link-view-doc').on('click', function(){
         //     var doc_id = $(this).attr('rel');

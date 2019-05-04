@@ -82,7 +82,7 @@
         // Process document uploads if at least one exists
         if(!empty($_FILES['documents']['name'][0])) {
 
-            $file_ary = reArrayFiles($_FILES['documents']);
+            $file_ary = re_array_files($_FILES['documents']);
         
             foreach ($file_ary as $file) {
                 $orig_filename = clean($file['name']);

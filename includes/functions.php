@@ -300,7 +300,7 @@
         traverse using foreach.
         SOURCE: https://www.php.net/manual/en/features.file-upload.multiple.php (phpuser at gmail dot com)
     */
-    function reArrayFiles(&$file_post) {
+    function re_array_files(&$file_post) {
 
         $file_ary = array();
         $file_count = count($file_post['name']);
