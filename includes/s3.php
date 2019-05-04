@@ -22,10 +22,45 @@
         require('/app/vendor/autoload.php');
 
         // this will simply read AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env vars
-        $s3 = new S3Client([
+        $client = new S3Client([
             'version'  => SDK_VERSION,
             'region'   => REGION,
         ]);
+    }
+
+    /*
+        Return TRUE if Amazon S3 environment detected else FALSE;
+     */
+    function is_S3(){
+        global $bucket;
+        return !empty($bucket);
+    }
+
+
+    /* 
+       AWS S3 
+       SOURCE: https://docs.aws.amazon.com/aws-sdk-php/v2/guide/service-s3.html
+     */ 
+
+    // 
+    // KEYS:                      // EXAMPLE: echo $result[key];
+    // 'Expiration'
+    // 'ServerSideEncryption'
+    // 'ETag'
+    // 'VersionId'
+    // 'RequestId'
+    // 'ObjectURL'
+    function S3_upload_file($pathToFile, $filename){
+        global $client;
+
+        // Upload an object by streaming the contents of a file
+        // $pathToFile should be absolute path to a file on disk
+        $result = $client->putObject(array(
+            'Bucket'     => $bucket,
+            'Key'        => $filename,
+            'SourceFile' => $pathToFile,
+        ));
+        return $result;
     }
 
 ?>
