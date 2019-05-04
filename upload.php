@@ -2,7 +2,10 @@
 <?php include_once "includes/functions.php"; ?>
 <?php
 
-    if(isset($_POST['email']) && !empty(clean($_POST['email']))){
+    if(isset($_POST['email']) 
+        && isset($_POST['cust_id'])
+        && !empty($_POST['email'])
+        && !is_email_inuse_by_another(clean($_POST['email']), $_POST['cust_id'])){
         
         $email = clean($_POST['email']);
         $first = (isset($_POST['first'])) ? clean($_POST['first']) : '';
@@ -89,7 +92,7 @@
 
     } else {
 
-        die("Error saving data: email address is required.");
+        echo "Error saving data: email address is required or already in use.";
 
     }
 

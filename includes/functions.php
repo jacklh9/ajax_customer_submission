@@ -93,14 +93,16 @@
     }
 
     function delete_document($doc_id){
-        $doc = get_profile_pic($cust_id);
+        $doc = get_document($doc_id);
         $fullpath_doc = $doc['path'];
 
+        debug_to_console("Inside delete_document()");
         // Determine if S3 env
         if(is_S3()){
 
             // TODO: implement S3 purging
             // don't forget success status
+            $success = FALSE;
 
         } else {
 
@@ -114,7 +116,7 @@
 
     function delete_document_from_db($doc_id){
         global $connection;
-        $query = "DELETE from documents WHERE id = {$doc_id}";
+        $query = "DELETE from documents WHERE id = $doc_id";
         $result = mysqli_query($connection, $query);
         if(confirmQResult($result)){
             $success = TRUE;
@@ -243,6 +245,28 @@
         return !empty($row['profile']);
     }
 
+
+    function is_email_inuse_by_another($email, $cust_id){
+        global $connection;
+        $inuse = TRUE;
+
+        $query = "SELECT * FROM customers WHERE email = '{$email}'";
+        $result = mysqli_query($connection, $query);
+        if(confirmQResult($result)){
+            if(mysqli_num_rows($result) > 0){
+                $row = mysqli_fetch_assoc($result);
+                if($cust_id == $row['id']){
+                    // Looks like this user already owns this email
+                    $inuse = FALSE;
+                }
+            } else {
+                // no records with that email
+                $inuse = FALSE;
+            }
+        }
+        return $inuse;
+    }
+
     /*
         Return TRUE if Amazon S3 environment detected else FALSE;
      */
@@ -252,11 +276,10 @@
     }
 
     function purge_from_storage($fullpath){
-        global $bucket;
 
         if(is_S3()){
             /// Purge from Amazon S3 bucket
-            global $s3;
+            //global $s3;
             // TODO: implement purging of any filename from S3 bucket
 
             // Don't forget to get a $success status
