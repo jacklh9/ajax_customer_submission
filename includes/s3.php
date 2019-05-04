@@ -9,6 +9,7 @@
     unset($constants);
     $constants['region'] = 'us-west-1';
     $constants['sdk_version'] = 'latest';
+    $constants['object_timeout'] = '5';     // minutes TODO: increase to 10
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);
@@ -54,14 +55,36 @@
         global $bucket;
         global $client;
 
-        // Upload an object by streaming the contents of a file
-        // $pathToFile should be absolute path to a file on disk
-        $result = $client->putObject(array(
-            'Bucket'     => $bucket,
-            'Key'        => $remote_fullpath_destination,
-            'SourceFile' => $local_fullpath_source,
-        ));
+        try{
+            // Upload an object by streaming the contents of a file
+            // $pathToFile should be absolute path to a file on disk
+            $result = $client->putObject(array(
+                'Bucket'     => $bucket,
+                'Key'        => $remote_fullpath_destination,
+                'SourceFile' => $local_fullpath_source,
+            ));
+        } catch(Exception $e) {
+            echo $e->getResponse();
+            $result = "";
+        }
+
         return $result;
     }
 
+    function S3_get_temporary_object_url($remote_fullpath_destination){
+        global $bucket;
+        global $client;
+      
+        try{
+            // Get a pre-signed URL for an Amazon S3 object
+            $signedUrl = $client->getObjectUrl($bucket, $remote_fullpath_destination, OBJECT_TIMEOUT);
+            // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
+            // Get the contents of the object using the pre-signed URL
+        } catch(Exception $e) {
+            echo $e->getResponse();
+            $signedUrl = "";
+        }
+
+        return $signedUrl;
+    }
 ?>

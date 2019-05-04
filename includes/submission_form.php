@@ -109,7 +109,18 @@
 <?php
             if(!empty($cust_id)){
 ?>
-                <h4>Documents:</h4>
+            <h4>Documents:</h4>
+<?php
+                if(is_S3()){
+?>
+                    [Amazon S3]
+<?php
+                } else {
+?>
+                    [local server filesystem]
+<?php
+                }
+?>
                 <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
                 <br>
                 <div id="documents-list">
@@ -126,7 +137,7 @@
                             $docs = get_documents($cust_id);
                             foreach($docs as $doc){
                                 echo "<tr id='doc-" . $doc['id'] . "'>";
-                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['path'] . "'>{$doc['filename']}</a></td>";
+                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
