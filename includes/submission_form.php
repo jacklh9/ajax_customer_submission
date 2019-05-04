@@ -241,7 +241,7 @@
                             // Successfully deleted document
                             var profile_path = '<?php echo get_profile_pic_default(); ?>';
                                                     $('tr#doc-' + doc_id).hide();
-                            notifyUser("Successfully deleted document '" + filename + "' STATUS = '" + status + "'");
+                            notifyUser("Successfully deleted document '" + filename + "'");
                         } else {
                             notifyUser("Error deleting document '" + filename + "': " + status);
                         }
