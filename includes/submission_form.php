@@ -114,14 +114,15 @@
 <?php
                 if(is_S3()){
 ?>
-                    [Amazon S3]
+                    [Amazon S3 storage]<br>
 <?php
                 } else {
 ?>
-                    [local server filesystem]
+                    [local server filesystem storage]<br>
 <?php
                 }
 ?>
+                (Click to download or right-click Save-As to rename)
                 <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
                 <br>
                 <div id="documents-list">
