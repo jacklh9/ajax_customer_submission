@@ -85,7 +85,8 @@
 
     function delete_cust_and_related($cust_id){
         $success = FALSE;
-        if (delete_addresses_by_cust($cust_id) 
+        if (&& delete_documents_by_cust($cust_id)
+            && delete_addresses_by_cust($cust_id) 
             && delete_profile_pic($cust_id) 
             && delete_cust($cust_id)){
             $success = TRUE;
@@ -112,6 +113,10 @@
                 && purge_from_storage($fullpath_doc); 
         }
         return $success;
+    }
+
+    function delete_documents_by_cust($cust_id){
+        // TODO
     }
 
     function delete_document_from_db($doc_id){
