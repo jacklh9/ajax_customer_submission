@@ -178,7 +178,7 @@
     // Builds the internal document path given the original filename, datetime, and customer id
     function get_document_location($orig_filename, $datetime, $cust_id){
         $ext = get_file_extension($orig_filename);
-        return DOCUMENTS_PATH . "/{$cust_id}_{$row['datetime']}.{$ext}";
+        return DOCUMENTS_PATH . "/{$cust_id}_{$datetime}.{$ext}";
     }
 
     // KEYS: SEE: get_document()
