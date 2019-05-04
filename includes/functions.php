@@ -294,14 +294,6 @@
         return $success;
     }
 
-    /*
-        Return TRUE if Amazon S3 environment detected else FALSE;
-     */
-    function is_S3(){
-        global $bucket;
-        return !empty($bucket);
-    }
-
     function purge_from_storage($fullpath){
 
         if(is_S3()){
@@ -342,26 +334,25 @@
         return $file_ary;
     }
 
-    function save_to_storage($tmp_name, $filename){
-        global $bucket;
+    function save_to_storage($tmp_name, $fullpath_filename){
         $success = FALSE;
 
-        if(empty($bucket)){
-
-            // store on local server filesystem
-            $success = move_uploaded_file($tmp_name, $filename);
-        } else {
-
+        if(is_S3()){
             // store in an Amazon S3 bucket
             try {
-                global $s3;
-
-                // NOTE: do not use 'name' for upload (that's the original filename from the user's computer)
-                $upload = $s3->upload($bucket, $filename, fopen($tmp_name, 'rb'), 'public-read');
-                $success = TRUE;
+                // NOTE: do not use user's original filename
+                $result = S3_upload_file($tmp_name, $fullpath_filename);
+                if($result){
+                    $success=TRUE;
+                }
             } catch(Exception $e) {
-                $success=FALSE;
+                echo $e->getResponse();
             }
+        } else {
+
+            // store on local server filesystem
+            $success = move_uploaded_file($tmp_name, $fullpath_filename);
+
         }
         return $success;
     }
