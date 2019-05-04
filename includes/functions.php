@@ -85,7 +85,7 @@
 
     function delete_cust_and_related($cust_id){
         $success = FALSE;
-        if (&& delete_documents_by_cust($cust_id)
+        if (delete_documents_by_cust($cust_id)
             && delete_addresses_by_cust($cust_id) 
             && delete_profile_pic($cust_id) 
             && delete_cust($cust_id)){
