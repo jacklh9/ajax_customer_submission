@@ -5,6 +5,7 @@
     if(isset($_POST['email']) 
         && isset($_POST['cust_id'])
         && !empty($_POST['email'])
+        && is_valid_email(clean($_POST['email']))
         && !is_email_inuse_by_another(clean($_POST['email']), $_POST['cust_id'])){
         
         $email = clean($_POST['email']);

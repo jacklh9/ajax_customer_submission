@@ -8,7 +8,9 @@
             case 'email':
                 $cust_id = clean($_POST['cust_id']);
                 $email = clean($_POST['email']);
-                $success = !is_email_inuse_by_another($email, $cust_id);
+                if(strlen($email) <= MAX_EMAIL_LEN){
+                    $success = !is_email_inuse_by_another($email, $cust_id);
+                }
                 break;
             
             default:

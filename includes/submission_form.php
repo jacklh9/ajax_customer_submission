@@ -188,7 +188,7 @@
 
                     // Customer exists in DB, so purge from DB.
                     $.post("delete.php", {cust_id: cust_id, action: 'delete-user'}, function(status){
-                        if(status.localeCompare("1")){
+                        if($.trim(status) === "1"){
                             notifyUser("Customer# " + cust_id + " deleted.");
                         } else {
                             notifyUser("Error attempting to delete customer# " + cust_id + ": " + status);
@@ -210,7 +210,7 @@
                 if(cust_id >= 0){
                     // Customer exists in DB, so purge from DB.
                     $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
-                        if(status.localeCompare("1")){
+                        if($.trim(status) === "1"){
                             var profile_path = '<?php echo get_profile_pic_default(); ?>';
                                 $('#profile-pic').attr('src', profile_path);
                         } else {
@@ -226,7 +226,7 @@
             var doc_id = $(this).attr('rel');
             var filename = $(this).closest('td').prev('td').prev('td').text();
             var is_S3 = "<?php echo is_S3(); ?>";
-            if(is_S3.localeCompare("")){
+            if($.trim(status) === "1"){
 
                 // S3 env
                 alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
@@ -237,7 +237,7 @@
                 if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
                     // Purge doc from DB and from filesystem
                     $.post("delete.php", {doc_id: doc_id, action: 'delete-document'}, function(status){
-                        if(status.localeCompare("1")){
+                        if($.trim(status) === "1"){
                             // Successfully deleted document
                             var profile_path = '<?php echo get_profile_pic_default(); ?>';
                                                     $('tr#doc-' + doc_id).hide();
@@ -305,8 +305,10 @@
         // SOURCE: https://www.w3resource.com/javascript/form/email-validation.php
         function is_valid_email(email) {
             var success = false;
-            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+            if(email.length <= MAX_EMAIL_LEN){
+                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
                 success = true;
+                }
             }
             return success;
         }

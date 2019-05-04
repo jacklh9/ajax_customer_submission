@@ -12,6 +12,7 @@
     $constants['documents_path'] = './docs';
     $constants['default_image'] = './images/default.png';
     $constants['max_addresses'] = 3;
+    $constants['max_email_len'] = 255;
     $constants['profile_path'] = './profiles';
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
 
@@ -265,6 +266,17 @@
             }
         }
         return $inuse;
+    }
+
+    function is_valid_email($email){
+        $success = FALSE;
+        // Pretend we did email validation.
+        // For this demo, let's just rely on the client-side
+        // javascript. Of course we would never do this in prod.
+        if(strlen($email) <= MAX_EMAIL_LEN){
+            $success = TRUE;        }
+        }
+        return $success;
     }
 
     /*

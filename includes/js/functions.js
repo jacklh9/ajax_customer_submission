@@ -1,5 +1,12 @@
 /* Functions shared across pages */
 
+/* 
+    CONSTANTS
+ */
+
+MAX_EMAIL_LEN = 255;
+
+
 function show_registered_users(){
     $.get('includes/show_registered_users.php', function(data){
         $('#registered-users-list').html(data);
