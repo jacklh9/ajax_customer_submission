@@ -116,7 +116,18 @@
     }
 
     function delete_documents_by_cust($cust_id){
-        // TODO
+        $success = TRUE;
+        $docs = get_documents($cust_id);
+        
+        foreach($docs as $doc){
+            if(!delete_document($doc['id'])){
+                // Exit IMMEDIATELY upon ANY SINGLE failure to delete a doc
+                // We don't want any successive successful deletes to cloud
+                // the fact that we already have at least one failure.
+                return FALSE;
+            }
+        }
+        return $success;
     }
 
     function delete_document_from_db($doc_id){
