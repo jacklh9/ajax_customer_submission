@@ -2,36 +2,45 @@
 <?php include_once "includes/functions.php"; ?>
 <?php
 
-    if(isset($_POST['email']) && !empty(clean($_POST['email']))){
+    if(isset($_POST['email']) 
+        && isset($_POST['cust_id'])
+        && !empty($_POST['email'])
+        && is_valid_email(clean($_POST['email']))
+        && !is_email_inuse_by_another(clean($_POST['email']), $_POST['cust_id'])){
         
         $email = clean($_POST['email']);
         $first = (isset($_POST['first'])) ? clean($_POST['first']) : '';
         $last = (isset($_POST['last'])) ? clean($_POST['last']) : '';
         $phone = (isset($_POST['phone'])) ? clean($_POST['phone']) : '';
+        $cust_id = (isset($_POST['cust_id'])) ? clean($_POST['cust_id']) : '';
 
-        $cust_id = get_cust_id($email);
-        if(empty($cust_id)){
+        // submission_form.php already sets cust_id to -1 if email not in DB
+        if($cust_id >= 0){
+
+            // Update Existing Customer's Personal Info
+            $query = "UPDATE customers SET ";
+            $query .= "email = '{$email}', ";
+            $query .= "first = '{$first}', ";
+            $query .= "last = '{$last}', ";
+            $query .= "phone = '{$phone}' ";
+            $query .= "WHERE id = {$cust_id}";
+
+        } else {
 
             // Get or Create Customer
             $query = "INSERT INTO customers(email, first, last, phone) ";
             $query .= "VALUES('$email', '$first', '$last', '$phone')";
 
-        } else {
-
-            // Update Customer Personal Info
-            $query = "UPDATE customers SET ";
-            $query .= "first = '{$first}', ";
-            $query .= "last = '{$last}', ";
-            $query .= "phone = '{$phone}' ";
-            $query .= "WHERE email = '{$email}'";
-
         }
         $result_set = mysqli_query($connection, $query);
-        
-        $cust_id = get_cust_id($email);
+        if(confirmQResult($result_set)){
+            if($cust_id < 0){
+                // Get new cust_id if newly created
+                $cust_id = get_cust_id($email);
+            }
+        }
 
         // Update/Insert Customer Addresses
-
         for($i = 0; $i < MAX_ADDRESSES; $i++){
             $street_line1 = (isset($_POST['add' . $i . '_street_line1'])) ? clean($_POST['add' . $i . '_street_line1']) : '';
             $street_line2 = (isset($_POST['add' . $i . '_street_line2'])) ? clean($_POST['add' . $i . '_street_line2']) : '';
@@ -74,16 +83,17 @@
         // Process document uploads if at least one exists
         if(!empty($_FILES['documents']['name'][0])) {
 
-            $file_ary = reArrayFiles($_FILES['documents']);
+            $file_ary = re_array_files($_FILES['documents']);
         
             foreach ($file_ary as $file) {
-                add_document($file['tmp_name'], $file['name'], $cust_id);
+                $orig_filename = clean($file['name']);
+                add_document($file['tmp_name'], $orig_filename, $cust_id);
             }
         }
 
     } else {
 
-        die("Error saving data: email address is required.");
+        echo "Error saving data: email address is required or already in use.";
 
     }
 

@@ -10,17 +10,21 @@
 
                 // This is an existing customer
                 $submit_type = 'Save All';
-                $profile_path = PROFILE_PATH . "/" . get_profile_pic($cust_id);
+                $profile_path = get_profile_pic($cust_id);
             } else {
                 // This is a new customer
                 $submit_type = 'Register';
-                $profile_path = PROFILE_PATH . "/" . DEFAULT_IMAGE;
+                $profile_path = get_profile_pic_default();
                 $cust_id = -1;
             }
 ?>          
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
+                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
+
+                <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
+                <input type="button" id="disabled-submit" class="btn" name="disabled-upload" value="<?php echo $submit_type; ?>"><br>
             </div>
+
             <div class="form-group">
                 <input type="button" class="btn" id="btn-cancel" value="Cancel Changes"><br>
             </div>
@@ -40,7 +44,7 @@
         <div id="personal-info" class="col-xs-6">
             <div class="form-group">
                 <input type="hidden" class="form-control" id="cust_id" name='cust_id' value="<?php echo $cust_id; ?>">
-                <input type="text" class="form-control" name="email" value="<?php echo $email; ?>" placeholder="Email">
+                <input type="text" class="form-control" id="email" name="email" value="<?php echo $email; ?>" placeholder="Email">
                 <input type="text" class="form-control" name="first" value="<?php echo $first; ?>" placeholder="First Name">
                 <input type="text" class="form-control" name="last" value="<?php echo $last; ?>" placeholder="Last Name">
                 <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>" placeholder="Primary Phone">
@@ -121,8 +125,8 @@
 <?php
                             $docs = get_documents($cust_id);
                             foreach($docs as $doc){
-                                echo "<tr>";
-                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' href='javascript:void(0)'>{$doc['filename']}</a></td>";
+                                echo "<tr id='doc-" . $doc['id'] . "'>";
+                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['path'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
@@ -139,125 +143,6 @@
 </form><!-- ********************************* END FORM ************************************ -->
 
 <script>
-    <?php include "includes/js/functions.js"; ?>
-
-    function resetLogin(){
-        $('#upload-user-form').hide();
-        $('#upload-user-form')[0].reset();
-        $('#login-user-form')[0].reset();
-        $('#login-user-form').show();
-        show_registered_users();
-    }
-
-    function thankYou(){
-        alert("Thank you. Your information has been successfully submitted.");
-    }
-
-    // CANCEL button
-    $('#btn-cancel').on('click', function(){
-        if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
-            notifyUser("Form data not submitted.");
-            resetLogin();
-        }
-    });
-
-    // CLEAR ADDRESS button
-    $('.btn-clear-addr').on('click', function(){
-        if(confirm("Delete address?")){
-            addr_num = $(this).attr('rel');
-            $('#add' + addr_num + '_street_line1').val("");
-            $('#add' + addr_num + '_street_line2').val("");
-            $('#add' + addr_num + '_city').val("");
-            $('#add' + addr_num + '_state').val("");
-            $('#add' + addr_num + '_zip').val("");
-            $('#add' + addr_num + '_state').prop('selectedIndex',0);
-        }
-    });
-
-    // DELETE USER button
-    $('#btn-delete-user').on('click', function(){
-        if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved in the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
-            cust_id = $('#cust_id').val();
-            if(cust_id >= 0){
-
-                // Customer exists in DB, so purge from DB.
-                $.post("delete.php", {cust_id: cust_id, action: 'delete-user'}, function(status){
-                    if(status.localeCompare("1")){
-                        notifyUser("Customer# " + cust_id + " deleted.");
-                    } else {
-                        notifyUser("Error attempting to delete customer# " + cust_id + ": " + status);
-                    }
-                    resetLogin();
-                });
-            } else {
-                notifyUser("Form data not submitted.");
-                resetLogin();
-            }
-        }
-    });
-
-    // DELETE PROFILE PIC button
-    $('#btn-delete-profile-pic').on('click', function(){
-        alert("Deleting of profile pic from Amazon S3 not yet implemented.");
-        // if(confirm("Are you sure you wish to DELETE your profile pic?\nThis change WILL be saved.")){
-        //     cust_id = $('#cust_id').val();
-        //     if(cust_id >= 0){
-        //         // Customer exists in DB, so purge from DB.
-        //         $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
-        //             if(status.localeCompare("1")){
-        //                 profile_path = '<?php echo PROFILE_PATH . "/" . DEFAULT_IMAGE; ?>'
-        //                 $('#profile-pic').attr('src', profile_path);
-        //             } else {
-        //                 notifyUser("Error deleting profile pic: " + status);
-        //             }
-        //         });
-        //     }
-        // }
-    });
-
-    // DELETE DOC link
-    $('.link-del-doc').on('click', function(){
-        doc_id = $(this).attr('rel');
-        filename = $(this).closest('td').prev('td').prev('td').text();
-        alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-        // if(confirm("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
-        //     // TODO
-        // }
-    });
-
-    // VIEW DOC link
-    $('.link-view-doc').on('click', function(){
-        doc_id = $(this).attr('rel');
-        filename = $(this).text();
-        alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-        // if(confirm()){
-        //     // TODO
-        // }
-    });
-
-    // SUBMIT button
-    $('#upload-user-form').submit(function(evt){
-        evt.preventDefault();
-        notifyUser("Saving data...");
-        var url = $(this).attr('action');
-        var formData = new FormData(this);
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                notifyUser(response);
-                resetLogin();
-                thankYou();
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        }).fail(function(){
-            alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-        });
-
-
-    });
+    <?php include_once "./includes/js/submission_form.js"; ?>
 </script>
 

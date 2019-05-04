@@ -1,5 +1,12 @@
 /* Functions shared across pages */
 
+/* 
+    CONSTANTS
+ */
+
+MAX_EMAIL_LEN = 255;
+
+
 function show_registered_users(){
     $.get('includes/show_registered_users.php', function(data){
         $('#registered-users-list').html(data);
@@ -8,7 +15,7 @@ function show_registered_users(){
 }
 
 function notifyUser(response){
-    var notificationTextDurationSecs = 10;
+    var notificationTextDurationSecs = 60;
 
     $('#notification-bar').text(response);
     $('#notification-bar').show();
