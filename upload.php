@@ -8,30 +8,35 @@
         $first = (isset($_POST['first'])) ? clean($_POST['first']) : '';
         $last = (isset($_POST['last'])) ? clean($_POST['last']) : '';
         $phone = (isset($_POST['phone'])) ? clean($_POST['phone']) : '';
+        $cust_id = (isset($_POST['cust_id'])) ? clean($_POST['cust_id']) : '';
 
-        $cust_id = get_cust_id($email);
-        if(empty($cust_id)){
+        // submission_form.php already sets cust_id to -1 if email not in DB
+        if($cust_id >= 0){
+
+            // Update Existing Customer's Personal Info
+            $query = "UPDATE customers SET ";
+            $query .= "email = '{$email}', ";
+            $query .= "first = '{$first}', ";
+            $query .= "last = '{$last}', ";
+            $query .= "phone = '{$phone}' ";
+            $query .= "WHERE id = {$cust_id}";
+
+        } else {
 
             // Get or Create Customer
             $query = "INSERT INTO customers(email, first, last, phone) ";
             $query .= "VALUES('$email', '$first', '$last', '$phone')";
 
-        } else {
-
-            // Update Customer Personal Info
-            $query = "UPDATE customers SET ";
-            $query .= "first = '{$first}', ";
-            $query .= "last = '{$last}', ";
-            $query .= "phone = '{$phone}' ";
-            $query .= "WHERE email = '{$email}'";
-
         }
         $result_set = mysqli_query($connection, $query);
-        
-        $cust_id = get_cust_id($email);
+        if(confirmQResult($result_set)){
+            if($cust_id < 0){
+                // Get new cust_id if newly created
+                $cust_id = get_cust_id($email);
+            }
+        }
 
         // Update/Insert Customer Addresses
-
         for($i = 0; $i < MAX_ADDRESSES; $i++){
             $street_line1 = (isset($_POST['add' . $i . '_street_line1'])) ? clean($_POST['add' . $i . '_street_line1']) : '';
             $street_line2 = (isset($_POST['add' . $i . '_street_line2'])) ? clean($_POST['add' . $i . '_street_line2']) : '';
