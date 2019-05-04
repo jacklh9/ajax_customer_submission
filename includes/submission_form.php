@@ -260,21 +260,30 @@
             allow_submit();
         }
 
+        $('input#disabled-submit').on('click', function(){
+            notifyUser("Unable to submit: bad email address");
+        });
+
         // VALIDATE EMAIL not in use
         $('input#email').keyup(function(){
+            deny_submit(); // We do this here to avoid race condition
             var email = $('#email').val();
             var cust_id = $('#cust_id').val();
-            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
-                if(status.localeCompare("1")){
-                    // email is available
-                    allow_submit();
-                    notifyUser("TEST STATUS OK: '" + status + "'");  // TODO: this is only a test
-                } else {
-                    // email address already in use
-                    deny_submit();
-                    notifyUser("ERROR: '" + status + "'");
-                }
-            });
+            if(is_valid_email(email)){
+                $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
+                    if(status.localeCompare("1")){
+                        // email is available
+                        allow_submit();
+                        notifyUser("TEST STATUS OK: '" + status + "'");  // TODO: this is only a test
+                    } else {
+                        // email address already in use
+                        notifyUser("ERROR: '" + status + "'");
+                    }
+                })
+                .fail(function(){
+                    notifyUser("ERROR: Unable to communicate with the server.");
+                });
+            }
         });
 
         function allow_submit(){
@@ -289,9 +298,9 @@
 
         // SOURCE: https://www.w3resource.com/javascript/form/email-validation.php
         function is_valid_email(email) {
-            var success = (false);
+            var success = false;
             if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-                success = (true);
+                success = true;
             }
             return success;
         }
