@@ -122,7 +122,7 @@
                             $docs = get_documents($cust_id);
                             foreach($docs as $doc){
                                 echo "<tr>";
-                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' href='javascript:void(0)'>{$doc['filename']}</a></td>";
+                                echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['path'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
@@ -226,15 +226,15 @@
         // }
     });
 
-    // VIEW DOC link
-    $('.link-view-doc').on('click', function(){
-        doc_id = $(this).attr('rel');
-        filename = $(this).text();
-        alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-        // if(confirm()){
-        //     // TODO
-        // }
-    });
+    // // VIEW DOC link
+    // $('.link-view-doc').on('click', function(){
+    //     doc_id = $(this).attr('rel');
+    //     filename = $(this).text();
+    //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+    //     // if(confirm()){
+    //     //     // TODO
+    //     // }
+    // });
 
     // SUBMIT button
     $('#upload-user-form').submit(function(evt){

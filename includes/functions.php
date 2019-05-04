@@ -125,6 +125,13 @@
         return $row['id'];
     }
 
+    //
+    // KEYS:
+    // 'id' = document id
+    // 'filename' = original user filename
+    // 'datetime' = datetime file uploaded (and used for internal filename)
+    // 'path' = internal full-path filename
+    // 'FK_cust_id' = customer id (foreign key)
     function get_documents($cust_id){
         global $connection;
         $query = "SELECT * FROM documents WHERE FK_cust_id = $cust_id";
@@ -132,6 +139,8 @@
         confirmQResult($result);
         $list = array();
         while($row = mysqli_fetch_assoc($result)){
+            $ext = get_file_extension($row['filename']);
+            $row['path'] = DOCUMENTS_PATH . "/{$cust_id}_{$row['datetime']}.{$ext}";
             array_push($list, $row);
         }
         return $list;
