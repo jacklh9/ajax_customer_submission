@@ -8,6 +8,7 @@
     //
     /////////////////////////////////////////////////
 
+    unset($constants);
     $constants['date_format'] = 'Y-m-d H:i:s';
     $constants['documents_path'] = './docs';
     $constants['default_image'] = './images/default.png';

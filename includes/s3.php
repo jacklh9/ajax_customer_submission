@@ -6,6 +6,7 @@
     //
     /////////////////////////////////////////////////
 
+    unset($constants);
     $constants['region'] = 'us-west-1';
     $constants['sdk_version'] = 'latest';
 
