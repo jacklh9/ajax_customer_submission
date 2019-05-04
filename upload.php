@@ -77,7 +77,8 @@
             $file_ary = reArrayFiles($_FILES['documents']);
         
             foreach ($file_ary as $file) {
-                add_document($file['tmp_name'], $file['name'], $cust_id);
+                $orig_filename = clean($file['name']);
+                add_document($file['tmp_name'], $orig_filename, $cust_id);
             }
         }
 

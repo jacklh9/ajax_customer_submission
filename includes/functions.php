@@ -25,21 +25,25 @@
     //
     /////////////////////////////////////////////////
 
-    function add_document($tmp_name, $filename, $cust_id){
+    function add_document($tmp_name, $orig_filename, $cust_id){
         global $connection;
 
         // NAMING CONVENTION: id_datetime.ext
         // We use the customer ID and datetime as the filename and NOT the user's original filename
         // for security reasons. This ensures valid, safe filenames. 
         // We also sleep for 1 second to ensure no two files have the same datetime filename.
-        // NOTE: In the future we can reimplement with microseconds for faster processing.
+        // The customer's original filename is saved to the database "filename" column
+        // so that we can rebuild later, such as when requesting doc for viewing.
+        //
+        // NOTE: In the future we can reimplement using milliseconds for even faster processing
+        // as long as the database datetime is setup for milliseconds as well. 
         sleep(1);
         $datetime = date(DATE_FORMAT);
-        $ext = get_file_extension($filename);
-        $fullpath_doc = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
+        $ext = get_file_extension($orig_filename);
+        $doc_internal_fullpath = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
 
-        $success = save_to_storage($tmp_file, $fullpath_doc)
-            &&  update_db_doc_info('document', $fullpath_doc, $cust_id, $datetime);
+        $success = save_to_storage($tmp_name, $doc_internal_fullpath)
+            &&  update_db_doc_info('document', $orig_filename, $cust_id, $datetime);
         return $success;
     }
 
