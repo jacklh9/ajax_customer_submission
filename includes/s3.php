@@ -77,7 +77,7 @@
       
         try{
             // Get a pre-signed URL for an Amazon S3 object
-            $signedUrl = $client->getObjectUrl($bucket, $remote_fullpath_destination, OBJECT_TIMEOUT);
+            $signedUrl = $client->getObjectUrl($bucket, $remote_fullpath_destination, '+10 minutes'); // TO-DO: Use constant after debugging this
             // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
             // Get the contents of the object using the pre-signed URL
         } catch(Exception $e) {
