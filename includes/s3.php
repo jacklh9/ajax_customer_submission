@@ -50,14 +50,14 @@
     // 'VersionId'
     // 'RequestId'
     // 'ObjectURL'
-    function S3_upload_file($pathToFile, $filename){
+    function S3_upload_file($local_fullpath_source, $remote_fullpath_destination){
         global $client;
 
         // Upload an object by streaming the contents of a file
         // $pathToFile should be absolute path to a file on disk
         $result = $client->putObject(array(
             'Bucket'     => $bucket,
-            'Key'        => $filename,
+            'Key'        => $destination_path_filename,
             'SourceFile' => $pathToFile,
         ));
         return $result;
