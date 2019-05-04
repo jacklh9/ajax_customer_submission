@@ -121,7 +121,7 @@
 <?php
                             $docs = get_documents($cust_id);
                             foreach($docs as $doc){
-                                echo "<tr>";
+                                echo "<tr id='doc-{$doc['id']}'>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['path'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
@@ -206,7 +206,7 @@
                 $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
                     if(status.localeCompare("1")){
                         profile_path = '<?php echo get_profile_pic_default(); ?>';
-                        $('#profile-pic').attr('src', profile_path);
+                        $('tr#doc-' + doc_id).hide();
                         notifyUser("Default profile path = " + profile_path);
                     } else {
                         notifyUser("Error deleting profile pic: " + status);
@@ -220,10 +220,29 @@
     $('.link-del-doc').on('click', function(){
         doc_id = $(this).attr('rel');
         filename = $(this).closest('td').prev('td').prev('td').text();
-        alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-        // if(confirm("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.")){
-        //     // TODO
-        // }
+
+        if("1".localeCompare("<?php echo is_S3(); ?>"){
+
+            // S3 env
+            alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+
+        } else {
+
+            // non-S3 env
+            if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
+                // Purge doc from DB and from filesystem
+                $.post("delete.php", {doc_id: doc_id, action: 'delete-document'}, function(status){
+                    if(status.localeCompare("1")){
+                        // Successfully deleted document
+                        profile_path = '<?php echo get_profile_pic_default(); ?>';
+                        $('#profile-pic').attr('src', profile_path);
+                        notifyUser("Successfuly deleted document '" + filename + "'");
+                    } else {
+                        notifyUser("Error deleting document '" + filename + "': " + status);
+                    }
+                });
+            }
+        }
     });
 
     // // VIEW DOC link

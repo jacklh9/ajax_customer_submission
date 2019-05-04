@@ -92,6 +92,30 @@
         return $success;
     }
 
+    function delete_document($doc_id){
+        // $fullpath_image = get_profile_pic($cust_id);
+        // $fullpath_default = get_profile_pic_default();
+
+        // // Determine if cust has an actual profile pic or just the default one
+        // if(!empty($fullpath_image) && (basename($fullpath_image) != basename($fullpath_default))){
+
+        //     // Cust has a profile pic.
+        //     // Remove DB profile pic reference
+        //     // and remove image file.
+        //     $success = update_db_doc_info('profile', '', $cust_id)
+        //         // Delete profile pic
+        //         && purge_from_storage($fullpath_image); 
+
+        // } else {
+
+        //     // Customer didn't have a profile pic;
+        //     // Default pic was in use.
+        //     // So effectively their profile pic is already deleted.
+        //     $success = TRUE;
+        // }
+        // return $success;
+    }
+
     function delete_profile_pic($cust_id){
         $fullpath_image = get_profile_pic($cust_id);
         $fullpath_default = get_profile_pic_default();
@@ -191,6 +215,14 @@
         confirmQResult($result);
         $row = mysqli_fetch_assoc($result);
         return !empty($row['profile']);
+    }
+
+    /*
+        Return TRUE if Amazon S3 environment detected else FALSE;
+     */
+    function is_S3(){
+        global $bucket;
+        return !empty($bucket);
     }
 
     function purge_from_storage($fullpath_name){
