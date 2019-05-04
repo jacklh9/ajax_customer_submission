@@ -71,10 +71,14 @@ function clean($string){
 
 function confirmQResult($query_result){
     global $connection; 
+    $success = FALSE;
 
     if(!$query_result){
         die("QUERY FAILED: " . mysqli_error($connection));
+    } else {
+        $success = TRUE;
     }
+    return $success;
 }
 
 // Quick Test (remove in prod)

@@ -93,27 +93,35 @@
     }
 
     function delete_document($doc_id){
-        // $fullpath_image = get_profile_pic($cust_id);
-        // $fullpath_default = get_profile_pic_default();
+        $doc = get_profile_pic($cust_id);
+        $fullpath_doc = $doc['path'];
 
-        // // Determine if cust has an actual profile pic or just the default one
-        // if(!empty($fullpath_image) && (basename($fullpath_image) != basename($fullpath_default))){
+        // Determine if S3 env
+        if(is_S3()){
 
-        //     // Cust has a profile pic.
-        //     // Remove DB profile pic reference
-        //     // and remove image file.
-        //     $success = update_db_doc_info('profile', '', $cust_id)
-        //         // Delete profile pic
-        //         && purge_from_storage($fullpath_image); 
+            // TODO: implement S3 purging
+            // don't forget success status
 
-        // } else {
+        } else {
 
-        //     // Customer didn't have a profile pic;
-        //     // Default pic was in use.
-        //     // So effectively their profile pic is already deleted.
-        //     $success = TRUE;
-        // }
-        // return $success;
+            // non-S3 filesystem
+            $success = delete_document_from_db($doc_id)
+                // Delete profile pic
+                && purge_from_storage($fullpath_doc); 
+        }
+        return $success;
+    }
+
+    function delete_document_from_db($doc_id){
+        global $connection;
+        $query = "DELETE from documents WHERE id = {$doc_id}";
+        $result = mysqli_query($connection, $query);
+        if(confirmQResult($result)){
+            $success = TRUE;
+        } else {
+            $success = FALSE;
+        }
+        return $success;
     }
 
     function delete_profile_pic($cust_id){
@@ -149,13 +157,32 @@
         return $row['id'];
     }
 
-    //
+
     // KEYS:
     // 'id' = document id
     // 'filename' = original user filename
     // 'datetime' = datetime file uploaded (and used for internal filename)
     // 'path' = internal full-path filename
     // 'FK_cust_id' = customer id (foreign key)
+    function get_document($doc_id){
+        global $connection;
+        $query = "SELECT * FROM documents WHERE doc_id = $doc_id";
+        $result = mysqli_query($connection, $query);
+        if(confirmQResult($result)){
+            $row = mysqli_fetch_assoc($result);
+            $row['path'] = get_document_location($row['filename'], $row['datetime'], $row['FK_cust_id']);
+            return $row;
+        }
+    }
+
+    // Builds the internal document path given the original filename, datetime, and customer id
+    function get_document_location($orig_filename, $datetime, $cust_id){
+        $ext = get_file_extension($orig_filename);
+        return DOCUMENTS_PATH . "/{$cust_id}_{$row['datetime']}.{$ext}";
+    }
+
+    // KEYS: SEE: get_document()
+    // Returns array of documents owned by $cust_id
     function get_documents($cust_id){
         global $connection;
         $query = "SELECT * FROM documents WHERE FK_cust_id = $cust_id";
@@ -163,8 +190,7 @@
         confirmQResult($result);
         $list = array();
         while($row = mysqli_fetch_assoc($result)){
-            $ext = get_file_extension($row['filename']);
-            $row['path'] = DOCUMENTS_PATH . "/{$cust_id}_{$row['datetime']}.{$ext}";
+            $row['path'] = get_document_location($row['filename'], $row['datetime'], $cust_id);
             array_push($list, $row);
         }
         return $list;
@@ -225,23 +251,23 @@
         return !empty($bucket);
     }
 
-    function purge_from_storage($fullpath_name){
+    function purge_from_storage($fullpath){
         global $bucket;
 
-        if(empty($bucket)){
-            // Purge from local filesystem
-            if (unlink($fullpath_name)){
-                $success = TRUE;
-            } else {
-                $success = FALSE;
-                echo "ERROR: Unable to delete file '{$fullpath_name}'";
-            };
-        } else {
+        if(is_S3()){
             /// Purge from Amazon S3 bucket
             global $s3;
             // TODO: implement purging of any filename from S3 bucket
 
             // Don't forget to get a $success status
+        } else {
+            // Purge from local filesystem
+            if (unlink($fullpath)){
+                $success = TRUE;
+            } else {
+                $success = FALSE;
+                echo "ERROR: Unable to delete file '{$fullpath}'";
+            };
         }
         return $success;
     }

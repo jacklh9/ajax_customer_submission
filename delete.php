@@ -22,8 +22,7 @@ if(isset($_POST['action'])){
 
         case 'delete-document':
             $doc_id = clean($_POST['doc_id']);
-            //$success = delete_document(($doc_id);
-            $success = TRUE;  // TODO: delete when implemented
+            $success = delete_document($doc_id);
             break;
 
         default:
