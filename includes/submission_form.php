@@ -147,7 +147,8 @@
         $('#login-user-form')[0].reset();
         $('#login-user-form').show();
         show_registered_users();
-
+    }
+    
     // POST-SUBMISSION
     function thankYou(){
         alert("Thank you. Your information has been successfully submitted.");
