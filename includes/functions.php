@@ -176,12 +176,13 @@
         return $row['id'];
     }
 
-
     // KEYS:
     // 'id' = document id
     // 'filename' = original user filename
     // 'datetime' = datetime file uploaded (and used for internal filename)
     // 'path' = internal full-path filename
+    // 'tmp_url'  = temp url to object (SEE: S3.php for OBJECT_TIMEOUT value)
+    // 'url' = permanent url to object [NOT YET IMPLEMENTED]
     // 'FK_cust_id' = customer id (foreign key)
     function get_document($doc_id){
         global $connection;
@@ -190,6 +191,7 @@
         if(confirmQResult($result)){
             $row = mysqli_fetch_assoc($result);
             $row['path'] = get_document_location($row['filename'], $row['datetime'], $row['FK_cust_id']);
+            $row['tmp_url'] = S3_get_temp_file_url($row['path']);
             return $row;
         }
     }
@@ -339,20 +341,14 @@
 
         if(is_S3()){
             // store in an Amazon S3 bucket
-            try {
-                // NOTE: do not use user's original filename
-                $result = S3_upload_file($tmp_name, $fullpath_filename);
-                if($result){
-                    $success=TRUE;
-                }
-            } catch(Exception $e) {
-                echo $e->getResponse();
+            // NOTE: do not use user's original filename
+            $result = S3_upload_file($tmp_name, $fullpath_filename);
+            if($result){
+                $success=TRUE;
             }
         } else {
-
             // store on local server filesystem
             $success = move_uploaded_file($tmp_name, $fullpath_filename);
-
         }
         return $success;
     }
