@@ -304,21 +304,19 @@
     }
 
     function purge_from_storage($fullpath){
+        $success = FALSE;
 
         if(is_S3()){
-            /// Purge from Amazon S3 bucket
-            //global $s3;
-            // TODO: implement purging of any filename from S3 bucket
-
-            // Don't forget to get a $success status
+            // delete from Amazon S3
+            $result = S3_delete_file($fullpath_filename);
+            if($result){
+                $success=TRUE;
+            }
         } else {
             // Purge from local filesystem
             if (unlink($fullpath)){
                 $success = TRUE;
-            } else {
-                $success = FALSE;
-                echo "ERROR: Unable to delete file '{$fullpath}'";
-            };
+            }
         }
         return $success;
     }
@@ -347,7 +345,7 @@
         $success = FALSE;
 
         if(is_S3()){
-            // store in an Amazon S3 bucket
+            // store in an Amazon S3
             // NOTE: do not use user's original filename
             $result = S3_upload_file($tmp_name, $fullpath_filename);
             if($result){

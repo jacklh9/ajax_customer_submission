@@ -38,10 +38,61 @@
     }
 
 
-    /* 
-       AWS S3 
-       SOURCE: https://docs.aws.amazon.com/aws-sdk-php/v2/guide/service-s3.html
-     */ 
+    function  S3_delete_file($remote_fullpath_destination){
+        global $bucket;
+        global $client;
+        $success = FALSE;
+
+        try{
+            $cmd = $client->getCommand('GetObject', [
+                'Bucket' => "{$bucket}",
+                'Key' => "{$remote_fullpath_destination}",
+            ]);
+
+            $result = $client->deleteObject($cmd);
+            if($result){
+                $success = TRUE;
+            }
+        } catch(Exception $e) {
+            echo "ERROR: Unable to delete file on S3: " . $e->getResponse();
+        }
+        return $success;
+    }
+
+
+    function S3_get_temp_file_url($remote_fullpath_destination){
+        global $bucket;
+        global $client;
+      
+        try{
+            // Get a pre-signed URL for an Amazon S3 object valid for OBJECT_TIMEOUT minutes
+            // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
+            // SOURCE: https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/s3-presigned-url.html
+            // SOURCE: https://docs.aws.amazon.com/aws-sdk-php/v2/guide/service-s3.html
+
+            //Creating a presigned URL
+            $cmd = $client->getCommand('GetObject', [
+                'Bucket' => "{$bucket}",
+                'Key' => "{$remote_fullpath_destination}",
+            ]);
+
+            $request = $client->createPresignedRequest($cmd, OBJECT_TIMEOUT);
+            if($request){
+                // Get the actual presigned-url
+                $presignedUrl = (string)$request->getUri();
+            } else {
+                echo "ERROR: Unable to get file from S3";
+                $presignedUrl = "";
+            }
+
+        } catch(Exception $e) {
+            echo "ERROR: Unable to get file from S3: " . $e->getResponse();
+            $presignedUrl = "";
+        }
+
+        return $presignedUrl;
+    }
+
 
     // 
     // KEYS:                      // EXAMPLE: echo $result[key];
@@ -54,6 +105,7 @@
     function S3_upload_file($local_fullpath_source, $remote_fullpath_destination){
         global $bucket;
         global $client;
+        $success = FALSE;
 
         try{
             // Upload an object by streaming the contents of a file
@@ -64,41 +116,14 @@
                 'SourceFile' => $local_fullpath_source,
                 'ACL'        => 'public-read',
             ));
+            if($result){
+                $success = TRUE;
+            }
         } catch(Exception $e) {
             echo $e->getResponse();
-            $result = "";
         }
 
-        return $result;
+        return $success;
     }
 
-    function S3_get_temp_file_url($remote_fullpath_destination){
-        global $bucket;
-        global $client;
-        $key = $remote_fullpath_destination;
-      
-        try{
-            // Get a pre-signed URL for an Amazon S3 object valid for OBJECT_TIMEOUT minutes
-            // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
-            // SOURCE: https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/s3-presigned-url.html
-            // SOURCE: https://docs.aws.amazon.com/aws-sdk-php/v2/guide/service-s3.html
-
-            //Creating a presigned URL
-            $cmd = $client->getCommand('GetObject', [
-                'Bucket' => "{$bucket}",
-                'Key' => "{$key}",
-            ]);
-
-            $request = $client->createPresignedRequest($cmd, OBJECT_TIMEOUT);
-
-            // Get the actual presigned-url
-            $presignedUrl = (string)$request->getUri();
-
-        } catch(Exception $e) {
-            echo "ERROR: Unable to get file from S3: " . $e->getResponse();
-            $presignedUrl = "";
-        }
-
-        return $presignedUrl;
-    }
 ?>
