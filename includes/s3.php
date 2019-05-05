@@ -52,7 +52,7 @@
                 $success = TRUE;
             }
         } catch(Exception $e) {
-            echo "ERROR: Unable to delete file on S3: " . $e->getResponse();
+            echo "ERROR: Unable to delete file '{$remote_fullpath_destination}' from S3: " . $e->__toString();
         }
         return $success;
     }
@@ -84,7 +84,7 @@
             }
 
         } catch(Exception $e) {
-            echo "ERROR: Unable to get file from S3: " . $e->getResponse();
+            echo "ERROR: Unable to get file '{$remote_fullpath_destination}' from S3: " . $e->__toString();
             $presignedUrl = "";
         }
 
@@ -118,7 +118,7 @@
                 $success = TRUE;
             }
         } catch(Exception $e) {
-            echo $e->getResponse();
+            echo "Unable to upload file '{$remote_fullpath_destination}' to S3: " . $e->__toString();
         }
 
         return $success;
