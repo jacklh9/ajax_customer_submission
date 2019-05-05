@@ -77,6 +77,9 @@
             $tmp_file = $_FILES['profile_pic']['tmp_name'];
             $filename = clean($_FILES['profile_pic']['name']);
 
+            $file['name'] = $filename;
+            $file['size'] = $_FILES['profile_pic']['size'];
+
             if(is_valid_file($file, VALID_PIC_EXTENSIONS, MAX_PIC_SIZE)){
                 update_profile_pic($tmp_file, $filename, $cust_id);
             }

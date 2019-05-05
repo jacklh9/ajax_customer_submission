@@ -308,7 +308,8 @@
     // Validation rules for file
     // $valid_exts = array of valid extensions (case insensitive)
     // $max_size is in bytes
-    // $file assoc array with keys (name, size, ext)
+    // $file assoc array with keys (name, size)
+    // (SEE: re_array_files() for quick setup with array of files)
     function is_valid_file($file, $valid_exts, $max_bytes){
 
         // Check filesize
@@ -322,7 +323,7 @@
         $ext = get_file_extension($file['name']);
         if (!preg_grep("/^$ext$/i", $valid_exts)){
             echo "ERROR: File '" . $file['name'] 
-                . "' has invalid extension of {$ext}. Must be in: " . print_r($valid_exts);
+                . "' has invalid extension of {$ext}. Must be in: " . implode( ", ", $valid_exts);
             return FALSE;
         }
         return TRUE;
