@@ -113,6 +113,10 @@ $(document).ready(function(){
         var doc_id = $(this).attr('rel');
         var filename = $(this).closest('td').prev('td').prev('td').text();
 
+        // Make the delete button inactive and put a dummy in its place
+        $(this).addClass("hidden");
+        $(this).next('.placeholder-del-btn').removeClass("hidden");
+
         if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
             // Purge doc from DB and from filesystem
             notifyUser("Processing deletion of document '" + filename + "'");
@@ -130,6 +134,10 @@ $(document).ready(function(){
                     notifyUser("Successfully deleted document '" + filename + "'");
                 } else {
                     notifyUser("Error deleting document '" + filename + "': " + status);
+
+                    // revert hidden delete button and dummy delete button so user can try again
+                    $(this).removeClass("hidden");
+                    $(this).next('.placeholder-del-btn').addClass("hidden");
                 }
             });
         }
