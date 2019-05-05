@@ -185,8 +185,9 @@
 ?>
                         </tbody>
                     </table>
+                    <input type='hidden' id='num-docs-found' value='<?php echo $num_rows; ?>'>
                 </div><!-- documents-list -->
-                <div id='num-docs-found' hidden><?php echo $num_rows; ?></div>
+                
 
 <?php
             } // end if-!empty-cust_id

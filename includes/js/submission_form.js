@@ -13,7 +13,7 @@ $(document).ready(function(){
     // The initial number of document rows displayed
     // We will subtract this number and at 0
     // display the default #empty-documents-row.
-    MY_GLOBALS.num_docs_shown = $('#num-docs-found').val();
+    MY_GLOBALS.num_docs_shown = $('input#num-docs-found').val();
     update_num_docs_found();
 
     ////// STANDARD GLOBALS
