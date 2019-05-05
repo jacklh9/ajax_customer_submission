@@ -131,6 +131,7 @@ $(document).ready(function(){
             resetLogin();
         } else {
             btn_submit_enabled();
+            btn_cancel_enabled();
             btn_delete_acct_enabled();
         }
     });
