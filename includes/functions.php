@@ -52,10 +52,10 @@
 
         $success = save_to_storage($tmp_name, $doc_internal_fullpath)
             &&  update_db_doc_info([
-                'cust_id' => '$cust_id',
-                'datetime' => '$datetime',
-                'filename' => '$orig_filename',
-                'size' => '$size',
+                'cust_id' => "$cust_id",
+                'datetime' => "$datetime",
+                'filename' => "$orig_filename",
+                'size' => "$size",
                 'type' => 'document', 
             ]);
         return $success;
@@ -160,8 +160,8 @@
             // then remove DB profile pic reference.
             $success = purge_from_storage($fullpath_image)
                 && update_db_doc_info([
-                    'cust_id' => '$cust_id',
-                    'filename' => '$fullpath_image',
+                    'cust_id' => "$cust_id",
+                    'filename' => "$fullpath_image",
                     'type' => 'profile'
                 ]);
 
@@ -425,8 +425,8 @@
         $success = delete_profile_pic($cust_id)
             &&  save_to_storage($tmp_file, $fullpath_image)
             && update_db_doc_info([
-                'cust_id' => '$cust_id',
-                'filename' => '$fullpath_image',
+                'cust_id' => "$cust_id",
+                'filename' => "$fullpath_image",
                 'type' => 'profile'
             ]);
 
