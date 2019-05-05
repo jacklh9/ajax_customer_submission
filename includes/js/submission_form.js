@@ -1,34 +1,17 @@
 $(document).ready(function(){
     <?php include_once "includes/js/functions.js"; ?>
 
-    // global var
+    // ****************** GLOBAL VARS ***********************
+
     window.MY_GLOBALS = {};
-    MY_GLOBALS.num_docs_uploading = 0;
 
-    function startUploadTimer(){
-        MY_GLOBALS.doc_save_interval_id = setInterval(function(){
-            // On avg, we upload one doc per second
-            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
-            MY_GLOBALS.num_docs_uploading--;
-            if(MY_GLOBALS.num_docs_uploading <= 0){
-                // kill thyself
-                clearInterval(MY_GLOBALS.doc_save_interval_id);
-            }
-        }, 1000); // 1000 = 1 sec
-    }
+    // SEE: startUpLoadTimer(), Submit Form section
+    //       Document File Upload Count section
+    MY_GLOBALS.num_docs_uploading = 0; 
 
-    function resetLogin(){
-        $('#upload-user-form').hide();
-        $('#upload-user-form')[0].reset();
-        $('#login-user-form')[0].reset();
-        $('#login-user-form').show();
-        show_registered_users();
-    }
+    // ***************** END GLOBAL VARS *******************
 
-    // POST-SUBMISSION
-    function thankYou(){
-        alert("Thank you. Your information has been successfully submitted.");
-    }
+    
 
     // CANCEL button
     $('#btn-cancel').on('click', function(){
@@ -124,6 +107,7 @@ $(document).ready(function(){
         }
     });
 
+    
     // DOCUMENT FILE UPLOAD COUNT
     $('#user-documents-selector').change(function(){
         var files = $(this)[0].files;
@@ -134,6 +118,7 @@ $(document).ready(function(){
         $('#num-docs-uploading').html("<strong>" + MY_GLOBALS.num_docs_uploading + " documents ready to upload.</strong>");
     });
 
+
     // PREVIEW PIC updated and DELETE PIC button hidden
     $('input#add-profile-pic').change(function(){
         // When this input is changed, the below native-JS will update the profile pic preview image
@@ -143,6 +128,87 @@ $(document).ready(function(){
         // and will only delete the preview image, but on submission the input field will put the picture back.
         // It causes confusion and is best to just hide the delete button at this juncture. 
         $('#btn-delete-profile-pic').hide();
+    });
+
+
+    function resetLogin(){
+        $('#upload-user-form').hide();
+        $('#upload-user-form')[0].reset();
+        $('#login-user-form')[0].reset();
+        $('#login-user-form').show();
+        show_registered_users();
+    }
+
+    function startUploadTimer(){
+        MY_GLOBALS.doc_save_interval_id = setInterval(function(){
+            // On avg, we upload one doc per second
+            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
+            MY_GLOBALS.num_docs_uploading--;
+            if(MY_GLOBALS.num_docs_uploading <= 0){
+                // kill thyself
+                clearInterval(MY_GLOBALS.doc_save_interval_id);
+            }
+        }, 1000); // 1000 = 1 sec
+    }
+
+    // THANK YOU: POST-SUBMISSION
+    function thankYou(){
+        alert("Thank you. Your information has been successfully submitted.");
+    }
+
+
+    // ************************ SUBMIT FORM *******************************
+    $('#upload-user-form').submit(function(evt){
+        evt.preventDefault();
+        notifyUser("Saving data...");
+        var url = $(this).attr('action');
+        var formData = new FormData(this);
+        var email = $(this).find('input#email').val();
+        var cust_id = $('#cust_id').val();
+
+        // One last validation that email is not in-use before we submit form data
+        if(is_valid_email(email)){
+            notifyUser(""); // Clear any past transgressions
+            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
+                if($.trim(status) === "1"){
+                    
+                    // Start upload countdown
+                    // so user knows how long
+                    // to expect the upload
+                    // of one doc per second
+                    // per sleep_between_doc_saves constant
+                    // in functions.php
+                    startUploadTimer();
+
+                    // email is available
+                    // submit form data
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            notifyUser(response);
+                            resetLogin();
+                            thankYou();
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).fail(function(){
+                        alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
+                    });
+
+                } else {
+                    // email address already in use
+                    notifyUser("ERROR: Email address in use.");
+                }
+            })
+            .fail(function(){
+                notifyUser("ERROR: Unable to communicate with the server.");
+            });
+        } else {
+            notifyUser(messageEnterValidEmail); 
+        }
     });
 
 
@@ -223,58 +289,4 @@ $(document).ready(function(){
     //     // }
     // });
 
-    // ******************************************** SUBMIT ***********************************
-    $('#upload-user-form').submit(function(evt){
-        evt.preventDefault();
-        notifyUser("Saving data...");
-        var url = $(this).attr('action');
-        var formData = new FormData(this);
-        var email = $(this).find('input#email').val();
-        var cust_id = $('#cust_id').val();
-
-        // One last validation that email is not in-use before we submit form data
-        if(is_valid_email(email)){
-            notifyUser(""); // Clear any past transgressions
-            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
-                if($.trim(status) === "1"){
-                    
-                    // Start upload countdown
-                    // so user knows how long
-                    // to expect the upload
-                    // of one doc per second
-                    // per sleep_between_doc_saves constant
-                    // in functions.php
-                    startUploadTimer();
-
-                    // email is available
-                    // submit form data
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: formData,
-                        success: function (response) {
-                            notifyUser(response);
-                            resetLogin();
-                            thankYou();
-                        },
-                        cache: false,
-                        contentType: false,
-                        processData: false
-                    }).fail(function(){
-                        alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-                    });
-
-                } else {
-                    // email address already in use
-                    notifyUser("ERROR: Email address in use.");
-                }
-            })
-            .fail(function(){
-                notifyUser("ERROR: Unable to communicate with the server.");
-            });
-        } else {
-            notifyUser(messageEnterValidEmail); 
-        }
-
-    });
 });
