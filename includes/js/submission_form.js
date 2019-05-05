@@ -188,21 +188,44 @@ $(document).ready(function(){
         notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                notifyUser(response);
-                resetLogin();
-                thankYou();
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        }).fail(function(){
-            alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-        });
+        var email = $(this).find('input#email').val();
+        var cust_id = $('#cust_id').val();
+
+        // One last validation that email is not in-use before we submit form data
+        if(is_valid_email(email)){
+            notifyUser(""); // Clear any past transgressions
+            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
+                if($.trim(status) === "1"){
+
+                    // email is available
+                    // submit form data
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            notifyUser(response);
+                            resetLogin();
+                            thankYou();
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }).fail(function(){
+                        alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
+                    });
+
+                } else {
+                    // email address already in use
+                    notifyUser("ERROR: Email address in use.");
+                }
+            })
+            .fail(function(){
+                notifyUser("ERROR: Unable to communicate with the server.");
+            });
+        } else {
+            notifyUser(messageEnterValidEmail); 
+        }
 
     });
 });
