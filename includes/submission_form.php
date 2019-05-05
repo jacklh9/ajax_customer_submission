@@ -1,6 +1,5 @@
 <?php include_once "includes/functions.php"; ?>
 <?php include_once "s3.php"; ?>
-<?php include_once "./includes/js/dynamic_preview_pic.js"; ?>
 <form action="upload.php" id="upload-user-form" method="post" enctype="multipart/form-data">
 
     <div class="row" id="personal-info-row">
@@ -62,18 +61,14 @@
             </div>
         </div><!-- ************* END: PERSONAL INFO ********************* -->
         <div id="between-personal-info-and-profile-pic" class="col-xs-1"></div>
-        <!-- ************* PROFILE PIC ********************* -->
+        <!-- ************* PROFILE PIC PREVIEW ********************* -->
         <div class="col-xs-3 text-center" id="profile-info">
             <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image-bounded img-rounded"><br><br>
             <div class="form-group">
                 <label for="profile_pic">Change Profile Photo:</label><br>
 
-                <!-- ********************* PREVIEW PIC ************************************
-                     NOTE: After this form-control gets a new filename, "onchange" is activated to dynamically
-                     swap the preview photo
-                     ********************************************************************** -->
-                <input id="add-profile-pic" type="file" class="form-control" name="profile_pic" accept="image/*" 
-                    onchange="addPreviewPic(this);">
+                <!-- ********************* PROFILE PIC SELECTOR ************************************  -->
+                <input id="add-profile-pic" type="file" class="form-control" name="profile_pic" accept="image/*">
                 <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
             </div>
 <?php       
@@ -122,12 +117,13 @@
 ?>
     </div> <!-- row -->
     <br>
-    <!-- ************************ UPLOAD DOCUMENTS **************************************************************** -->    
+    <!-- ************************ UPLOAD USER DOCUMENTS **************************************************************** -->    
     <div class="row" id="upload-documents-container">
         <div class="col-xs-12">
-            <div class="form-group">
+            <div id='num-docs-uploading'></div>
+            <div id='user-documents-selector-form-group' class="form-group">
                 <label for="document[]">Upload Documents:</label><br>
-                <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                <input type="file" id="user-documents-selector" class="form-control" name="documents[]" accept="application/pdf" multiple>
                 <p><small class="form-text text-muted">PDF only (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
             </div><!-- form-group -->
         </div><!-- col-xs-12 -->
