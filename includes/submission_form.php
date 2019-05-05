@@ -25,29 +25,29 @@
 ?>         
                 <br><br><!-- new-lines between "Customer#/New Registration" label and submit/register button -->
 
-                <!-- *******************  SUBMIT CHANGES BTN ****************************** -->
-                <input type="submit" id="btn-submit-ready" class="btn btn-primary single-process-btn-ready hidden" name="upload" value="<?php echo $submit_type; ?>">
-                <input type="button" id="btn-submit-busy" class="btn single-process-btn-active hidden" name="submit-disabled-while-processing" value="Processing">
-                <input type="button" id="btn-submit-disabled" class="btn single-process-btn-disabled col-xs-12 " name="submit-disabled" value="<?php echo $submit_type; ?>">
+                <!-- *******************  BTN SUBMIT CHANGES ****************************** -->
+                <input type="button" id="btn-submit-busy" class="btn single-process-btn-busy col-xs-12 hidden" value="Sending">
+                <input type="button" id="btn-submit-disabled" class="btn single-process-btn-disabled col-xs-12" value="<?php echo $submit_type; ?>">
+                <input type="submit" id="btn-submit-enabled" name="upload" class="btn btn-primary single-process-btn-enabled col-xs-12 hidden" value="<?php echo $submit_type; ?>">
 
                 <br><br>
 
-                <!-- *******************  CANCEL CHANGES BTN ****************************** -->
-                <input type="button" id="btn-cancel-ready" class="btn btn-default single-process-btn-ready hidden" value="Cancel Changes">
-                <input type="button" id="btn-cancel-busy" class="btn btn-default single-process-btn-active hidden" value="Cancelling">
-                <input type="button" id="btn-cancel-disabled" class="btn btn-default single-process-btn-disabled col-xs-12" value="Cancel Changes">
+                <!-- *******************  BTN CANCEL CHANGES ****************************** -->
+                <input type="button" id="btn-cancel-busy" class="btn btn-default single-process-btn-busy col-xs-12 hidden" value="Cancelling">
+                <input type="button" id="btn-cancel-disabled" class="btn btn-default single-process-btn-disabled col-xs-12 hidden" value="Cancel Changes">
+                <input type="button" id="btn-cancel-enabled" class="btn btn-default single-process-btn-enabled col-xs-12" value="Cancel Changes">
 
 <?php       
             if($cust_id >= 0){
 ?>
                 <br><br><br><!-- Customer exists in DB, so display delete button -->
 
-                <!-- *******************  DELETE USER BTN ****************************** -->
+                <!-- *******************  BTN DELETE USER ACCT ****************************** -->
                 <label for="btn-delete-acct-ready">Danger Zone:</label>
                 <p><small class="form-text text-muted">WARNING:<br>ALL account data in the form, saved files, and database data will be deleted permanently!</small></p>
-                <input type="button" class="btn btn-danger single-process-btn-ready hidden" id="btn-delete-acct-ready" value="Delete Acct">
-                <input type="button" class="btn btn-danger single-process-btn-disabled col-xs-12" id="btn-delete-acct-disabled" value="Delete Acct">
-                <input type="button" class="btn btn-danger single-process-btn-active hidden" id="btn-delete-acct-active" value="Deleting Acct">
+                <input type="button" id="btn-delete-acct-busy" class="btn btn-danger single-process-btn-busy col-xs-12 hidden" value="Deleting Acct">
+                <input type="button" id="btn-delete-acct-disabled" class="btn btn-danger single-process-btn-disabled col-xs-12 hidden" value="Delete Acct">
+                <input type="button" id="btn-delete-acct-enabled" class="btn btn-danger single-process-btn-enabled col-xs-12" value="Delete Acct">
 <?php
             }
 ?>
