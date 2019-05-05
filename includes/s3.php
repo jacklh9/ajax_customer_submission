@@ -80,11 +80,11 @@
         try{
             // Get a pre-signed URL for an Amazon S3 object valid for OBJECT_TIMEOUT minutes
             // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
-            $request = $client->getObjectUrl($bucket, $key);
-            //$request = $client->get({$bucket}/{$key}); // get() returns a Guzzle\Http\Message\Request object
+            //$request = $client->getObjectUrl($bucket, $key);
+            $request = $client->get("{$bucket}/{$key}"); // get() returns a Guzzle\Http\Message\Request object
             $signedUrl = $client->createPresignedUrl($request, OBJECT_TIMEOUT);
         } catch(Exception $e) {
-            echo $e->getResponse();
+            echo "ERROR: Unable to get file from S3: " . $e->getResponse();
             $signedUrl = "";
         }
 
