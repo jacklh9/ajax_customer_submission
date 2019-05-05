@@ -4,7 +4,7 @@
 
     <div class="row" id="personal-info-row">
         <!-- *********** SUBMISSION CONTROLS **************  -->
-        <div id="submission-controls" class="col-xs-3">
+        <div id="submission-controls" class="col-xs-2">
             <div class="form-group" id="submit-group">
 <?php 
             if(empty($cust_id)){
@@ -46,18 +46,22 @@
 ?>
        </div><!-- submission-controls -->
        <!-- *********** END: SUBMISSION CONTROLS **************  -->
+       <div id="between-submission-controls-and-personal-info" class="col-xs-1"></div>
        <!-- ************* BEGIN: PERSONAL INFO ********************* -->
-        <div id="personal-info" class="col-xs-6">
+        <div id="personal-info" class="col-xs-5">
             <div class="form-group">
+                <br><br>
                 <input type="hidden" class="form-control" id="cust_id" name='cust_id' value="<?php echo $cust_id; ?>">
                 <input type="text" class="form-control" id="email" name="email" value="<?php echo $email; ?>" placeholder="Email">
                 <input type="text" class="form-control" name="first" value="<?php echo $first; ?>" placeholder="First Name">
                 <input type="text" class="form-control" name="last" value="<?php echo $last; ?>" placeholder="Last Name">
                 <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>" placeholder="Primary Phone">
             </div>
-        </div><!-- personal-info -->
+        </div><!-- ************* END: PERSONAL INFO ********************* -->
+        <div id="between-personal-info-and-profile-pic" class="col-xs-1"></div>
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-3 text-center" id="profile-info">
+            <br><br>
             <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' width="200" height="200">
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
@@ -73,8 +77,7 @@
 <?php
             }
 ?>
-        </div><!-- profile-info -->
-        <div class="col-xs-2"></div>
+        </div><!-- ************* END: PROFILE PIC ********************* -->
     </div><!-- row: personal-info -->
     <!-- ************* END: PERSONAL INFO ROW ********************* -->
     <!-- ************* ADDRESSES ********************* -->
@@ -118,8 +121,8 @@
             if(!empty($cust_id)){
 ?>
             <div class="form-group">
-            <label for="document[]">Documents:</label>
-            <p><small class="form-text text-muted">Add PDF (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
+            <br><br>
+            <label for="document[]">Documents:</label><br>
 <?php
                 if(is_S3()){
 ?>
@@ -127,14 +130,13 @@
 <?php
                 } else {
 ?>
-                    [local server filesystem storage]<br>
+                    [local server filesystem storage]<br><br>
 <?php
                 }
 ?>
-                NOTE: Click links to download to your Downloads directory or right-click and "Save-As" to rename.
-                
-                    
                     <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                    <p><small class="form-text text-muted">Add PDF (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
+                    <p>NOTE: Click links to download to your Downloads directory or right-click and "Save-As" to rename.</p>
                 </div>
                 <br>
                 <div id="documents-list">
