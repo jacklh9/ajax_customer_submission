@@ -5,25 +5,31 @@
     <div class="row" id="personal-info-row">
         <!-- *********** SUBMISSION CONTROLS **************  -->
         <div id="submission-controls" class="col-xs-3">
+            <div class="form-group" id="submit-group">
 <?php 
-            if(!empty($cust_id)){
-                echo "<p>Customer# {$cust_id}</p>";
+            if(empty($cust_id)){
+
+                // This is a new customer
+                $cust_id = -1;
+                echo "<label for='upload'>New Customer Registration</label>";
+                $submit_type = 'Register';
+
+            } else {
 
                 // This is an existing customer
+                echo "<label for='upload'>Customer# {$cust_id}</label>";
                 $submit_type = 'Save All';
-            } else {
-                // This is a new customer
-                $submit_type = 'Register';
-                $cust_id = -1;
+
             }
             $profile_pic = get_profile_pic_url($cust_id);
 ?>          
-            <div class="form-group">
-                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
+                <br>
+                <br>
+                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
                 <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
                 <input type="button" id="disabled-submit" class="btn" name="disabled-upload" value="<?php echo $submit_type; ?>"><br>
-            </div>
+            </div><!-- submit-group -->
 
             <div class="form-group">
                 <input type="button" class="btn" id="btn-cancel" value="Cancel Changes"><br>
@@ -51,10 +57,12 @@
             </div>
         </div><!-- personal-info -->
         <!-- ************* PROFILE PIC ********************* -->
-        <div class="col-xs-3" id="profile-info">
+        <div class="col-xs-3 text-center" id="profile-info">
             <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' width="200" height="200">
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
+                <label for="profile_pic" class="form-control">Update Profile Photo</label>
+                <p><small class="form-text text-muted"><?php echo get_max_pic_size_in_MB() . " max"; ?></small></p>
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
@@ -75,9 +83,9 @@
     for($i = 0; $i < MAX_ADDRESSES; $i++){
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
-            <h4>Address <?php echo $i+1; ?>:</h4>
             <div class="form-group">
-                <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Clear Address">
+                <label for='<?php echo "clear_add{$i}"; ?>'>Address <?php echo $i+1; ?>:</label><br>
+                <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Reset Address" name='<?php echo "clear_add{$i}"; ?>'>
             </div>
             <input type="hidden" class="form-control" name='<?php echo "add{$i}_id"; ?>' value="<?php echo $add[$i]['id']; ?>">
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line1"; ?>' name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
@@ -109,7 +117,9 @@
 <?php
             if(!empty($cust_id)){
 ?>
-            <h4>Documents:</h4>
+            <div class="form-group">
+            <label for="document[]">Documents:</label>
+            <p><small class="form-text text-muted">Add PDF (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
 <?php
                 if(is_S3()){
 ?>
@@ -121,8 +131,11 @@
 <?php
                 }
 ?>
-                NOTE: Click links to download to your Download directory or right-click and "Save-As" to rename.
-                <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                NOTE: Click links to download to your Downloads directory or right-click and "Save-As" to rename.
+                
+                    
+                    <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                </div>
                 <br>
                 <div id="documents-list">
                     <table id="documents-table" class='table table-hover table-bordered table-striped'>
