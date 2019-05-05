@@ -37,7 +37,10 @@
 <?php      if($cust_id >= 0){
                 // Customer exists in DB, so display delete button
 ?>
+                <br>
                 <div class="form-group">
+                    <label for="btn-delete-user">Danger Zone:</label>
+                    <p><small class="form-text text-muted">WARNING: ALL data in the form AND in the database and saved files will be lost permanently</small></p>
                     <input type="button" class="btn btn-danger" id="btn-delete-user" value="Delete User"><br>
                 </div>
 <?php
@@ -139,7 +142,7 @@
                 <div id="documents-list">
                     <table id="documents-table" class='table table-hover table-bordered table-striped'>
                         <thead class='thead-dark'>
-                            <tr>
+                            <tr class='bg-primary'>
                                 <td>Original Filename</td>
                                 <td>Date Uploaded</td>
                                 <td>File Size</td>
