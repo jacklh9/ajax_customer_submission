@@ -5,7 +5,7 @@
     <div class="row" id="personal-info-row">
         <!-- *********** SUBMISSION CONTROLS **************  -->
         <div id="submission-controls" class="col-xs-2">
-            <div class="form-group" id="submit-group">
+            <div class="form-group" id="submit-group"><!-- submission controls -->
 <?php 
             if(empty($cust_id)){
 
@@ -22,34 +22,37 @@
 
             }
             $profile_pic = get_profile_pic_url($cust_id);
-?>          
+?>         
                 <br><br><!-- new-lines between "Customer#/New Registration" label and submit/register button -->
-                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
-                <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
-                <input type="button" id="submit-disabled" class="btn" name="submit-disabled" value="<?php echo $submit_type; ?>">
+                <!-- *******************  BTN SUBMIT CHANGES ****************************** -->
+                <input type="button" id="btn-submit-busy" class="btn btn-info single-process-btn-busy col-xs-12" value="Sending">
+                <input type="button" id="btn-submit-disabled" class="btn btn-info single-process-btn-disabled col-xs-12" value="<?php echo $submit_type; ?>">
+                <input type="submit" id="btn-submit-enabled" name="upload" class="btn btn-primary single-process-btn-enabled col-xs-12" value="<?php echo $submit_type; ?>">
 
-                <!-- The below serves as a dummy butten while waiting for a previous submit to complete -->
-                <input type="button" id="submit-disabled-while-processing" class="btn" name="submit-disabled-while-processing" value="Processing">
-            </div><!-- submit-group -->
+                <br><br>
 
-            <div class="form-group">
-                <input type="button" class="btn btn-default" id="btn-cancel" value="Cancel Changes"><br>
-            </div>
+                <!-- *******************  BTN CANCEL CHANGES ****************************** -->
+                <input type="button" id="btn-cancel-busy" class="btn btn-info single-process-btn-busy col-xs-12" value="Cancelling">
+                <input type="button" id="btn-cancel-disabled" class="btn btn-info single-process-btn-disabled col-xs-12" value="Cancel Changes">
+                <input type="button" id="btn-cancel-enabled" class="btn btn-default single-process-btn-enabled col-xs-12" value="Cancel Changes">
 
-<?php      if($cust_id >= 0){
-                // Customer exists in DB, so display delete button
+<?php       
+            if($cust_id >= 0){
 ?>
-                <br>
-                <div class="form-group">
-                    <label for="btn-delete-user">Danger Zone:</label>
-                    <p><small class="form-text text-muted">WARNING: ALL data in the form AND in the database and saved files will be lost permanently</small></p>
-                    <input type="button" class="btn btn-danger" id="btn-delete-user" value="Delete User"><br>
-                </div>
+                <br><br><br><!-- Customer exists in DB, so display delete button -->
+
+                <!-- *******************  BTN DELETE USER ACCT ****************************** -->
+                <label for="btn-delete-acct-ready">Danger Zone:</label>
+                <p><small class="form-text text-muted">WARNING:<br>ALL account data in the form, saved files, and database data will be deleted permanently!</small></p>
+                <input type="button" id="btn-delete-acct-busy" class="btn btn-info single-process-btn-busy col-xs-12" value="Deleting Acct">
+                <input type="button" id="btn-delete-acct-disabled" class="btn btn-info single-process-btn-disabled col-xs-12" value="Delete Acct">
+                <input type="button" id="btn-delete-acct-enabled" class="btn btn-danger single-process-btn-enabled col-xs-12" value="Delete Acct">
 <?php
             }
 ?>
-       </div><!-- submission-controls -->
+            </div><!-- form-group submission-controls -->
+       </div><!-- col-xs-2 submission-controls -->
        <!-- *********** END: SUBMISSION CONTROLS **************  -->
        <div id="between-submission-controls-and-personal-info" class="col-xs-1"></div>
        <!-- ************* BEGIN: PERSONAL INFO ********************* -->
@@ -71,14 +74,14 @@
                 <label for="profile_pic">Change Profile Photo:</label><br>
 
                 <!-- ********************* PROFILE PIC SELECTOR ************************************  -->
-                <input id="add-profile-pic" type="file" class="form-control" name="profile_pic" accept="image/*">
+                <input id="add-profile-pic" type="file" class="form-control hide-on-submit" name="profile_pic" accept="image/*">
                 <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
 ?>
                 <div class="form-group">
-                    <input type="button" class="btn btn-xs btn-warning" id="btn-delete-profile-pic" value="Delete Pic">
+                    <input type="button" class="btn btn-xs btn-warning hide-on-submit" id="btn-delete-profile-pic" value="Delete Pic">
                 </div>
 <?php
             }
@@ -94,7 +97,7 @@
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
             <div class="form-group">
                 <label for='<?php echo "clear_add{$i}"; ?>'>Address <?php echo $i+1; ?>:</label><br>
-                <input rel="<?php echo $i; ?>" type="button" class="btn btn-xs btn-warning btn-clear-addr" value="Reset Address" name='<?php echo "clear_add{$i}"; ?>'>
+                <input rel="<?php echo $i; ?>" type="button" class="btn btn-xs btn-warning btn-clear-addr hide-on-submit" value="Reset Address" name='<?php echo "clear_add{$i}"; ?>'>
             </div>
             <input type="hidden" class="form-control" name='<?php echo "add{$i}_id"; ?>' value="<?php echo $add[$i]['id']; ?>">
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line1"; ?>' name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
@@ -126,7 +129,7 @@
             <div id='num-docs-uploading' class="bg-info"></div>
             <div id='user-documents-selector-form-group' class="form-group">
                 <label for="document[]">Upload Documents:</label><br>
-                <input type="file" id="user-documents-selector" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                <input type="file" id="user-documents-selector" class="form-control hide-on-submit" name="documents[]" accept="application/pdf" multiple>
                 <p><small class="form-text text-muted">PDF only (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
             </div><!-- form-group -->
         </div><!-- col-xs-12 -->
@@ -158,7 +161,7 @@
                                 <td>Original Filename</td>
                                 <td>Date Uploaded</td>
                                 <td>File Size</td>
-                                <td></td>
+                                <td>&nbsp;</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -171,7 +174,7 @@
                                     echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                     echo "  <td>{$doc['datetime']}</td>";
                                     echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
-                                    echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-warning' role='button' href='javascript:void(0)'>Delete</a><a class='placeholder-del-btn btn btn-xs btn-default hidden' role='button' href='javascript:void(0)'>Delete</a></td>";
+                                    echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-warning hide-on-submit' role='button' href='javascript:void(0)'>Delete</a><a class='placeholder-del-btn btn btn-xs btn-default hidden hide-on-submit' role='button' href='javascript:void(0)'>Delete</a></td>";
                                     echo "</tr>";
                                 } 
                             }

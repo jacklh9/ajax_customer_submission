@@ -21,21 +21,27 @@ $(document).ready(function(){
 
     // ***************** END GLOBAL VARS *******************
 
-    // ************* BEGIN: INITIAL STATE *******************
+    // ************* BEGIN: SET INITIAL STATES *******************
 
-    // We begin by immediately disabling submit button
-    // from processing so we can first do some validations.
-    submit_disabled();
+    // Initially the submit button is disabled until the 
+    // email validation confirms we can submit.
+    // We allow user to cancel page or delete acct 
+    // (if valid cust_id) while we valid the email.
+    btn_submit_disabled();
+    btn_cancel_enabled();
+    btn_delete_acct_enabled();
 
     // What does the email field look like right now?
     var email = $('input#email').val();
     if(is_valid_email(email)){
 
         // Looks okay, so enable the submit button.
-        submit_enabled();
+        btn_submit_enabled();
     } else {
 
-        // Initial email entered is no good. Ask user to try again.
+        // Initial email entered is no good. 
+        // Leave submit button disabled, and
+        // ask user to try again.
         notifyUser(messageEnterValidEmail);
     }
 
@@ -43,15 +49,94 @@ $(document).ready(function(){
 
     // *************** BEGIN: FUNCTIONS ***********************
 
-    // CANCEL button
-    $('#btn-cancel').on('click', function(){
+    //  BUTTON CANCEL BUSY (SUBMITTING)
+    function btn_cancel_busy(){
+        $('#btn-cancel-busy').show();
+        $('#btn-cancel-disabled').hide();
+        $('#btn-cancel-enabled').hide();
+        $('.hide-on-submit').hide();
+    }
+
+    // BUTTON CANCEL DISABLED
+    function btn_cancel_disabled(){
+        $('#btn-cancel-busy').hide();
+        $('#btn-cancel-disabled').show();
+        $('#btn-cancel-enabled').hide();
+    }
+
+    // BUTTON CANCEL ENABLED
+    function btn_cancel_enabled(){
+        $('#btn-cancel-busy').hide();
+        $('#btn-cancel-disabled').hide();
+        $('#btn-cancel-enabled').show();
+        $('.hide-on-submit').show();
+    }
+
+    //  BUTTON DELETE ACCT BUSY (SUBMITTING)
+    function btn_delete_acct_busy(){
+        $('#btn-delete-acct-busy').show();
+        $('#btn-delete-acct-disabled').hide();
+        $('#btn-delete-acct-enabled').hide();
+        $('.hide-on-submit').hide();
+    }
+
+    // BUTTON DELETE ACCT DISABLED
+    function btn_delete_acct_disabled(){
+        $('#btn-delete-acct-busy').hide();
+        $('#btn-delete-acct-disabled').show();
+        $('#btn-delete-acct-enabled').hide();
+    }
+
+    // BUTTON DELETE ACCT ENABLED
+    function btn_delete_acct_enabled(){
+        $('#btn-delete-acct-busy').hide();
+        $('#btn-delete-acct-disabled').hide();
+        $('#btn-delete-acct-enabled').show();
+        $('.hide-on-submit').show();
+    }
+
+    //  BUTTON SUBMIT BUSY (SUBMITTING)
+    function btn_submit_busy(){
+        $('#btn-submit-busy').show();
+        $('#btn-submit-disabled').hide();
+        $('#btn-submit-enabled').hide();
+        $('.hide-on-submit').hide();
+    }
+
+    // BUTTON SUBMIT DISABLED
+    function btn_submit_disabled(){
+        $('#btn-submit-busy').hide();
+        $('#btn-submit-disabled').show();
+        $('#btn-submit-enabled').hide();
+    }
+
+    // BUTTON SUBMIT ENABLED
+    function btn_submit_enabled(){
+        $('#btn-submit-busy').hide();
+        $('#btn-submit-disabled').hide();
+        $('#btn-submit-enabled').show();
+        $('.hide-on-submit').show();
+    }
+
+    //////////////// BELOW IS GOING TO BE RE-ORDERED SOON /////
+
+    // BUTTON CANCEL
+    $('#btn-cancel-enabled').on('click', function(){
+        btn_submit_disabled();
+        btn_cancel_busy();
+        btn_delete_acct_disabled();
+
         if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
             notifyUser("Form data not submitted.");
             resetLogin();
+        } else {
+            btn_submit_enabled();
+            btn_cancel_enabled();
+            btn_delete_acct_enabled();
         }
     });
 
-    // CLEAR ADDRESS button
+    // BUTTON CLEAR ADDRESS 
     $('.btn-clear-addr').on('click', function(){
         if(confirm("Delete address?")){
             var addr_num = $(this).attr('rel');
@@ -65,7 +150,11 @@ $(document).ready(function(){
     });
 
     // DELETE USER button
-    $('#btn-delete-user').on('click', function(){
+    $('#btn-delete-acct-enabled').on('click', function(){
+        btn_submit_disabled();
+        btn_cancel_disabled();
+        btn_delete_acct_busy();
+
         if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved to the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
             var cust_id = $('#cust_id').val();
             if(cust_id >= 0){
@@ -83,6 +172,11 @@ $(document).ready(function(){
                 notifyUser("Form data not submitted.");
                 resetLogin();
             }
+        } else {
+            // User cancelled delete. Restore everything back to normal.
+            btn_submit_enabled();
+            btn_cancel_enabled();
+            btn_delete_acct_enabled();
         }
     });
 
@@ -173,6 +267,14 @@ $(document).ready(function(){
         $('#upload-user-form').hide();
         $('#upload-user-form')[0].reset();
         $('#login-user-form')[0].reset();
+
+
+        // prep these for next return
+        // (the parent containers are hidden anyway)
+        btn_submit_enabled();
+        btn_cancel_enabled();
+        btn_delete_acct_enabled();
+
         $('#login-user-form').show();
         show_registered_users();
     }
@@ -190,36 +292,16 @@ $(document).ready(function(){
         }, 1000); // 1000 = 1 sec
     }
 
-    // SUBMIT DISABLED ALL
-    function submit_disabled_all(){
-        $('input#submit').hide();
-        $('input#submit-disabled').hide();
-        $('input#submit-disabled-while-processing').hide();
-    }
-
-    // SUBMIT DISABLED (WHILE VALIDATING)
-    function submit_disabled(){
-        submit_disabled_all();
-        $('input#submit-disabled').show();
-    }
-
-    // SUBMIT DISABLED WHILE PROCESSING
-    function submit_disabled_while_processing(){
-        submit_disabled_all();
-        $('input#submit-disabled-while-processing').show();
-    }
-
-    // SUBMIT ENABLED
-    function submit_enabled(){
-        submit_disabled_all();
-        $('input#submit').show();
-    }
-
 
     // ************************ SUBMIT FORM *******************************
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
-        submit_disabled_while_processing();
+
+        // Get submission controls in order
+        btn_submit_busy();
+        btn_cancel_disabled();
+        btn_delete_acct_disabled();
+
         notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
@@ -256,7 +338,9 @@ $(document).ready(function(){
                         processData: false
                     }).fail(function(){
                         alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-                        submit_enabled(); // So user can retry
+                        btn_submit_enabled(); // So user can retry
+                        btn_cancel_enabled();
+                        btn_delete_acct_enabled();
                     });
 
                 } else {
@@ -265,22 +349,32 @@ $(document).ready(function(){
                     
                     // Do not re-enable submit. Let the validator do it.
                     // Too risky to submit while an invalid email chosen.
-                    submit_disabled();
+                    btn_submit_disabled();
+                    btn_cancel_enabled();
+                    btn_delete_acct_enabled();
                 }
             })
             .fail(function(){
                 notifyUser("ERROR: Unable to communicate with the server.");
-                submit_enabled(); // So user can retry
+                btn_submit_enabled(); // So user can retry
+                btn_cancel_enabled();
+                btn_delete_acct_enabled();
             });
         } else {
             notifyUser(messageEnterValidEmail); 
-            submit_disabled();
+            // Do not re-enable submit. Let the validator do it.
+            // Too risky to submit while an invalid email chosen.
+            btn_submit_disabled();
+            btn_cancel_enabled();
+            btn_delete_acct_enabled();
         }
     });
 
-
     // THANK YOU: POST-SUBMISSION
     function thankYou(){
+        btn_submit_busy();
+        btn_cancel_disabled();
+        btn_delete_acct_disabled();
         alert("Thank you. Your information has been successfully submitted.");
     }
 
@@ -305,8 +399,13 @@ $(document).ready(function(){
     });
 
     // VALIDATE EMAIL not in use
+    // NOTE: Although we disable submission from the beginning,
+    // we continue to explicitly disable whenever we determine we 
+    // have a bad email as a matter of security in case
+    // another asynchronous task has momentarily enabled the submit button.
+    // Better safe (and overly verbose) than sorry.
     $('input#email').keyup(function(){
-        submit_disabled(); // We do this here to avoid race condition
+        btn_submit_disabled(); // We do this here to avoid race condition
         var email = $(this).val();
         var cust_id = $('#cust_id').val();
 
@@ -315,20 +414,20 @@ $(document).ready(function(){
             $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
                 if($.trim(status) === "1"){
                     // email is available
-                    submit_enabled();
+                    btn_submit_enabled();
                 } else {
                     // email address already in use
                     notifyUser("ERROR: Email address in use.");
-                    submit_disabled();
+                    btn_submit_disabled();
                 }
             })
             .fail(function(){
                 notifyUser("ERROR: Unable to communicate with the server.");
-                submit_enabled(); // Let user retry
+                btn_submit_enabled(); // Let user retry
             });
         } else {
             notifyUser(messageEnterValidEmail);
-            submit_disabled();
+            btn_submit_disabled(); // Sorry, bad email. User needs to correct before submitting allowed.
         }
     });
 
@@ -344,17 +443,6 @@ $(document).ready(function(){
     }
 
 
-    // ******************************** END VALIDATIONS ******************************************
-
-    
-    // // VIEW DOC link
-    // $('.link-view-doc').on('click', function(){
-    //     var doc_id = $(this).attr('rel');
-    //     var filename = $(this).text();
-    //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-    //     // if(confirm()){
-    //            //... 
-    //     // }
-    // });
+    // ******************************** END: VALIDATIONS ******************************************
 
 });
