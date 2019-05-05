@@ -13,7 +13,7 @@ function notifyUser(response){
     $('#notification-bar').text(response);
     $('#notification-bar').show();
     setTimeout(function(text){
-        $('#notification-bar').hide();
+        notifyUserHide();
     }, notificationTextDurationSecs * 1000); // 1 sec = 1000 milliseconds
 }
 
@@ -24,3 +24,6 @@ function show_registered_users(){
     });
 }
 
+function notifyUserHide(){
+    $('#notification-bar').hide();
+}

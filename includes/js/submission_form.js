@@ -168,6 +168,7 @@ $(document).ready(function(){
             MY_GLOBALS.num_docs_uploading--;
             if(MY_GLOBALS.num_docs_uploading <= 0){
                 // kill thyself
+                notifyUserHide();
                 clearInterval(MY_GLOBALS.doc_save_interval_id);
             }
         }, 1000); // 1000 = 1 sec
