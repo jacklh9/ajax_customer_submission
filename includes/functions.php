@@ -12,9 +12,11 @@
     $constants['date_format'] = 'Y-m-d H:i:s';
     $constants['documents_path'] = './docs';
     $constants['default_image'] = './images/default.png';
-    $constants['max_addresses'] = 3;
-    $constants['max_email_len'] = 255;
-    $constants['profile_path'] = './profiles';
+    $constants['max_addresses'] = 3;    // Max number of addressses customer can have
+    $constants['max_email_len'] = 255;  // Max length of email 
+    $constants['max_doc_size'] = 4028;  // in KB
+    $constants['max_pic_size'] = 512;   // in KB
+    $constants['profile_path'] = './profiles'; // fileserver location and S3
     $constants['sleep_between_doc_saves'] = 1;  // MUST be 1 sec at the MINIMUM 
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
 

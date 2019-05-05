@@ -130,6 +130,7 @@
                             <tr>
                                 <td>Filename</td>
                                 <td>Date Uploaded</td>
+                                <td>Size (KB)</td>
                                 <td></td>
                             </tr>
                         </thead>
