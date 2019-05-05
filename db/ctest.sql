@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 03, 2019 at 11:43 AM
+-- Generation Time: May 05, 2019 at 04:23 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.4
 
@@ -54,7 +54,7 @@ INSERT INTO `addresses` (`id`, `street_line1`, `street_line2`, `city`, `state`, 
 (90, 'Pineapple', 'Under The Sea', 'No where', 'CA', '', 4),
 (91, '', '', '', '', '', 4),
 (92, '', '', '', '', '', 4),
-(93, 'a', 'b', 'c', 'AK', '92129', 2),
+(93, '1701 Rodeo Dr', '', 'Beverly Hills', 'CA', '90210', 2),
 (94, 'Under a Rock', '', 'Bikini Bottom', '', '', 5),
 (95, '', '', '', '', '', 5),
 (96, '', '', '', '', '', 5),
@@ -64,15 +64,9 @@ INSERT INTO `addresses` (`id`, `street_line1`, `street_line2`, `city`, `state`, 
 (170, 'Somewhere near Jupiter', '', '', '', '02001', 14),
 (171, '', '', 'Urbana-Champagne', 'IL', '09000', 14),
 (172, 'Mission Control', '', 'Houston', 'TX', '70000', 14),
-(173, 'asdfasdf', 'asdfsa', 'asdfsa', 'AL', '0456435', 28),
-(174, 'asdfsa', 'asdf', 'asdf', 'AL', '533', 28),
-(175, 'asdfsdaf', 'asdfsa', 'asdfdsa', 'CT', '2345234523', 28),
-(176, 'asdf', 'asdf', 'asdf', 'AL', '000', 29),
-(177, 'asdf', 'sadf', 'sadf', 'AR', '0000', 29),
-(178, 'asdf', 'asdf', 'sadf', 'AZ', '000', 29),
-(179, 'asdfsaddf', '', '', 'AZ', '', 30),
-(180, 'asdfsad', '', '', 'AZ', '', 30),
-(181, 'asdfsad', '', '', 'CA', '', 30);
+(176, '', '', '', '', '', 16),
+(177, '', '', '', '', '', 16),
+(178, '', '', '', '', '', 16);
 
 -- --------------------------------------------------------
 
@@ -94,16 +88,14 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `first`, `last`, `email`, `phone`, `profile`) VALUES
-(1, 'James', 'Kirk', 'jtkirk@starfleet.org', '619-555-0001', '1.jpg'),
-(2, 'Spock', '', 'spock@starfleet.org', '619-555-0002', '2.webp'),
-(3, 'Hikaru', 'Sulu', 'sulu@starfleet.org', '619-555-1003', '3.webp'),
-(4, 'Spongebob', 'Squarepants', 'spongebob@bikinibottom.com', '858-555-1122', '4.webp'),
-(5, 'Patrick', 'Starfish', 'patrick@bikinibottom.com', '619-555-1234', '5.jpg'),
-(6, 'Bob', 'Barker', 'bbarker@priceisright.com', '', '6.jpg'),
-(14, 'HAL', '9000', 'hal9000@discovery.org', '929-000-2001', '14.jpg'),
-(28, '', '', 'asdfasdfa', '', ''),
-(29, 'asdf', 'asdf', 'asdfsdaf', '619-332-2134', ''),
-(30, 'asdf', 'asdf', 'asdfsda', '619-332-2134', '30.jpeg');
+(1, 'James', 'Kirk', 'jtkirk@starfleet.org', '619-555-0001', './profiles/1.jpg'),
+(2, 'Spock', '', 'spock@starfleet.org', '619-555-0002', './profiles/2.webp'),
+(3, 'Hikaru', 'Sulu', 'sulu@starfleet.org', '619-555-1003', './profiles/3.webp'),
+(4, 'Spongebob', 'Squarepants', 'spongebob@bikinibottom.com', '858-555-1122', ''),
+(5, 'Patrick', 'Starfish', 'patrick@bikinibottom.com', '619-555-1234', ''),
+(6, 'Bob', 'Barker', 'bbarker@priceisright.com', '', './profiles/6.jpg'),
+(14, 'HAL', '9000', 'hal9000@discovery.org', '929-000-2001', './profiles/14.jpg'),
+(16, '', '', 'asdf@asfdsa.com', '', './profiles/16.jpg');
 
 -- --------------------------------------------------------
 
@@ -114,6 +106,7 @@ INSERT INTO `customers` (`id`, `first`, `last`, `email`, `phone`, `profile`) VAL
 CREATE TABLE `documents` (
   `id` int(11) NOT NULL,
   `filename` varchar(255) NOT NULL,
+  `size` int(11) NOT NULL,
   `datetime` datetime NOT NULL,
   `FK_cust_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -122,19 +115,43 @@ CREATE TABLE `documents` (
 -- Dumping data for table `documents`
 --
 
-INSERT INTO `documents` (`id`, `filename`, `datetime`, `FK_cust_id`) VALUES
-(4, './docs/30.Test_PDF.pdf', '2003-05-19 00:00:00', 30),
-(5, './docs/30.Test_PDF (another copy).pdf', '2003-05-19 00:00:00', 30),
-(6, './docs/30.Test_PDF (copy).pdf', '2003-05-19 00:00:00', 30),
-(7, './docs/30.Test_PDF.pdf', '0000-00-00 00:00:00', 30),
-(8, './docs/30.Test_PDF (another copy).pdf', '0000-00-00 00:00:00', 30),
-(9, './docs/30.Test_PDF (copy).pdf', '0000-00-00 00:00:00', 30),
-(10, './docs/30.Test_PDF (3rd copy).pdf', '0000-00-00 00:00:00', 30),
-(11, './docs/4.Test_PDF (3rd copy).pdf', '0000-00-00 00:00:00', 4),
-(12, './docs/4.Test_PDF (another copy).pdf', '0000-00-00 00:00:00', 4),
-(13, './docs/4.Test_PDF (copy).pdf', '0000-00-00 00:00:00', 4),
-(14, './docs/29.Test_PDF.pdf', '0000-00-00 00:00:00', 29),
-(15, './docs/29.Test_PDF (copy).pdf', '0000-00-00 00:00:00', 29);
+INSERT INTO `documents` (`id`, `filename`, `size`, `datetime`, `FK_cust_id`) VALUES
+(88, 'Test_PDF.pdf', 14812, '2019-05-05 12:31:00', 1),
+(89, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 12:31:02', 1),
+(90, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 12:31:03', 1),
+(91, 'Test_PDF (copy).pdf', 14812, '2019-05-05 12:31:05', 1),
+(108, '20180606_IRS_statement.pdf', 3718172, '2019-05-05 15:43:29', 16),
+(111, 'Test_PDF.pdf', 14812, '2019-05-05 15:50:03', 16),
+(112, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 15:50:05', 16),
+(113, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 15:50:06', 16),
+(114, 'Test_PDF (copy).pdf', 14812, '2019-05-05 15:50:07', 16),
+(115, 'pdf-test.pdf', 20597, '2019-05-05 15:53:28', 16),
+(116, 'Test_PDF.pdf', 14812, '2019-05-05 15:53:29', 16),
+(117, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 15:53:30', 16),
+(118, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 15:53:31', 16),
+(119, 'Test_PDF (copy).pdf', 14812, '2019-05-05 15:53:32', 16),
+(120, 'pdf-test.pdf', 20597, '2019-05-05 15:58:30', 16),
+(121, 'Test_PDF.pdf', 14812, '2019-05-05 15:58:31', 16),
+(122, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 15:58:32', 16),
+(123, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 15:58:33', 16),
+(124, 'Test_PDF (copy).pdf', 14812, '2019-05-05 15:58:34', 16),
+(125, 'pdf-test.pdf', 20597, '2019-05-05 16:03:12', 16),
+(126, 'Test_PDF.pdf', 14812, '2019-05-05 16:03:14', 16),
+(127, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 16:03:15', 16),
+(128, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 16:03:16', 16),
+(129, 'Test_PDF (copy).pdf', 14812, '2019-05-05 16:03:17', 16),
+(130, 'pdf-test.pdf', 20597, '2019-05-05 16:03:37', 16),
+(131, 'Test_PDF.pdf', 14812, '2019-05-05 16:03:38', 16),
+(132, 'pdf-test.pdf', 20597, '2019-05-05 16:03:51', 16),
+(133, 'Test_PDF.pdf', 14812, '2019-05-05 16:03:52', 16),
+(134, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 16:03:53', 16),
+(135, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 16:03:54', 16),
+(136, 'Test_PDF (copy).pdf', 14812, '2019-05-05 16:03:55', 16),
+(137, 'pdf-test.pdf', 20597, '2019-05-05 16:05:04', 16),
+(138, 'Test_PDF.pdf', 14812, '2019-05-05 16:05:05', 16),
+(139, 'Test_PDF (3rd copy).pdf', 14812, '2019-05-05 16:05:06', 16),
+(140, 'Test_PDF (another copy).pdf', 14812, '2019-05-05 16:05:07', 16),
+(141, 'Test_PDF (copy).pdf', 14812, '2019-05-05 16:05:09', 16);
 
 --
 -- Indexes for dumped tables
@@ -166,19 +183,19 @@ ALTER TABLE `documents`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=179;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

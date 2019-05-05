@@ -1,5 +1,21 @@
 $(document).ready(function(){
-    <?php include "includes/js/functions.js"; ?>
+    <?php include_once "includes/js/functions.js"; ?>
+
+    // global var
+    window.MY_GLOBALS = {};
+    MY_GLOBALS.num_docs_uploading = 0;
+
+    function startUploadTimer(){
+        MY_GLOBALS.doc_save_interval_id = setInterval(function(){
+            // On avg, we upload one doc per second
+            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
+            MY_GLOBALS.num_docs_uploading--;
+            if(MY_GLOBALS.num_docs_uploading <= 0){
+                // kill thyself
+                clearInterval(MY_GLOBALS.doc_save_interval_id);
+            }
+        }, 1000); // 1000 = 1 sec
+    }
 
     function resetLogin(){
         $('#upload-user-form').hide();
@@ -67,7 +83,10 @@ $(document).ready(function(){
                 $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
                     if($.trim(status) === "1"){
                         var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                            $('#profile-pic').attr('src', profile_path);
+                        $('#profile-pic').attr('src', profile_path);
+                        
+                        // Now hide the delete button as there is no more photo to delete.
+                        $('#btn-delete-profile-pic').hide();
                     } else {
                         notifyUser("Error deleting profile pic: " + status);
                     }
@@ -104,6 +123,28 @@ $(document).ready(function(){
             }
         }
     });
+
+    // DOCUMENT FILE UPLOAD COUNT
+    $('#user-documents-selector').change(function(){
+        var files = $(this)[0].files;
+
+        /// update static global var 
+        MY_GLOBALS.num_docs_uploading = files.length;
+        $('#user-documents-selector-form-group').hide();
+        $('#num-docs-uploading').html("<strong>" + MY_GLOBALS.num_docs_uploading + " documents ready to upload.</strong>");
+    });
+
+    // PREVIEW PIC updated and DELETE PIC button hidden
+    $('input#add-profile-pic').change(function(){
+        // When this input is changed, the below native-JS will update the profile pic preview image
+        document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0]);
+
+        // We then remove the delete button because the delete button will never be able to clear the input control
+        // and will only delete the preview image, but on submission the input field will put the picture back.
+        // It causes confusion and is best to just hide the delete button at this juncture. 
+        $('#btn-delete-profile-pic').hide();
+    });
+
 
     // ******************************** VALIDATIONS ******************************************
 
@@ -182,7 +223,7 @@ $(document).ready(function(){
     //     // }
     // });
 
-    // SUBMIT button
+    // ******************************************** SUBMIT ***********************************
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
         notifyUser("Saving data...");
@@ -196,6 +237,14 @@ $(document).ready(function(){
             notifyUser(""); // Clear any past transgressions
             $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
                 if($.trim(status) === "1"){
+                    
+                    // Start upload countdown
+                    // so user knows how long
+                    // to expect the upload
+                    // of one doc per second
+                    // per sleep_between_doc_saves constant
+                    // in functions.php
+                    startUploadTimer();
 
                     // email is available
                     // submit form data

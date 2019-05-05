@@ -1,7 +1,6 @@
-img.image { 
+/* Here just in case something Bootstrap doesn't provide */
+
+img.image-bounded { 
     max-width: 200px;
     max-height: 200px;
 }
-/* div#profile-info { 
-    width: 600px; 
-} */

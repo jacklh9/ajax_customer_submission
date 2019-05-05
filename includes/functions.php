@@ -16,7 +16,9 @@
     $constants['max_email_len'] = 255;  // Max length of email 
     $constants['megabyte'] = 1048576; // Bytes in a megabyte (1024^2)
     $constants['max_doc_size'] = 4194304;  // in bytes
-    $constants['max_pic_size'] = 524288;   // in bytes
+    $constants['max_pic_size'] = 1048576;   // in bytes
+    $constants['no_user_docs_found_msg'] = "No Documents Saved Online"; // What to output in table if no docs saved.
+    $constants['no_user_docs_info_msg'] = "N/A"; // What to output in table if no docs info.
     $constants['profile_path'] = './profiles'; // fileserver location and S3
     $constants['sleep_between_doc_saves'] = 1;  // MUST be 1 sec at the MINIMUM 
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
@@ -165,7 +167,7 @@
             $success = purge_from_storage($fullpath_image)
                 && update_db_doc_info([
                     'cust_id' => "$cust_id",
-                    'filename' => "$fullpath_image",
+                    'filename' => "", // NULL filename to clear in DB
                     'type' => 'profile'
                 ]);
 
