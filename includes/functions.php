@@ -303,7 +303,7 @@
         return $success;
     }
 
-    function purge_from_storage($fullpath){
+    function purge_from_storage($fullpath_filename){
         $success = FALSE;
 
         if(is_S3()){
@@ -314,7 +314,7 @@
             }
         } else {
             // Purge from local filesystem
-            if (unlink($fullpath)){
+            if (unlink($fullpath_filename)){
                 $success = TRUE;
             }
         }
