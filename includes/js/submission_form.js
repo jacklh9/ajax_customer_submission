@@ -29,7 +29,7 @@ $(document).ready(function(){
     // (if valid cust_id) while we valid the email.
     btn_submit_disabled();
     btn_cancel_enabled();
-    btn_delete_act_enabled();
+    btn_delete_acct_enabled();
 
     // What does the email field look like right now?
     var email = $('input#email').val();
