@@ -27,7 +27,10 @@
                 <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
                 <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
-                <input type="button" id="disabled-submit" class="btn" name="disabled-upload" value="<?php echo $submit_type; ?>"><br>
+                <input type="button" id="submit-disabled" class="btn" name="submit-disabled" value="<?php echo $submit_type; ?>">
+
+                <!-- The below serves as a dummy butten while waiting for a previous submit to complete -->
+                <input type="button" id="submit-disabled-while-processing" class="btn" name="submit-disabled-while-processing" value="Processing">
             </div><!-- submit-group -->
 
             <div class="form-group">
@@ -116,11 +119,11 @@
     } // end for-loop
 ?>
     </div> <!-- row -->
-    <br>
+    <br><br>
     <!-- ************************ UPLOAD USER DOCUMENTS **************************************************************** -->    
     <div class="row" id="upload-documents-container">
         <div class="col-xs-12">
-            <div id='num-docs-uploading'></div>
+            <div id='num-docs-uploading' class="bg-info"></div>
             <div id='user-documents-selector-form-group' class="form-group">
                 <label for="document[]">Upload Documents:</label><br>
                 <input type="file" id="user-documents-selector" class="form-control" name="documents[]" accept="application/pdf" multiple>
@@ -135,7 +138,7 @@
 <?php
             if($cust_id >= 0){
 ?>
-                <label for="document[]">Documents:</label><br>
+                <label for="document[]">Documents Found: <span id='documents-found'></span></label><br>
 <?php
                 if(is_S3()){
 ?>
@@ -164,25 +167,28 @@
                             $num_rows = count($docs);
                             if($num_rows > 0){
                                 foreach($docs as $doc){
-                                    echo "<tr id='doc-" . $doc['id'] . "'>";
+                                    echo "<tr id='doc-" . $doc['id'] . "' class='document-row'>";
                                     echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                     echo "  <td>{$doc['datetime']}</td>";
                                     echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
                                     echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-warning' role='button' href='javascript:void(0)'>Delete</a></td>";
                                     echo "</tr>";
                                 } 
-                            } else {
-                                    echo "<tr id='no-documents-row'>";
-                                        echo "<td id='no-documents-filename'>", NO_USER_DOCS_FOUND_MSG, "</td>";
-                                        echo "<td id='no-documents-datetime'>", NO_USER_DOCS_INFO_MSG, "</td>";
-                                        echo "<td id='no-documents-size'>", NO_USER_DOCS_INFO_MSG, "</td>";
-                                        echo "<td id='no-documents-delete'><a class='placeholder-button btn btn-xs btn-default' role='button' href='javascript:void(0)'>Delete</a></td>";
-                                    echo "</tr>";
                             }
+                            // This will be hidden by JavaScript
+                            echo "<tr id='empty-documents-row' class='document-row'>";
+                                echo "<td id='no-documents-filename'>", NO_USER_DOCS_FOUND_MSG, "</td>";
+                                echo "<td id='no-documents-datetime'>", NO_USER_DOCS_INFO_MSG, "</td>";
+                                echo "<td id='no-documents-size'>", NO_USER_DOCS_INFO_MSG, "</td>";
+                                echo "<td id='no-documents-delete' class='text-center'><a class='placeholder-button btn btn-xs btn-default' role='button' href='javascript:void(0)'>Delete</a></td>";
+                            echo "</tr>";
 ?>
                         </tbody>
                     </table>
+                    <input type='hidden' id='num-docs-found' value='<?php echo $num_rows; ?>'>
                 </div><!-- documents-list -->
+                
+
 <?php
             } // end if-!empty-cust_id
 ?>

@@ -1,34 +1,47 @@
 $(document).ready(function(){
     <?php include_once "includes/js/functions.js"; ?>
 
-    // global var
+    // ****************** GLOBAL VARS ***********************
+
+    ////// GLOBAL STATIC
     window.MY_GLOBALS = {};
+
+    // SEE: startUpLoadTimer(), Submit Form section
+    //       Document File Upload Count section
     MY_GLOBALS.num_docs_uploading = 0;
 
-    function startUploadTimer(){
-        MY_GLOBALS.doc_save_interval_id = setInterval(function(){
-            // On avg, we upload one doc per second
-            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
-            MY_GLOBALS.num_docs_uploading--;
-            if(MY_GLOBALS.num_docs_uploading <= 0){
-                // kill thyself
-                clearInterval(MY_GLOBALS.doc_save_interval_id);
-            }
-        }, 1000); // 1000 = 1 sec
+    // The initial number of document rows displayed
+    // We will subtract this number and at 0
+    // display the default #empty-documents-row.
+    MY_GLOBALS.num_docs_shown = $('input#num-docs-found').val();
+    update_num_docs_found();
+
+    ////// STANDARD GLOBALS
+    var messageEnterValidEmail = "Enter valid email address";
+
+    // ***************** END GLOBAL VARS *******************
+
+    // ************* BEGIN: INITIAL STATE *******************
+
+    // We begin by immediately disabling submit button
+    // from processing so we can first do some validations.
+    submit_disabled();
+
+    // What does the email field look like right now?
+    var email = $('input#email').val();
+    if(is_valid_email(email)){
+
+        // Looks okay, so enable the submit button.
+        submit_enabled();
+    } else {
+
+        // Initial email entered is no good. Ask user to try again.
+        notifyUser(messageEnterValidEmail);
     }
 
-    function resetLogin(){
-        $('#upload-user-form').hide();
-        $('#upload-user-form')[0].reset();
-        $('#login-user-form')[0].reset();
-        $('#login-user-form').show();
-        show_registered_users();
-    }
+    // **************** END: INITIAL STATE *******************
 
-    // POST-SUBMISSION
-    function thankYou(){
-        alert("Thank you. Your information has been successfully submitted.");
-    }
+    // *************** BEGIN: FUNCTIONS ***********************
 
     // CANCEL button
     $('#btn-cancel').on('click', function(){
@@ -114,7 +127,12 @@ $(document).ready(function(){
                     if($.trim(status) === "1"){
                         // Successfully deleted document
                         var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                                                $('tr#doc-' + doc_id).hide();
+                        
+                        // hide deleted row
+                        $('tr#doc-' + doc_id).hide();
+                        MY_GLOBALS.num_docs_shown--;
+                        update_num_docs_found();
+
                         notifyUser("Successfully deleted document '" + filename + "'");
                     } else {
                         notifyUser("Error deleting document '" + filename + "': " + status);
@@ -134,6 +152,7 @@ $(document).ready(function(){
         $('#num-docs-uploading').html("<strong>" + MY_GLOBALS.num_docs_uploading + " documents ready to upload.</strong>");
     });
 
+
     // PREVIEW PIC updated and DELETE PIC button hidden
     $('input#add-profile-pic').change(function(){
         // When this input is changed, the below native-JS will update the profile pic preview image
@@ -145,87 +164,57 @@ $(document).ready(function(){
         $('#btn-delete-profile-pic').hide();
     });
 
-
-    // ******************************** VALIDATIONS ******************************************
-
-    // Initial state of the submit buttons
-    var messageEnterValidEmail = "Enter valid email address";
-    deny_submit();
-
-    var email = $('input#email').val();
-    if(is_valid_email(email)){
-        allow_submit();
-    } else {
-        notifyUser(messageEnterValidEmail);
+    function resetLogin(){
+        $('#upload-user-form').hide();
+        $('#upload-user-form')[0].reset();
+        $('#login-user-form')[0].reset();
+        $('#login-user-form').show();
+        show_registered_users();
     }
 
-    $('input#disabled-submit').on('click', function(){
-        notifyUser("Unable to submit: bad email address or already in use.");
-    });
-
-    // VALIDATE EMAIL not in use
-    $('input#email').keyup(function(){
-        deny_submit(); // We do this here to avoid race condition
-        var email = $(this).val();
-        var cust_id = $('#cust_id').val();
-
-        if(is_valid_email(email)){
-            notifyUser(""); // Clear any past transgressions
-            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
-                if($.trim(status) === "1"){
-                    // email is available
-                    allow_submit();
-                } else {
-                    // email address already in use
-                    notifyUser("ERROR: Email address in use.");
-                }
-            })
-            .fail(function(){
-                notifyUser("ERROR: Unable to communicate with the server.");
-            });
-        } else {
-            notifyUser(messageEnterValidEmail);
-        }
-    });
-
-    function allow_submit(){
-            $('input#disabled-submit').hide();
-            $('input#submit').show();
-    }
-
-    function deny_submit(){
-            $('input#submit').hide();
-            $('input#disabled-submit').show();
-    }
-
-    // SOURCE: https://www.w3resource.com/javascript/form/email-validation.php
-    function is_valid_email(email) {
-        var success = false;
-        if(email.length <= MAX_EMAIL_LEN){
-            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-            success = true;
+    function startUploadTimer(){
+        MY_GLOBALS.doc_save_interval_id = setInterval(function(){
+            // On avg, we upload one doc per second
+            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
+            MY_GLOBALS.num_docs_uploading--;
+            if(MY_GLOBALS.num_docs_uploading <= 0){
+                // kill thyself
+                notifyUserHide();
+                clearInterval(MY_GLOBALS.doc_save_interval_id);
             }
-        }
-        return success;
+        }, 1000); // 1000 = 1 sec
+    }
+
+    // SUBMIT DISABLED ALL
+    function submit_disabled_all(){
+        $('input#submit').hide();
+        $('input#submit-disabled').hide();
+        $('input#submit-disabled-while-processing').hide();
+    }
+
+    // SUBMIT DISABLED (WHILE VALIDATING)
+    function submit_disabled(){
+        submit_disabled_all();
+        $('input#submit-disabled').show();
+    }
+
+    // SUBMIT DISABLED WHILE PROCESSING
+    function submit_disabled_while_processing(){
+        submit_disabled_all();
+        $('input#submit-disabled-while-processing').show();
+    }
+
+    // SUBMIT ENABLED
+    function submit_enabled(){
+        submit_disabled_all();
+        $('input#submit').show();
     }
 
 
-    // ******************************** END VALIDATIONS ******************************************
-
-    
-    // // VIEW DOC link
-    // $('.link-view-doc').on('click', function(){
-    //     var doc_id = $(this).attr('rel');
-    //     var filename = $(this).text();
-    //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-    //     // if(confirm()){
-    //            //... 
-    //     // }
-    // });
-
-    // ******************************************** SUBMIT ***********************************
+    // ************************ SUBMIT FORM *******************************
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
+        submit_disabled_while_processing();
         notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
@@ -262,19 +251,105 @@ $(document).ready(function(){
                         processData: false
                     }).fail(function(){
                         alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
+                        submit_enabled(); // So user can retry
                     });
 
                 } else {
                     // email address already in use
                     notifyUser("ERROR: Email address in use.");
+                    
+                    // Do not re-enable submit. Let the validator do it.
+                    // Too risky to submit while an invalid email chosen.
+                    submit_disabled();
                 }
             })
             .fail(function(){
                 notifyUser("ERROR: Unable to communicate with the server.");
+                submit_enabled(); // So user can retry
             });
         } else {
             notifyUser(messageEnterValidEmail); 
+            submit_disabled();
         }
-
     });
+
+
+    // THANK YOU: POST-SUBMISSION
+    function thankYou(){
+        alert("Thank you. Your information has been successfully submitted.");
+    }
+
+    // UPDATE NUM DOCS
+    function update_num_docs_found(){
+        $('#documents-found').text(MY_GLOBALS.num_docs_shown);
+    
+        if(MY_GLOBALS.num_docs_shown <= 0){
+            // unhide default placeholder row if all docs deleted
+            $('tr#empty-documents-row').show();
+        } else {
+            $('#empty-documents-row').hide();
+        }
+    }
+
+    // ******************************** VALIDATIONS ******************************************
+
+    // VALIDATION: disabled-submit due to bad email or already in use
+    $('input#disabled-submit').on('click', function(){
+        notifyUser("Unable to submit: bad email address or already in use.");
+        submit_disabled();
+    });
+
+    // VALIDATE EMAIL not in use
+    $('input#email').keyup(function(){
+        submit_disabled(); // We do this here to avoid race condition
+        var email = $(this).val();
+        var cust_id = $('#cust_id').val();
+
+        if(is_valid_email(email)){
+            notifyUser(""); // Clear any past transgressions
+            $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
+                if($.trim(status) === "1"){
+                    // email is available
+                    submit_enabled();
+                } else {
+                    // email address already in use
+                    notifyUser("ERROR: Email address in use.");
+                    submit_disabled();
+                }
+            })
+            .fail(function(){
+                notifyUser("ERROR: Unable to communicate with the server.");
+                submit_enabled(); // Let user retry
+            });
+        } else {
+            notifyUser(messageEnterValidEmail);
+            submit_disabled();
+        }
+    });
+
+    // SOURCE: https://www.w3resource.com/javascript/form/email-validation.php
+    function is_valid_email(email) {
+        var success = false;
+        if(email.length <= MAX_EMAIL_LEN){
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+            success = true;
+            }
+        }
+        return success;
+    }
+
+
+    // ******************************** END VALIDATIONS ******************************************
+
+    
+    // // VIEW DOC link
+    // $('.link-view-doc').on('click', function(){
+    //     var doc_id = $(this).attr('rel');
+    //     var filename = $(this).text();
+    //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+    //     // if(confirm()){
+    //            //... 
+    //     // }
+    // });
+
 });
