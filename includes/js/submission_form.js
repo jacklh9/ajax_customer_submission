@@ -70,7 +70,7 @@ $(document).ready(function(){
                         $('#profile-pic').attr('src', profile_path);
                         
                         // Now hide the delete button as there is no more photo to delete.
-                        $(#btn-delete-profile-pic).hide();
+                        $('#btn-delete-profile-pic').hide();
                     } else {
                         notifyUser("Error deleting profile pic: " + status);
                     }

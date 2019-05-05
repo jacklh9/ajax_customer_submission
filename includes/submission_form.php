@@ -1,5 +1,18 @@
 <?php include_once "includes/functions.php"; ?>
 <?php include_once "s3.php"; ?>
+<script>
+    // ADD PREVIEW PIC
+    function addPreviewPic(obj){
+        
+        // When this input is changed, the below native-JS will update the profile pic preview image
+        document.getElementById('profile-pic').src = window.URL.createObjectURL(obj.files[0]);
+
+        // We then remove the delete button because the delete button will never be able to clear the input control
+        // and will only delete the preview image, but on submission the input field will put the picture back.
+        // It causes confusion and is best to just hide the delete button at this juncture. 
+        $('#btn-delete-profile-pic').hide();
+    }
+</script>
 <form action="upload.php" id="upload-user-form" method="post" enctype="multipart/form-data">
 
     <div class="row" id="personal-info-row">
@@ -66,7 +79,13 @@
             <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image-bounded img-rounded"><br><br>
             <div class="form-group">
                 <label for="profile_pic">Change Profile Photo:</label><br>
-                <input id="add-profile-pic" type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
+
+                <!-- ********************* PREVIEW PIC ************************************
+                     NOTE: After this form-control gets a new filename, "onchange" is activated to dynamically
+                     swap the preview photo
+                     ********************************************************************** -->
+                <input id="add-profile-pic" type="file" class="form-control" name="profile_pic" accept="image/*" 
+                    onchange="addPreviewPic(this);">
                 <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
             </div>
 <?php       
