@@ -27,9 +27,6 @@ $(document).ready(function(){
     // from processing so we can first do some validations.
     submit_disabled();
 
-    // Turn off empty documents
-    $('#empty-documents-row').hide();
-
     // What does the email field look like right now?
     var email = $('input#email').val();
     if(is_valid_email(email)){
@@ -289,6 +286,8 @@ $(document).ready(function(){
         if(MY_GLOBALS.num_docs_shown <= 0){
             // unhide default placeholder row if all docs deleted
             $('tr#empty-documents-row').show();
+        } else {
+            $('#empty-documents-row').hide();
         }
     }
 
