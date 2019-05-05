@@ -14,11 +14,14 @@
     $constants['default_image'] = './images/default.png';
     $constants['max_addresses'] = 3;    // Max number of addressses customer can have
     $constants['max_email_len'] = 255;  // Max length of email 
+    $constants['megabyte'] = 1048576; // Bytes in a megabyte (1024^2)
     $constants['max_doc_size'] = 4028;  // in KB
     $constants['max_pic_size'] = 512;   // in KB
     $constants['profile_path'] = './profiles'; // fileserver location and S3
     $constants['sleep_between_doc_saves'] = 1;  // MUST be 1 sec at the MINIMUM 
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
+    $constants['valid_doc_extensions'] = ['pdf'];
+    $constants['valid_pic_extensions'] = ['jpg', 'jpeg', 'png', 'webp'];
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);
@@ -220,6 +223,10 @@
         return pathinfo($filename, PATHINFO_EXTENSION);
     }
 
+    function get_file_size($filename){
+
+    }
+
     function get_profile_pic($cust_id){
         global $connection;
 
@@ -298,6 +305,29 @@
         return $success;
     }
 
+    // Validation rules for file
+    // $valid_exts = array of valid extensions (case insensitive)
+    // $max_size is in bytes
+    // $file assoc array with keys (name, size, ext)
+    function is_valid_file($file, $valid_exts, $max_bytes){
+
+        // Check filesize
+        if($file['size'] > $max_bytes){
+            $file_size_MB = sprintf("%1.1f", $file['size'] / MEGABYTE);
+            $max_MB = sprintf("%1.1f", $max_bytes / MEGABYTE);
+            echo "ERROR: File '" . $file['name'] . "' with size of {$file_size}MB exceeds max of {$max_MB}MB allowedl";
+            return FALSE;
+        }
+        // Ext in valid extensions whitelist?
+        $ext = get_file_extension($file);
+        if (!preg_grep("/^$ext$/i", $valid_exts)){
+            echo "ERROR: File '" . $file['name'] 
+                . "' has invalid extension of {$ext}. Must be in: " . $print_r($valid_exts);
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     function purge_from_storage($fullpath_filename){
         $success = FALSE;
 
@@ -319,6 +349,19 @@
     /* 
         PURPOSE: Re-arranges uploaded files array from PHP to a more sensible array to 
         traverse using foreach.
+
+        EXAMPLE:
+
+        if ($_FILES['upload']) {
+            $file_ary = reArrayFiles($_FILES['ufile']);
+
+            foreach ($file_ary as $file) {
+                print 'File Name: ' . $file['name'];
+                print 'File Type: ' . $file['type'];
+                print 'File Size: ' . $file['size'];
+            }
+        }
+
         SOURCE: https://www.php.net/manual/en/features.file-upload.multiple.php (phpuser at gmail dot com)
     */
     function re_array_files(&$file_post) {
