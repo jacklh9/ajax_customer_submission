@@ -5,7 +5,7 @@
     <div class="row" id="personal-info-row">
         <!-- *********** SUBMISSION CONTROLS **************  -->
         <div id="submission-controls" class="col-xs-2">
-            <div class="form-group" id="submit-group">
+            <div class="form-group" id="submit-group"><!-- submission controls -->
 <?php 
             if(empty($cust_id)){
 
@@ -22,30 +22,33 @@
 
             }
             $profile_pic = get_profile_pic_url($cust_id);
-?>          
+?>         
                 <br><br><!-- new-lines between "Customer#/New Registration" label and submit/register button -->
-                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
+                <!-- *******************  SUBMIT CHANGES BTN ****************************** -->
+                <input type="submit" id="btn-submit-ready" class="btn btn-primary single-process-btn-ready hidden" name="upload" value="<?php echo $submit_type; ?>">
                 <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
-                <input type="button" id="submit-disabled" class="btn" name="submit-disabled" value="<?php echo $submit_type; ?>">
-
+                <input type="button" id="btn-submit-disabled" class="btn single-process-btn-disabled" name="submit-disabled" value="<?php echo $submit_type; ?>">
                 <!-- The below serves as a dummy butten while waiting for a previous submit to complete -->
-                <input type="button" id="submit-disabled-while-processing" class="btn" name="submit-disabled-while-processing" value="Processing">
-            </div><!-- submit-group -->
+                <input type="button" id="btn-submit-active" class="btn single-process-btn-active hidden" name="submit-disabled-while-processing" value="Processing">
 
-            <div class="form-group">
-                <input type="button" class="btn btn-default" id="btn-cancel" value="Cancel Changes"><br>
-            </div>
-
-<?php      if($cust_id >= 0){
-                // Customer exists in DB, so display delete button
-?>
                 <br>
-                <div class="form-group">
-                    <label for="btn-delete-user">Danger Zone:</label>
-                    <p><small class="form-text text-muted">WARNING: ALL data in the form AND in the database and saved files will be lost permanently</small></p>
-                    <input type="button" class="btn btn-danger" id="btn-delete-user" value="Delete User"><br>
-                </div>
+
+                <!-- *******************  CANCEL CHANGES BTN ****************************** -->
+                <input type="button" class="btn btn-default single-process-btn-ready hidden" id="btn-cancel-ready" value="Cancel Changes">
+                <input type="button" class="btn btn-default single-process-btn-disabled" id="btn-cancel-disabled" value="Cancel Changes">
+                <input type="button" class="btn btn-default single-process-btn-active hidden" id="btn-cancel-active" value="Cancelling">
+<?php       
+            if($cust_id >= 0){
+?>
+                <br><!-- Customer exists in DB, so display delete button -->
+
+                <!-- *******************  DELETE USER BTN ****************************** -->
+                <label for="btn-delete-acct-ready">Danger Zone:</label>
+                <p><small class="form-text text-muted">WARNING: ALL account data in the form, saved files, and database data will be deleted permanently!</small></p>
+                <input type="button" class="btn btn-danger single-process-btn-ready hidden" id="btn-delete-acct-ready" value="Delete Acct">
+                <input type="button" class="btn btn-danger single-process-btn-disabled" id="btn-delete-acct-disabled" value="Delete Acct">
+                <input type="button" class="btn btn-danger single-process-btn-active hidden" id="btn-delete-acct-active" value="Deleting Acct">
 <?php
             }
 ?>
