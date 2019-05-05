@@ -65,6 +65,7 @@
         <div class="col-xs-3 text-center" id="profile-info">
             <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image-bounded img-rounded"><br><br>
             <div class="form-group">
+                <label for="profile_pic">Change Profile Photo:</label><br>
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
                 <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
             </div>
