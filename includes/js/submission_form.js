@@ -15,11 +15,11 @@ $(document).ready(function(){
 
     // ***************** END GLOBAL VARS *******************
 
-    // ************* BEGIN INITIAL STATE *******************
+    // ************* BEGIN: INITIAL STATE *******************
 
     // We begin by immediately disabling submit button
-    // so we can first do some validations.
-    submit_deny_while_validating();
+    // from processing so we can first do some validations.
+    submit_disabled();
 
     // What does the email field look like right now?
     var email = $('input#email').val();
@@ -33,9 +33,9 @@ $(document).ready(function(){
         notifyUser(messageEnterValidEmail);
     }
 
-    // **************** END INITIAL STATE *******************
+    // **************** END: INITIAL STATE *******************
 
-    // *************** BEGIN FUNCTION ***********************
+    // *************** BEGIN: FUNCTIONS ***********************
 
     // CANCEL button
     $('#btn-cancel').on('click', function(){
@@ -153,7 +153,6 @@ $(document).ready(function(){
         $('#btn-delete-profile-pic').hide();
     });
 
-
     function resetLogin(){
         $('#upload-user-form').hide();
         $('#upload-user-form')[0].reset();
@@ -174,16 +173,28 @@ $(document).ready(function(){
         }, 1000); // 1000 = 1 sec
     }
 
-    // SUBMIT DISABLE
-    function submit_disabled(){
+    // SUBMIT DISABLED ALL
+    function submit_disabled_all(){
         $('input#submit').hide();
-        $('input#disasbled-submit-while-processingg').show();
+        $('input#submit-disabled').hide();
+        $('input#submit-disabled-while-processing').hide();
     }
 
-    // SUBMIT ENABLE
+    // SUBMIT DISABLED (WHILE VALIDATING)
+    function submit_disabled(){
+        submit_disabled_all();
+        $('input#submit-disabled').show();
+    }
+
+    // SUBMIT DISABLED WHILE PROCESSING
+    function submit_disabled_while_processing(){
+        submit_disabled_all();
+        $('input#submit-disabled-while-processing').show();
+    }
+
+    // SUBMIT ENABLED
     function submit_enabled(){
-        $('input#disabled-submit-while-validating').hide();
-        $('input#disabled-submit-while-processingg').hide();
+        submit_disabled_all();
         $('input#submit').show();
     }
 
@@ -191,7 +202,7 @@ $(document).ready(function(){
     // ************************ SUBMIT FORM *******************************
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
-        submit_disabled();
+        submit_disabled_while_processing();
         notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
@@ -228,15 +239,16 @@ $(document).ready(function(){
                         processData: false
                     }).fail(function(){
                         alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-                        submit_enabled(); // So user can retryyyyy
+                        submit_enabled(); // So user can retry
                     });
 
                 } else {
                     // email address already in use
                     notifyUser("ERROR: Email address in use.");
-
+                    
                     // Do not re-enable submit. Let the validator do it.
                     // Too risky to submit while an invalid email chosen.
+                    submit_disabled();
                 }
             })
             .fail(function(){
@@ -245,6 +257,7 @@ $(document).ready(function(){
             });
         } else {
             notifyUser(messageEnterValidEmail); 
+            submit_disabled();
         }
     });
 
@@ -257,13 +270,14 @@ $(document).ready(function(){
     // ******************************** VALIDATIONS ******************************************
 
     // VALIDATION: disabled-submit due to bad email or already in use
-    $('input#disabled-submit-while-validating').on('click', function(){
+    $('input#disabled-submit').on('click', function(){
         notifyUser("Unable to submit: bad email address or already in use.");
+        submit_disabled();
     });
 
     // VALIDATE EMAIL not in use
     $('input#email').keyup(function(){
-        submit_deny_while_validating(); // We do this here to avoid race condition
+        submit_disabled(); // We do this here to avoid race condition
         var email = $(this).val();
         var cust_id = $('#cust_id').val();
 
@@ -276,20 +290,18 @@ $(document).ready(function(){
                 } else {
                     // email address already in use
                     notifyUser("ERROR: Email address in use.");
+                    submit_disabled();
                 }
             })
             .fail(function(){
                 notifyUser("ERROR: Unable to communicate with the server.");
+                submit_enabled(); // Let user retry
             });
         } else {
             notifyUser(messageEnterValidEmail);
+            submit_disabled();
         }
     });
-
-    function submit_deny_while_validating(){
-            $('input#submit').hide();
-            $('input#disabled-submit-while-validating').show();
-    }
 
     // SOURCE: https://www.w3resource.com/javascript/form/email-validation.php
     function is_valid_email(email) {

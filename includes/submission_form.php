@@ -27,10 +27,10 @@
                 <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
                 <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
-                <input type="button" id="disabled-submit" class="btn" name="disabled-upload" value="<?php echo $submit_type; ?>"><br>
+                <input type="button" id="submit-disabled" class="btn" name="submit-disabled" value="<?php echo $submit_type; ?>"><br>
 
                 <!-- The below serves as a dummy butten while waiting for a previous submit to complete -->
-                <input type="button" id="disabled-submit-while-processing" class="btn" name="disabled-submit-while-processing" value="Processing"><br>
+                <input type="button" id="submit-disabled-while-processing" class="btn" name="submit-disabled-while-processing" value="Processing"><br>
             </div><!-- submit-group -->
 
             <div class="form-group">
