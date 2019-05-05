@@ -315,7 +315,7 @@
         if($file['size'] > $max_bytes){
             $file_size_MB = sprintf("%1.1f", $file['size'] / MEGABYTE);
             $max_MB = sprintf("%1.1f", $max_bytes / MEGABYTE);
-            echo "ERROR: File '" . $file['name'] . "' with size of {$file_size_MB}MB exceeds max of {$max_MB}MB allowedl";
+            echo "ERROR: File '" . $file['name'] . "' with size of {$file_size_MB}MB exceeds max of {$max_MB}MB allowed.";
             return FALSE;
         }
         // Ext in valid extensions whitelist?
