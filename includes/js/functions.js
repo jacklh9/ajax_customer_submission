@@ -18,9 +18,18 @@ function notifyUser(response){
 }
 
 function show_registered_users(){
+    var notice = "Getting list of registered test users... Please Wait!";
+    $('#registered-users-list').html(notice);
+    $('#registered-users-list').show();
+
     $.get('includes/show_registered_users.php', function(data){
         $('#registered-users-list').html(data);
         $('#registered-users-list').show();
+    })
+    .fail(function(responseText) {
+        var notice = "ERROR: Get request failed: " + responseText;
+        $('#registered-users-list').html(notice);
+        $('#registered-users-list').show();;
     });
 }
 
