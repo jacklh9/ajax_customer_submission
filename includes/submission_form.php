@@ -4,26 +4,32 @@
 
     <div class="row" id="personal-info-row">
         <!-- *********** SUBMISSION CONTROLS **************  -->
-        <div id="submission-controls" class="col-xs-3">
+        <div id="submission-controls" class="col-xs-2">
+            <div class="form-group" id="submit-group">
 <?php 
-            if(!empty($cust_id)){
-                echo "<p>Customer# {$cust_id}</p>";
+            if(empty($cust_id)){
+
+                // This is a new customer
+                $cust_id = -1;
+                echo "<label for='upload'>New Customer Registration</label>";
+                $submit_type = 'Register';
+
+            } else {
 
                 // This is an existing customer
+                echo "<label for='upload'>Customer# {$cust_id}</label>";
                 $submit_type = 'Save All';
-            } else {
-                // This is a new customer
-                $submit_type = 'Register';
-                $cust_id = -1;
+
             }
             $profile_pic = get_profile_pic_url($cust_id);
 ?>          
-            <div class="form-group">
-                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>"><br>
+                <br>
+                <br>
+                <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
                 <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
                 <input type="button" id="disabled-submit" class="btn" name="disabled-upload" value="<?php echo $submit_type; ?>"><br>
-            </div>
+            </div><!-- submit-group -->
 
             <div class="form-group">
                 <input type="button" class="btn" id="btn-cancel" value="Cancel Changes"><br>
@@ -40,21 +46,27 @@
 ?>
        </div><!-- submission-controls -->
        <!-- *********** END: SUBMISSION CONTROLS **************  -->
+       <div id="between-submission-controls-and-personal-info" class="col-xs-1"></div>
        <!-- ************* BEGIN: PERSONAL INFO ********************* -->
-        <div id="personal-info" class="col-xs-6">
+        <div id="personal-info" class="col-xs-5">
             <div class="form-group">
+                <br><br>
                 <input type="hidden" class="form-control" id="cust_id" name='cust_id' value="<?php echo $cust_id; ?>">
                 <input type="text" class="form-control" id="email" name="email" value="<?php echo $email; ?>" placeholder="Email">
                 <input type="text" class="form-control" name="first" value="<?php echo $first; ?>" placeholder="First Name">
                 <input type="text" class="form-control" name="last" value="<?php echo $last; ?>" placeholder="Last Name">
                 <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>" placeholder="Primary Phone">
             </div>
-        </div><!-- personal-info -->
+        </div><!-- ************* END: PERSONAL INFO ********************* -->
+        <div id="between-personal-info-and-profile-pic" class="col-xs-1"></div>
         <!-- ************* PROFILE PIC ********************* -->
-        <div class="col-xs-3" id="profile-info">
-            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' width="200" height="200">
+        <div class="col-xs-3 text-center" id="profile-info">
+            <br><br>
+            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image">
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
+                <label for="profile_pic" class="form-control">Update Profile Photo</label>
+                <p><small class="form-text text-muted"><?php echo get_max_pic_size_in_MB() . " max"; ?></small></p>
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
@@ -65,8 +77,7 @@
 <?php
             }
 ?>
-        </div><!-- profile-info -->
-        <div class="col-xs-2"></div>
+        </div><!-- ************* END: PROFILE PIC ********************* -->
     </div><!-- row: personal-info -->
     <!-- ************* END: PERSONAL INFO ROW ********************* -->
     <!-- ************* ADDRESSES ********************* -->
@@ -75,9 +86,9 @@
     for($i = 0; $i < MAX_ADDRESSES; $i++){
 ?>
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
-            <h4>Address <?php echo $i+1; ?>:</h4>
             <div class="form-group">
-                <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Clear Address">
+                <label for='<?php echo "clear_add{$i}"; ?>'>Address <?php echo $i+1; ?>:</label><br>
+                <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Reset Address" name='<?php echo "clear_add{$i}"; ?>'>
             </div>
             <input type="hidden" class="form-control" name='<?php echo "add{$i}_id"; ?>' value="<?php echo $add[$i]['id']; ?>">
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line1"; ?>' name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
@@ -109,7 +120,9 @@
 <?php
             if(!empty($cust_id)){
 ?>
-            <h4>Documents:</h4>
+            <div class="form-group">
+            <br><br>
+            <label for="document[]">Documents:</label><br>
 <?php
                 if(is_S3()){
 ?>
@@ -117,12 +130,14 @@
 <?php
                 } else {
 ?>
-                    [local server filesystem storage]<br>
+                    [local server filesystem storage]<br><br>
 <?php
                 }
 ?>
-                NOTE: Click links to download to your Download directory or right-click and "Save-As" to rename.
-                <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                    <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                    <p><small class="form-text text-muted">Add PDF (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
+                    <p>NOTE: Click links to download to your Downloads directory or right-click and "Save-As" to rename.</p>
+                </div>
                 <br>
                 <div id="documents-list">
                     <table id="documents-table" class='table table-hover table-bordered table-striped'>
@@ -130,6 +145,7 @@
                             <tr>
                                 <td>Filename</td>
                                 <td>Date Uploaded</td>
+                                <td>Size (KB)</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -140,6 +156,7 @@
                                 echo "<tr id='doc-" . $doc['id'] . "'>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
+                                echo "  <td>TBD</td>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }

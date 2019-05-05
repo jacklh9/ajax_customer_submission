@@ -77,7 +77,12 @@
             $tmp_file = $_FILES['profile_pic']['tmp_name'];
             $filename = clean($_FILES['profile_pic']['name']);
 
-            update_profile_pic($tmp_file, $filename, $cust_id);
+            $file['name'] = $filename;
+            $file['size'] = $_FILES['profile_pic']['size'];
+
+            if(is_valid_file($file, VALID_PIC_EXTENSIONS, MAX_PIC_SIZE)){
+                update_profile_pic($tmp_file, $filename, $cust_id);
+            }
         }
 
         // Process document uploads if at least one exists
@@ -87,7 +92,9 @@
         
             foreach ($file_ary as $file) {
                 $orig_filename = clean($file['name']);
-                add_document($file['tmp_name'], $orig_filename, $cust_id);
+                if(is_valid_file($file, VALID_DOC_EXTENSIONS, MAX_DOC_SIZE)){
+                    add_document($file['tmp_name'], $orig_filename, $cust_id);
+                }
             }
         }
 
