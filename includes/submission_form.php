@@ -61,12 +61,10 @@
         <div id="between-personal-info-and-profile-pic" class="col-xs-1"></div>
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-3 text-center" id="profile-info">
-            <br><br>
-            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image">
+            <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image"><br><br>
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
-                <label for="profile_pic" class="form-control">Update Profile Photo</label>
-                <p><small class="form-text text-muted"><?php echo get_max_pic_size_in_MB() . " max"; ?></small></p>
+                <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
