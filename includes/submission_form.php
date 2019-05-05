@@ -143,9 +143,9 @@
                     <table id="documents-table" class='table table-hover table-bordered table-striped'>
                         <thead class='thead-dark'>
                             <tr>
-                                <td>Filename</td>
+                                <td>Original Filename</td>
                                 <td>Date Uploaded</td>
-                                <td>Size (KB)</td>
+                                <td>File Size</td>
                                 <td></td>
                             </tr>
                         </thead>
