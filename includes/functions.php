@@ -61,6 +61,10 @@
         return $success;
     }
 
+    function convert_bytes_to_MB($bytes){
+        return sprintf("%1.1fMB", $bytes / MEGABYTE);
+    }
+
     function debug_to_console( $data ) {
         $output = $data;
         if ( is_array( $output ) )
@@ -233,11 +237,11 @@
     }
 
     function get_max_doc_size_in_MB(){
-        return sprintf("%1.1fMB", MAX_DOC_SIZE / MEGABYTE);
+        return convert_bytes_to_MB(MAX_DOC_SIZE);
     }
 
     function get_max_pic_size_in_MB(){
-        return sprintf("%1.1fMB", MAX_PIC_SIZE / MEGABYTE);
+        return convert_bytes_to_MB(MAX_PIC_SIZE);
     }
 
     function get_profile_pic($cust_id){
