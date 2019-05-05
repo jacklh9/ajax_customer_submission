@@ -6,7 +6,7 @@
 
     <div class="form-group">
         <input type="submit" class="btn btn-primary" name="login" value="Login | Register">
-        <input type="button" class="btn" id="reset-login-form" name="reset-login-form" value="Reset">
+        <input type="button" class="btn" id="reset-email-login-input" name="reset-login-form" value="Reset">
     </div>
 
 </form><!-- login-user-form -->

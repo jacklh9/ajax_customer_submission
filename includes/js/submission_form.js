@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    <?php include "includes/js/functions.js"; ?>
+    <?php include_once "includes/js/functions.js"; ?>
 
     function resetLogin(){
         $('#upload-user-form').hide();

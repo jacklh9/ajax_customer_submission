@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    <?php include "includes/js/functions.js"; ?>
+    <?php include_once "includes/js/functions.js"; ?>
 
     /* ************* LOGIN FORM ******************* */
 
@@ -26,9 +26,8 @@ $(document).ready(function(){
 
     });
 
-    $('#reset-login-form').on('click', function(){
-        // $('#login-user-form')[0].reset();
-        resetLogin();
+    $('#reset-email-login-input').on('click', function(){
+        $('#login-user-form')[0].reset();
     });
 
 });
