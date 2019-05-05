@@ -112,33 +112,26 @@ $(document).ready(function(){
     $('.link-del-doc').on('click', function(){
         var doc_id = $(this).attr('rel');
         var filename = $(this).closest('td').prev('td').prev('td').text();
-        var is_S3 = "<?php echo is_S3(); ?>";
-        if($.trim(status) === "1"){
 
-            // S3 env
-            alert("Deletion of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
+        if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
+            // Purge doc from DB and from filesystem
+            notifyUser("Processing deletion of document '" + filename + "'");
 
-        } else {
+            $.post("delete.php", {doc_id: doc_id, action: 'delete-document'}, function(status){
+                if($.trim(status) === "1"){
+                    // Successfully deleted document
+                    var profile_path = '<?php echo get_profile_pic_default(); ?>';
+                    
+                    // hide deleted row
+                    $('tr#doc-' + doc_id).hide();
+                    MY_GLOBALS.num_docs_shown--;
+                    update_num_docs_found();
 
-            // non-S3 env
-            if(confirm("Delete document '" + filename + "' immediately?\nClick OK to confirm.\n\nWARNING:This cannot be undone.")){
-                // Purge doc from DB and from filesystem
-                $.post("delete.php", {doc_id: doc_id, action: 'delete-document'}, function(status){
-                    if($.trim(status) === "1"){
-                        // Successfully deleted document
-                        var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                        
-                        // hide deleted row
-                        $('tr#doc-' + doc_id).hide();
-                        MY_GLOBALS.num_docs_shown--;
-                        update_num_docs_found();
-
-                        notifyUser("Successfully deleted document '" + filename + "'");
-                    } else {
-                        notifyUser("Error deleting document '" + filename + "': " + status);
-                    }
-                });
-            }
+                    notifyUser("Successfully deleted document '" + filename + "'");
+                } else {
+                    notifyUser("Error deleting document '" + filename + "': " + status);
+                }
+            });
         }
     });
 
