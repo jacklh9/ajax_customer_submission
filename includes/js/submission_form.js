@@ -21,21 +21,27 @@ $(document).ready(function(){
 
     // ***************** END GLOBAL VARS *******************
 
-    // ************* BEGIN: INITIAL STATE *******************
+    // ************* BEGIN: SET INITIAL STATES *******************
 
-    // We begin by immediately disabling submit button
-    // from processing so we can first do some validations.
-    submit_disabled();
+    // Initially the submit button is disabled until the 
+    // email validation confirms we can submit.
+    // We allow user to cancel page or delete acct 
+    // (if valid cust_id) while we valid the email.
+    btn_submit_disabled();
+    btn_cancel_enabled();
+    btn_delete_act_enabled();
 
     // What does the email field look like right now?
     var email = $('input#email').val();
     if(is_valid_email(email)){
 
         // Looks okay, so enable the submit button.
-        submit_enabled();
+        btn_submit_enabled();
     } else {
 
-        // Initial email entered is no good. Ask user to try again.
+        // Initial email entered is no good. 
+        // Leave submit button disabled, and
+        // ask user to try again.
         notifyUser(messageEnterValidEmail);
     }
 
@@ -43,7 +49,72 @@ $(document).ready(function(){
 
     // *************** BEGIN: FUNCTIONS ***********************
 
-    // CANCEL button
+    //  BUTTON CANCEL BUSY (SUBMITTING)
+    function btn_cancel_busy(){
+        $('#btn-cancel-busy').removeClass("hidden");
+        $('#btn-cancel-disabled').addClass("hidden");
+        $('#btn-cancel-enabled').addClass("hidden");
+    }
+
+    // BUTTON CANCEL DISABLED
+    function btn_cancel_disabled(){
+        $('#btn-cancel-busy').addClass("hidden");
+        $('#btn-cancel-disabled').removeClass("hidden");
+        $('#btn-cancel-enabled').addClass("hidden");
+    }
+
+    // BUTTON CANCEL ENABLED
+    function btn_cancel_enabled(){
+        $('#btn-cancel-busy').addClass("hidden");
+        $('#btn-cancel-disabled').addClass("hidden");
+        $('#btn-cancel-enabled').removeClass("hidden");
+    }
+
+    //  BUTTON DELETE ACCT BUSY (SUBMITTING)
+    function btn_delete_acct_busy(){
+        $('#btn-delete-acct-busy').removeClass("hidden");
+        $('#btn-delete-acct-disabled').addClass("hidden");
+        $('#btn-delete-acct-enabled').addClass("hidden");
+    }
+
+    // BUTTON DELETE ACCT DISABLED
+    function btn_delete_acct_disabled(){
+        $('#btn-delete-acct-busy').addClass("hidden");
+        $('#btn-delete-acct-disabled').removeClass("hidden");
+        $('#btn-delete-acct-enabled').addClass("hidden");
+    }
+
+    // BUTTON DELETE ACCT ENABLED
+    function btn_delete_acct_enabled(){
+        $('#btn-delete-acct-busy').addClass("hidden");
+        $('#btn-delete-acct-disabled').addClass("hidden");
+        $('#btn-delete-acct-enabled').removeClass("hidden");
+    }
+
+    //  BUTTON SUBMIT BUSY (SUBMITTING)
+    function btn_submit_busy(){
+        $('#btn-submit-busy').removeClass("hidden");
+        $('#btn-submit-disabled').addClass("hidden");
+        $('#btn-submit-enabled').addClass("hidden");
+    }
+
+    // BUTTON SUBMIT DISABLED
+    function btn_submit_disabled(){
+        $('#btn-submit-busy').addClass("hidden");
+        $('#btn-submit-disabled').removeClass("hidden");
+        $('#btn-submit-enabled').addClass("hidden");
+    }
+
+    // BUTTON SUBMIT ENABLED
+    function btn_submit_enabled(){
+        $('#btn-submit-busy').addClass("hidden");
+        $('#btn-submit-disabled').addClass("hidden");
+        $('#btn-submit-enabled').removeClass("hidden");
+    }
+
+    //////////////// BELOW IS GOING TO BE RE-ORDERED SOON /////
+
+    // BUTTON CANCEL
     $('#btn-cancel').on('click', function(){
         if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
             notifyUser("Form data not submitted.");
@@ -51,7 +122,7 @@ $(document).ready(function(){
         }
     });
 
-    // CLEAR ADDRESS button
+    // BUTTON CLEAR ADDRESS 
     $('.btn-clear-addr').on('click', function(){
         if(confirm("Delete address?")){
             var addr_num = $(this).attr('rel');
@@ -190,36 +261,16 @@ $(document).ready(function(){
         }, 1000); // 1000 = 1 sec
     }
 
-    // SUBMIT DISABLED ALL
-    function submit_disabled_all(){
-        $('input#submit').hide();
-        $('input#submit-disabled').hide();
-        $('input#submit-disabled-while-processing').hide();
-    }
-
-    // SUBMIT DISABLED (WHILE VALIDATING)
-    function submit_disabled(){
-        submit_disabled_all();
-        $('input#submit-disabled').show();
-    }
-
-    // SUBMIT DISABLED WHILE PROCESSING
-    function submit_disabled_while_processing(){
-        submit_disabled_all();
-        $('input#submit-disabled-while-processing').show();
-    }
-
-    // SUBMIT ENABLED
-    function submit_enabled(){
-        submit_disabled_all();
-        $('input#submit').show();
-    }
-
 
     // ************************ SUBMIT FORM *******************************
     $('#upload-user-form').submit(function(evt){
         evt.preventDefault();
-        submit_disabled_while_processing();
+
+        // Get submission controls in order
+        btn_submit_busy();
+        btn_cancel_disabled();
+        btn_delete_acct_disabled();
+
         notifyUser("Saving data...");
         var url = $(this).attr('action');
         var formData = new FormData(this);
@@ -256,7 +307,9 @@ $(document).ready(function(){
                         processData: false
                     }).fail(function(){
                         alert("There was a problem uploading your information.\nWe are sorry for the inconvenience.");
-                        submit_enabled(); // So user can retry
+                        btn_submit_enabled(); // So user can retry
+                        btn_cancel_enabled();
+                        btn_delete_acct_enabled();
                     });
 
                 } else {
@@ -265,22 +318,32 @@ $(document).ready(function(){
                     
                     // Do not re-enable submit. Let the validator do it.
                     // Too risky to submit while an invalid email chosen.
-                    submit_disabled();
+                    btn_submit_disabled();
+                    btn_cancel_enabled();
+                    btn_delete_acct_enabled();
                 }
             })
             .fail(function(){
                 notifyUser("ERROR: Unable to communicate with the server.");
-                submit_enabled(); // So user can retry
+                btn_submit_enabled(); // So user can retry
+                btn_cancel_enabled();
+                btn_delete_acct_enabled();
             });
         } else {
             notifyUser(messageEnterValidEmail); 
-            submit_disabled();
+            // Do not re-enable submit. Let the validator do it.
+            // Too risky to submit while an invalid email chosen.
+            btn_submit_disabled();
+            btn_cancel_enabled();
+            btn_delete_acct_enabled();
         }
     });
 
-
     // THANK YOU: POST-SUBMISSION
     function thankYou(){
+        btn_submit_busy();
+        btn_cancel_disabled();
+        btn_delete_acct_disabled();
         alert("Thank you. Your information has been successfully submitted.");
     }
 

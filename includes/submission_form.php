@@ -27,17 +27,16 @@
 
                 <!-- *******************  SUBMIT CHANGES BTN ****************************** -->
                 <input type="submit" id="btn-submit-ready" class="btn btn-primary single-process-btn-ready hidden" name="upload" value="<?php echo $submit_type; ?>">
-                <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
+                <input type="button" id="btn-submit-busy" class="btn single-process-btn-active hidden" name="submit-disabled-while-processing" value="Processing">
                 <input type="button" id="btn-submit-disabled" class="btn single-process-btn-disabled col-xs-12 " name="submit-disabled" value="<?php echo $submit_type; ?>">
-                <!-- The below serves as a dummy butten while waiting for a previous submit to complete -->
-                <input type="button" id="btn-submit-active" class="btn single-process-btn-active hidden" name="submit-disabled-while-processing" value="Processing">
 
                 <br><br>
 
                 <!-- *******************  CANCEL CHANGES BTN ****************************** -->
-                <input type="button" class="btn btn-default single-process-btn-ready hidden" id="btn-cancel-ready" value="Cancel Changes">
-                <input type="button" class="btn btn-default single-process-btn-disabled col-xs-12" id="btn-cancel-disabled" value="Cancel Changes">
-                <input type="button" class="btn btn-default single-process-btn-active hidden" id="btn-cancel-active" value="Cancelling">
+                <input type="button" id="btn-cancel-ready" class="btn btn-default single-process-btn-ready hidden" value="Cancel Changes">
+                <input type="button" id="btn-cancel-busy" class="btn btn-default single-process-btn-active hidden" value="Cancelling">
+                <input type="button" id="btn-cancel-disabled" class="btn btn-default single-process-btn-disabled col-xs-12" value="Cancel Changes">
+
 <?php       
             if($cust_id >= 0){
 ?>
