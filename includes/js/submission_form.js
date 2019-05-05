@@ -14,6 +14,7 @@ $(document).ready(function(){
     // We will subtract this number and at 0
     // display the default #empty-documents-row.
     MY_GLOBALS.num_docs_shown = $('#num-docs-found').val();
+    update_num_docs_found();
 
     ////// STANDARD GLOBALS
     var messageEnterValidEmail = "Enter valid email address";
@@ -27,7 +28,7 @@ $(document).ready(function(){
     submit_disabled();
 
     // Turn off empty documents
-    $('#empty-documents').hide();
+    $('#empty-documents-row').hide();
 
     // What does the email field look like right now?
     var email = $('input#email').val();
@@ -133,11 +134,8 @@ $(document).ready(function(){
                         // hide deleted row
                         $('tr#doc-' + doc_id).hide();
                         MY_GLOBALS.num_docs_shown--;
+                        update_num_docs_found();
 
-                        if(MY_GLOBALS.num_docs_shown <= 0){
-                            // unhide default placeholder row if all docs deleted
-                            $('tr#empty-documents-row').show();
-                        }
                         notifyUser("Successfully deleted document '" + filename + "'");
                     } else {
                         notifyUser("Error deleting document '" + filename + "': " + status);
@@ -282,6 +280,16 @@ $(document).ready(function(){
     // THANK YOU: POST-SUBMISSION
     function thankYou(){
         alert("Thank you. Your information has been successfully submitted.");
+    }
+
+    // UPDATE NUM DOCS
+    function update_num_docs_found(){
+        $('#documents-found').text(MY_GLOBALS.num_docs_shown);
+    
+        if(MY_GLOBALS.num_docs_shown <= 0){
+            // unhide default placeholder row if all docs deleted
+            $('tr#empty-documents-row').show();
+        }
     }
 
     // ******************************** VALIDATIONS ******************************************

@@ -138,7 +138,7 @@
 <?php
             if($cust_id >= 0){
 ?>
-                <label for="document[]">Documents:</label><br>
+                <label for="document[]">Documents Found: <span id='documents-found'></span></label><br>
 <?php
                 if(is_S3()){
 ?>
@@ -180,13 +180,13 @@
                                 echo "<td id='no-documents-filename'>", NO_USER_DOCS_FOUND_MSG, "</td>";
                                 echo "<td id='no-documents-datetime'>", NO_USER_DOCS_INFO_MSG, "</td>";
                                 echo "<td id='no-documents-size'>", NO_USER_DOCS_INFO_MSG, "</td>";
-                                echo "<td id='no-documents-delete'><a class='placeholder-button btn btn-xs btn-default' role='button' href='javascript:void(0)'>Delete</a></td>";
+                                echo "<td id='no-documents-delete' class='text-center'><a class='placeholder-button btn btn-xs btn-default' role='button' href='javascript:void(0)'>Delete</a></td>";
                             echo "</tr>";
 ?>
                         </tbody>
                     </table>
                 </div><!-- documents-list -->
-                <div id='num-docs-found' hidden>$num_rows</div>
+                <div id='num-docs-found' hidden><?php echo $num_rows; ?></div>
 
 <?php
             } // end if-!empty-cust_id
