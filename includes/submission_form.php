@@ -31,14 +31,14 @@
             </div><!-- submit-group -->
 
             <div class="form-group">
-                <input type="button" class="btn" id="btn-cancel" value="Cancel Changes"><br>
+                <input type="button" class="btn btn-default" id="btn-cancel" value="Cancel Changes"><br>
             </div>
 
 <?php      if($cust_id >= 0){
                 // Customer exists in DB, so display delete button
 ?>
                 <div class="form-group">
-                    <input type="button" class="btn" id="btn-delete-user" value="Delete User"><br>
+                    <input type="button" class="btn btn-danger" id="btn-delete-user" value="Delete User"><br>
                 </div>
 <?php
             }
@@ -69,7 +69,7 @@
             if($cust_id >= 0 && has_profile_pic($cust_id)){
 ?>
                 <div class="form-group">
-                    <input type="button" class="btn btn-xs btn-danger" id="btn-delete-profile-pic" value="Delete Pic">
+                    <input type="button" class="btn btn-xs btn-warning" id="btn-delete-profile-pic" value="Delete Pic">
                 </div>
 <?php
             }
@@ -85,7 +85,7 @@
         <div class="col-xs-4" id="address-" . <?php echo $i; ?>>
             <div class="form-group">
                 <label for='<?php echo "clear_add{$i}"; ?>'>Address <?php echo $i+1; ?>:</label><br>
-                <input rel="<?php echo $i; ?>" type="button" class="btn btn-clear-addr" value="Reset Address" name='<?php echo "clear_add{$i}"; ?>'>
+                <input rel="<?php echo $i; ?>" type="button" class="btn btn-xs btn-warning btn-clear-addr" value="Reset Address" name='<?php echo "clear_add{$i}"; ?>'>
             </div>
             <input type="hidden" class="form-control" name='<?php echo "add{$i}_id"; ?>' value="<?php echo $add[$i]['id']; ?>">
             <input type="text" class="form-control" id='<?php echo "add{$i}_street_line1"; ?>' name='<?php echo "add{$i}_street_line1"; ?>' value="<?php echo $add[$i]['street_line1']; ?>" placeholder="Street Line 1">
@@ -154,7 +154,7 @@
                                 echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
-                                echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-danger' role='button' href='javascript:void(0)'>Delete</a></td>";
+                                echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-warning' role='button' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }
 ?>
