@@ -4,7 +4,7 @@
     CONSTANTS
  */
 
-NOTIFICATIONS_DURATION = 60;  // seconds before user notifications are removed from view
+NOTIFICATIONS_DURATION = 30;  // seconds before user notifications are removed from view
 MAX_EMAIL_LEN = 255;
 
 function notifyUser(response){

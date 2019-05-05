@@ -119,7 +119,7 @@
     } // end for-loop
 ?>
     </div> <!-- row -->
-    <br>
+    <br><br>
     <!-- ************************ UPLOAD USER DOCUMENTS **************************************************************** -->    
     <div class="row" id="upload-documents-container">
         <div class="col-xs-12">
