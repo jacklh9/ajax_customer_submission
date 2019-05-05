@@ -10,7 +10,7 @@
     <body>
 
     <div class="row" id="master-row">
-    <div class="col-xs-2" id="left-margin"></div>
-    <div class="col-xs-8" id="main-container"><span class="border border-dark">
+        <div class="col-xs-2" id="left-margin"></div>
+        <div class="col-xs-8" id="main-container">
 
 <!-- END HEADER -->        
