@@ -100,13 +100,13 @@
         $doc = get_document($doc_id);
         $fullpath_doc = $doc['path'];
 
-            // Valid for local server FS
-            // or Amazon S3 storage.
-            // Remove DB doc reference
-            // and then physical file.
-            $success = delete_document_from_db($doc_id)
-                && purge_from_storage($fullpath_doc); 
-        }
+        // Valid for local server FS
+        // or Amazon S3 storage.
+        // Remove DB doc reference
+        // and then physical file.
+        $success = delete_document_from_db($doc_id)
+            && purge_from_storage($fullpath_doc); 
+
         return $success;
     }
 
