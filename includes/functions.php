@@ -15,8 +15,8 @@
     $constants['max_addresses'] = 3;    // Max number of addressses customer can have
     $constants['max_email_len'] = 255;  // Max length of email 
     $constants['megabyte'] = 1048576; // Bytes in a megabyte (1024^2)
-    $constants['max_doc_size'] = 4028;  // in KB
-    $constants['max_pic_size'] = 512;   // in KB
+    $constants['max_doc_size'] = 4194304;  // in bytes
+    $constants['max_pic_size'] = 524288;   // in bytes
     $constants['profile_path'] = './profiles'; // fileserver location and S3
     $constants['sleep_between_doc_saves'] = 1;  // MUST be 1 sec at the MINIMUM 
     $constants['states'] = array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY");
@@ -319,10 +319,10 @@
             return FALSE;
         }
         // Ext in valid extensions whitelist?
-        $ext = get_file_extension($file);
+        $ext = get_file_extension($file['name']);
         if (!preg_grep("/^$ext$/i", $valid_exts)){
             echo "ERROR: File '" . $file['name'] 
-                . "' has invalid extension of {$ext}. Must be in: " . $print_r($valid_exts);
+                . "' has invalid extension of {$ext}. Must be in: " . print_r($valid_exts);
             return FALSE;
         }
         return TRUE;
