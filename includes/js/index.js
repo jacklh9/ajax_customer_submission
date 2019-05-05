@@ -26,6 +26,11 @@ $(document).ready(function(){
 
     });
 
+    $('#reset-login-form').on('click', function(){
+        // $('#login-user-form')[0].reset();
+        resetLogin();
+    });
+
 });
 
 

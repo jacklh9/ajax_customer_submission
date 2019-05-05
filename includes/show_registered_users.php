@@ -2,7 +2,9 @@
 <?php include "functions.php"; ?>
 
     <h4>Registered User Emails</h4>
-    (TESTING PURPOSES ONLY)
+    <p><small class="form-text">(FOR TESTING PURPOSES ONLY)</small></p>
+    <p>Click to pre-populate login</P>
+
     <ul>
 
 <?php

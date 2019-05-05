@@ -23,8 +23,7 @@
             }
             $profile_pic = get_profile_pic_url($cust_id);
 ?>          
-                <br>
-                <br>
+                <br><br><!-- new-lines between "Customer#/New Registration" label and submit/register button -->
                 <input type="submit" id="submit" class="btn btn-primary" name="upload" value="<?php echo $submit_type; ?>">
 
                 <!-- The below serves as a dummy button when validation fails to indicate to user that submission is not available. -->
@@ -61,7 +60,7 @@
         <div id="between-personal-info-and-profile-pic" class="col-xs-1"></div>
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-3 text-center" id="profile-info">
-            <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image"><br><br>
+            <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image-bounded"><br><br>
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
                 <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
