@@ -121,7 +121,7 @@
 <?php
                 }
 ?>
-                (Click to download or right-click Save-As to rename)
+                NOTE: Click links to download to your Download directory or right-click and "Save-As" to rename.
                 <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
                 <br>
                 <div id="documents-list">
