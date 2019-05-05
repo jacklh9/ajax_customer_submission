@@ -154,7 +154,7 @@
                                 echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
-                                echo "  <td class='delete-doc-container'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-danger' role='button' href='javascript:void(0)'>Delete</a></td>";
+                                echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-danger' role='button' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }
 ?>
