@@ -54,6 +54,7 @@ $(document).ready(function(){
         $('#btn-cancel-busy').show();
         $('#btn-cancel-disabled').hide();
         $('#btn-cancel-enabled').hide();
+        $('.hide-on-submit').hide();
     }
 
     // BUTTON CANCEL DISABLED
@@ -68,6 +69,7 @@ $(document).ready(function(){
         $('#btn-cancel-busy').hide();
         $('#btn-cancel-disabled').hide();
         $('#btn-cancel-enabled').show();
+        $('.hide-on-submit').show();
     }
 
     //  BUTTON DELETE ACCT BUSY (SUBMITTING)
@@ -75,6 +77,7 @@ $(document).ready(function(){
         $('#btn-delete-acct-busy').show();
         $('#btn-delete-acct-disabled').hide();
         $('#btn-delete-acct-enabled').hide();
+        $('.hide-on-submit').hide();
     }
 
     // BUTTON DELETE ACCT DISABLED
@@ -89,6 +92,7 @@ $(document).ready(function(){
         $('#btn-delete-acct-busy').hide();
         $('#btn-delete-acct-disabled').hide();
         $('#btn-delete-acct-enabled').show();
+        $('.hide-on-submit').show();
     }
 
     //  BUTTON SUBMIT BUSY (SUBMITTING)
@@ -96,6 +100,7 @@ $(document).ready(function(){
         $('#btn-submit-busy').show();
         $('#btn-submit-disabled').hide();
         $('#btn-submit-enabled').hide();
+        $('.hide-on-submit').hide();
     }
 
     // BUTTON SUBMIT DISABLED
@@ -110,6 +115,7 @@ $(document).ready(function(){
         $('#btn-submit-busy').hide();
         $('#btn-submit-disabled').hide();
         $('#btn-submit-enabled').show();
+        $('.hide-on-submit').show();
     }
 
     //////////////// BELOW IS GOING TO BE RE-ORDERED SOON /////
