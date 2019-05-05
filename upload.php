@@ -93,7 +93,7 @@
             foreach ($file_ary as $file) {
                 $orig_filename = clean($file['name']);
                 if(is_valid_file($file, VALID_DOC_EXTENSIONS, MAX_DOC_SIZE)){
-                    add_document($file['tmp_name'], $orig_filename, $cust_id);
+                    add_document($file['tmp_name'], $orig_filename, $file['size'], $cust_id);
                 }
             }
         }

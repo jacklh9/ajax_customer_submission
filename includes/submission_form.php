@@ -61,12 +61,10 @@
         <div id="between-personal-info-and-profile-pic" class="col-xs-1"></div>
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-3 text-center" id="profile-info">
-            <br><br>
-            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image">
+            <br><br><img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image"><br><br>
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
-                <label for="profile_pic" class="form-control">Update Profile Photo</label>
-                <p><small class="form-text text-muted"><?php echo get_max_pic_size_in_MB() . " max"; ?></small></p>
+                <p><small class="form-text text-muted">Update Profile Photo (<?php echo get_max_pic_size_in_MB() . " max"; ?>)</small></p>
             </div>
 <?php       
             if($cust_id >= 0 && has_profile_pic($cust_id)){
@@ -143,9 +141,9 @@
                     <table id="documents-table" class='table table-hover table-bordered table-striped'>
                         <thead class='thead-dark'>
                             <tr>
-                                <td>Filename</td>
+                                <td>Original Filename</td>
                                 <td>Date Uploaded</td>
-                                <td>Size (KB)</td>
+                                <td>File Size</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -156,7 +154,7 @@
                                 echo "<tr id='doc-" . $doc['id'] . "'>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
-                                echo "  <td>TBD</td>";
+                                echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
                                 echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }

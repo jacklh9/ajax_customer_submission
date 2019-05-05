@@ -33,7 +33,7 @@
     //
     /////////////////////////////////////////////////
 
-    function add_document($tmp_name, $orig_filename, $cust_id){
+    function add_document($tmp_name, $orig_filename, $size, $cust_id){
         global $connection;
 
         // NAMING CONVENTION: id_datetime.ext
@@ -51,8 +51,18 @@
         $doc_internal_fullpath = DOCUMENTS_PATH . "/" . "{$cust_id}_{$datetime}.{$ext}";
 
         $success = save_to_storage($tmp_name, $doc_internal_fullpath)
-            &&  update_db_doc_info('document', $orig_filename, $cust_id, $datetime);
+            &&  update_db_doc_info([
+                'cust_id' => "$cust_id",
+                'datetime' => "$datetime",
+                'filename' => "$orig_filename",
+                'size' => "$size",
+                'type' => 'document', 
+            ]);
         return $success;
+    }
+
+    function convert_bytes_to_MB($bytes){
+        return sprintf("%1.2f MB", $bytes / MEGABYTE);
     }
 
     function debug_to_console( $data ) {
@@ -149,12 +159,15 @@
         // Determine if cust has an actual profile pic or just the default one
         if(!empty($fullpath_image) && (basename($fullpath_image) != basename($fullpath_default))){
 
-            // Cust has a profile pic.
-            // Remove DB profile pic reference
-            // and remove image file.
-            $success = update_db_doc_info('profile', '', $cust_id)
-                // Delete profile pic
-                && purge_from_storage($fullpath_image); 
+            // Delete cust's profile pic
+            // Remove image file and
+            // then remove DB profile pic reference.
+            $success = purge_from_storage($fullpath_image)
+                && update_db_doc_info([
+                    'cust_id' => "$cust_id",
+                    'filename' => "$fullpath_image",
+                    'type' => 'profile'
+                ]);
 
         } else {
 
@@ -224,11 +237,11 @@
     }
 
     function get_max_doc_size_in_MB(){
-        return sprintf("%1.1fMB", MAX_DOC_SIZE / MEGABYTE);
+        return convert_bytes_to_MB(MAX_DOC_SIZE);
     }
 
     function get_max_pic_size_in_MB(){
-        return sprintf("%1.1fMB", MAX_PIC_SIZE / MEGABYTE);
+        return convert_bytes_to_MB(MAX_PIC_SIZE);
     }
 
     function get_profile_pic($cust_id){
@@ -415,27 +428,34 @@
         // of good housekeeping.
         $success = delete_profile_pic($cust_id)
             &&  save_to_storage($tmp_file, $fullpath_image)
-            &&  update_db_doc_info('profile', $fullpath_image, $cust_id);
+            && update_db_doc_info([
+                'cust_id' => "$cust_id",
+                'filename' => "$fullpath_image",
+                'type' => 'profile'
+            ]);
+
         return $success;
     }
 
-    // $type = 'profile' | 'document'
-    // $datetime (required only for type 'document')
-    // update_db_doc_info(string $type, string $filename, int $cust_id, [datetime]):bool
-    function update_db_doc_info(){
-        $type = func_get_arg(0);
-        $filename = func_get_arg(1);
-        $cust_id = func_get_arg(2);
-
+    // 'cust_id' = customer id
+    // 'datetime' = required for type 'document' only
+    // 'filename' = full path to filename    
+    // 'size' = filesize in bytes  (document only)
+    // 'type' = [ profile | document ]
+    function update_db_doc_info($args){
         global $connection;
-        
+        $cust_id = $args['cust_id'];
+        $filename = $args['filename'];
+        $type = $args['type'];
+
         switch($type){
             case 'profile':
-                $query = "UPDATE customers SET profile = '$filename' WHERE id = $cust_id";
+                $query = "UPDATE customers SET profile = '$filename' WHERE id = {$cust_id}";
                 break;
             case 'document':
-                $datetime = func_get_arg(3);
-                $query = "INSERT INTO documents(filename, datetime, FK_cust_id) VALUES ('{$filename}', '{$datetime}', $cust_id)";
+                $datetime = $args['datetime'];
+                $size = $args['size'];
+                $query = "INSERT INTO documents(filename, size, datetime, FK_cust_id) VALUES ('{$filename}', '{$size}', '{$datetime}', $cust_id)";
                 break;
             default:
                 echo "'{$type}' is not a valid 'type' parameter in update_db_info()";
