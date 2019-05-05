@@ -86,8 +86,8 @@
 
             //Creating a presigned URL
             $cmd = $client->getCommand('GetObject', [
-                'Bucket' => '{$bucket}',
-                'Key' => '{$key}'
+                'Bucket' => "{$bucket}",
+                'Key' => "{$key}",
             ]);
 
             $request = $client->createPresignedRequest($cmd, OBJECT_TIMEOUT);
