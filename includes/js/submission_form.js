@@ -117,6 +117,7 @@ $(document).ready(function(){
     // BUTTON CANCEL
     $('#btn-cancel-enabled').on('click', function(){
         btn_submit_disabled();
+        btn_cancel_busy();
         btn_delete_acct_disabled();
 
         if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
@@ -143,6 +144,10 @@ $(document).ready(function(){
 
     // DELETE USER button
     $('#btn-delete-acct-enabled').on('click', function(){
+        btn_submit_disabled();
+        btn_cancel_disabled();
+        btn_delete_acct_busy();
+
         if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved to the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
             var cust_id = $('#cust_id').val();
             if(cust_id >= 0){
@@ -160,6 +165,11 @@ $(document).ready(function(){
                 notifyUser("Form data not submitted.");
                 resetLogin();
             }
+        } else {
+            // User cancelled delete. Restore everything back to normal.
+            btn_submit_enabled();
+            btn_cancel_enabled();
+            btn_delete_acct_enabled();
         }
     });
 
