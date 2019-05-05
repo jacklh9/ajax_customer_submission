@@ -51,65 +51,65 @@ $(document).ready(function(){
 
     //  BUTTON CANCEL BUSY (SUBMITTING)
     function btn_cancel_busy(){
-        $('#btn-cancel-busy').removeClass("hidden");
-        $('#btn-cancel-disabled').addClass("hidden");
-        $('#btn-cancel-enabled').addClass("hidden");
+        $('#btn-cancel-busy').show();
+        $('#btn-cancel-disabled').hide();
+        $('#btn-cancel-enabled').hide();
     }
 
     // BUTTON CANCEL DISABLED
     function btn_cancel_disabled(){
-        $('#btn-cancel-busy').addClass("hidden");
-        $('#btn-cancel-disabled').removeClass("hidden");
-        $('#btn-cancel-enabled').addClass("hidden");
+        $('#btn-cancel-busy').hide();
+        $('#btn-cancel-disabled').show();
+        $('#btn-cancel-enabled').hide();
     }
 
     // BUTTON CANCEL ENABLED
     function btn_cancel_enabled(){
-        $('#btn-cancel-busy').addClass("hidden");
-        $('#btn-cancel-disabled').addClass("hidden");
-        $('#btn-cancel-enabled').removeClass("hidden");
+        $('#btn-cancel-busy').hide();
+        $('#btn-cancel-disabled').hide();
+        $('#btn-cancel-enabled').show();
     }
 
     //  BUTTON DELETE ACCT BUSY (SUBMITTING)
     function btn_delete_acct_busy(){
-        $('#btn-delete-acct-busy').removeClass("hidden");
-        $('#btn-delete-acct-disabled').addClass("hidden");
-        $('#btn-delete-acct-enabled').addClass("hidden");
+        $('#btn-delete-acct-busy').show();
+        $('#btn-delete-acct-disabled').hide();
+        $('#btn-delete-acct-enabled').hide();
     }
 
     // BUTTON DELETE ACCT DISABLED
     function btn_delete_acct_disabled(){
-        $('#btn-delete-acct-busy').addClass("hidden");
-        $('#btn-delete-acct-disabled').removeClass("hidden");
-        $('#btn-delete-acct-enabled').addClass("hidden");
+        $('#btn-delete-acct-busy').hide();
+        $('#btn-delete-acct-disabled').show();
+        $('#btn-delete-acct-enabled').hide();
     }
 
     // BUTTON DELETE ACCT ENABLED
     function btn_delete_acct_enabled(){
-        $('#btn-delete-acct-busy').addClass("hidden");
-        $('#btn-delete-acct-disabled').addClass("hidden");
-        $('#btn-delete-acct-enabled').removeClass("hidden");
+        $('#btn-delete-acct-busy').hide();
+        $('#btn-delete-acct-disabled').hide();
+        $('#btn-delete-acct-enabled').show();
     }
 
     //  BUTTON SUBMIT BUSY (SUBMITTING)
     function btn_submit_busy(){
-        $('#btn-submit-busy').removeClass("hidden");
-        $('#btn-submit-disabled').addClass("hidden");
-        $('#btn-submit-enabled').addClass("hidden");
+        $('#btn-submit-busy').show();
+        $('#btn-submit-disabled').hide();
+        $('#btn-submit-enabled').hide();
     }
 
     // BUTTON SUBMIT DISABLED
     function btn_submit_disabled(){
-        $('#btn-submit-busy').addClass("hidden");
-        $('#btn-submit-disabled').removeClass("hidden");
-        $('#btn-submit-enabled').addClass("hidden");
+        $('#btn-submit-busy').hide();
+        $('#btn-submit-disabled').show();
+        $('#btn-submit-enabled').hide();
     }
 
     // BUTTON SUBMIT ENABLED
     function btn_submit_enabled(){
-        $('#btn-submit-busy').addClass("hidden");
-        $('#btn-submit-disabled').addClass("hidden");
-        $('#btn-submit-enabled').removeClass("hidden");
+        $('#btn-submit-busy').hide();
+        $('#btn-submit-disabled').hide();
+        $('#btn-submit-enabled').show();
     }
 
     //////////////// BELOW IS GOING TO BE RE-ORDERED SOON /////
