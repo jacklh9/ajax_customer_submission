@@ -167,7 +167,7 @@
             $success = purge_from_storage($fullpath_image)
                 && update_db_doc_info([
                     'cust_id' => "$cust_id",
-                    'filename' => "$fullpath_image",
+                    'filename' => "", // NULL filename to clear in DB
                     'type' => 'profile'
                 ]);
 
