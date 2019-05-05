@@ -67,7 +67,10 @@ $(document).ready(function(){
                 $.post("delete.php", {cust_id: cust_id, action: 'delete-profile-pic'}, function(status){
                     if($.trim(status) === "1"){
                         var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                            $('#profile-pic').attr('src', profile_path);
+                        $('#profile-pic').attr('src', profile_path);
+                        
+                        // Now hide the delete button as there is no more photo to delete.
+                        $(#btn-delete-profile-pic).hide();
                     } else {
                         notifyUser("Error deleting profile pic: " + status);
                     }
