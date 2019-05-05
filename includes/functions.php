@@ -12,7 +12,7 @@
     $constants['date_format'] = 'Y-m-d H:i:s';
     $constants['documents_path'] = './docs';
     $constants['default_image'] = './images/default.png';
-    $constants['max_addresses'] = 3;    // Max number of addressses customer can have
+    $constants['max_addresses'] = 3;    // Max number of addresses customer can have
     $constants['max_email_len'] = 255;  // Max length of email 
     $constants['megabyte'] = 1048576; // Bytes in a megabyte (1024^2)
     $constants['max_doc_size'] = 4194304;  // in bytes
@@ -223,8 +223,12 @@
         return pathinfo($filename, PATHINFO_EXTENSION);
     }
 
-    function get_file_size($filename){
+    function get_max_doc_size_in_MB(){
+        return sprintf("%1.1fMB", MAX_DOC_SIZE / MEGABYTE);
+    }
 
+    function get_max_pic_size_in_MB(){
+        return sprintf("%1.1fMB", MAX_PIC_SIZE / MEGABYTE);
     }
 
     function get_profile_pic($cust_id){
@@ -314,9 +318,9 @@
 
         // Check filesize
         if($file['size'] > $max_bytes){
-            $file_size_MB = sprintf("%1.1f", $file['size'] / MEGABYTE);
-            $max_MB = sprintf("%1.1f", $max_bytes / MEGABYTE);
-            echo "ERROR: File '" . $file['name'] . "' with size of {$file_size_MB}MB exceeds max of {$max_MB}MB allowed.";
+            $file_size_MB = sprintf("%1.1fMB", $file['size'] / MEGABYTE);
+            $max_MB = sprintf("%1.1fMB", $max_bytes / MEGABYTE);
+            echo "ERROR: File '" . $file['name'] . "' with size of {$file_size_MB} exceeds max of {$max_MB} allowed.";
             return FALSE;
         }
         // Ext in valid extensions whitelist?
