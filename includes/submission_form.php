@@ -5,7 +5,7 @@
     <div class="row" id="personal-info-row">
         <!-- *********** SUBMISSION CONTROLS **************  -->
         <div id="submission-controls" class="col-xs-2">
-            <div class="form-group" id="submit-group"><!-- submission controls -->
+            <div class="form-group table table-bordered" id="submit-group"><!-- submission controls -->
 <?php 
             if(empty($cust_id)){
 
@@ -32,7 +32,7 @@
                 <!-- The below serves as a dummy butten while waiting for a previous submit to complete -->
                 <input type="button" id="btn-submit-active" class="btn single-process-btn-active hidden" name="submit-disabled-while-processing" value="Processing">
 
-                <br>
+                <br><br>
 
                 <!-- *******************  CANCEL CHANGES BTN ****************************** -->
                 <input type="button" class="btn btn-default single-process-btn-ready hidden" id="btn-cancel-ready" value="Cancel Changes">
@@ -41,7 +41,7 @@
 <?php       
             if($cust_id >= 0){
 ?>
-                <br><!-- Customer exists in DB, so display delete button -->
+                <br><br><!-- Customer exists in DB, so display delete button -->
 
                 <!-- *******************  DELETE USER BTN ****************************** -->
                 <label for="btn-delete-acct-ready">Danger Zone:</label>
@@ -52,7 +52,8 @@
 <?php
             }
 ?>
-       </div><!-- submission-controls -->
+            </div><!-- form-group submission-controls -->
+       </div><!-- col-xs-2 submission-controls -->
        <!-- *********** END: SUBMISSION CONTROLS **************  -->
        <div id="between-submission-controls-and-personal-info" class="col-xs-1"></div>
        <!-- ************* BEGIN: PERSONAL INFO ********************* -->
