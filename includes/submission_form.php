@@ -114,31 +114,36 @@
 ?>
     </div> <!-- row -->
     <br>
+    <!-- ************************ UPLOAD DOCUMENTS **************************************************************** -->    
+    <div class="row" id="upload-documents-container">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="document[]">Upload Documents:</label><br>
+                <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
+                <p><small class="form-text text-muted">PDF only (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
+            </div><!-- form-group -->
+        </div><!-- col-xs-12 -->
+    </div><!-- upload-documents-container -->
+    <br>
     <!-- ************************ DOCUMENTS **************************************************************** -->
     <div class="row" id="documents-container">
         <div class="col-xs-12">
 <?php
-            if(!empty($cust_id)){
+            if($cust_id >= 0){
 ?>
-            <div class="form-group">
-            <br><br>
-            <label for="document[]">Documents:</label><br>
+                <label for="document[]">Documents:</label><br>
 <?php
                 if(is_S3()){
 ?>
-                    [Amazon S3 storage]<br>
+                    [Storage: Amazon S3]<br>
 <?php
                 } else {
 ?>
-                    [local server filesystem storage]<br><br>
+                    [Storage: server filesystem]<br><br>
 <?php
                 }
 ?>
-                    <input type="file" class="form-control" name="documents[]" accept="application/pdf" multiple>
-                    <p><small class="form-text text-muted">Add PDF (<?php echo get_max_doc_size_in_MB() . " max"; ?>)</small></p>
-                    <p>NOTE: Click links to download to your Downloads directory or right-click and "Save-As" to rename.</p>
-                </div>
-                <br>
+                <p>NOTE: Click links to download to your Downloads directory or right-click and "Save-As" to rename.</p>
                 <div id="documents-list">
                     <table id="documents-table" class='table table-hover table-bordered table-striped'>
                         <thead class='thead-dark'>
