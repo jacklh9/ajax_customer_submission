@@ -108,7 +108,7 @@ $(document).ready(function(){
         }
     });
 
-    // DELETE DOC link
+    // //////////////////////    DELETE DOC BUTTON (aka "a href")  ///////////////////////////////////
     $('.link-del-doc').on('click', function(){
         var doc_id = $(this).attr('rel');
         var filename = $(this).closest('td').prev('td').prev('td').text();
@@ -140,6 +140,10 @@ $(document).ready(function(){
                     $(this).next('.placeholder-del-btn').addClass("hidden");
                 }
             });
+        } else {
+            // revert hidden delete button and dummy delete button so user can try again
+            $(this).removeClass("hidden");
+            $(this).next('.placeholder-del-btn').addClass("hidden");
         }
     });
 
