@@ -9,7 +9,7 @@
     unset($constants);
     $constants['region'] = 'us-west-1';
     $constants['sdk_version'] = 'latest';
-    $constants['object_timeout'] = '+10 minutes';  
+    $constants['object_timeout'] = '+5 minutes';  
 
     foreach($constants as $key => $value){
         define(strtoupper($key), $value);
@@ -78,9 +78,10 @@
       
         try{
             // Get a pre-signed URL for an Amazon S3 object valid for OBJECT_TIMEOUT minutes
-            $signedUrl = $client->getObjectUrl($bucket, $remote_fullpath_destination, OBJECT_TIMEOUT); // TO-DO: Use constant after debugging this
             // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
-            // Get the contents of the object using the pre-signed URL
+            $url = $client->getObjectUrl($bucket, $remote_fullpath_destination);
+            $request = $client->get($url); // get() returns a Guzzle\Http\Message\Request object
+            $signedUrl = $client->createPresignedUrl($request, OBJECT_TIMEOUT);
         } catch(Exception $e) {
             echo $e->getResponse();
             $signedUrl = "";
