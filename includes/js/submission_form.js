@@ -6,12 +6,13 @@ $(document).ready(function(){
     MY_GLOBALS.num_docs_uploading = 0;
 
     function startUploadTimer(){
-        setTimeout(function(){
+        MY_GLOBALS.doc_save_interval_id = setInterval(function(){
             // On avg, we upload one doc per second
-            notifyUser("Saving documents: ... " + MY_GLOBALS.num_docs_uploading);
+            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
             MY_GLOBALS.num_docs_uploading--;
             if(MY_GLOBALS.num_docs_uploading <= 0){
-                clearInterval(this);
+                // kill thyself
+                clearInterval(MY_GLOBALS.doc_save_interval_id);
             }
         }, 1000); // 1000 = 1 sec
     }
