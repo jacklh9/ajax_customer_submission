@@ -167,25 +167,27 @@
                             $num_rows = count($docs);
                             if($num_rows > 0){
                                 foreach($docs as $doc){
-                                    echo "<tr id='doc-" . $doc['id'] . "'>";
+                                    echo "<tr id='doc-" . $doc['id'] . "' class='document-row'>";
                                     echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                     echo "  <td>{$doc['datetime']}</td>";
                                     echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
                                     echo "  <td class='delete-doc-container text-center'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-warning' role='button' href='javascript:void(0)'>Delete</a></td>";
                                     echo "</tr>";
                                 } 
-                            } else {
-                                    echo "<tr id='no-documents-row'>";
-                                        echo "<td id='no-documents-filename'>", NO_USER_DOCS_FOUND_MSG, "</td>";
-                                        echo "<td id='no-documents-datetime'>", NO_USER_DOCS_INFO_MSG, "</td>";
-                                        echo "<td id='no-documents-size'>", NO_USER_DOCS_INFO_MSG, "</td>";
-                                        echo "<td id='no-documents-delete'><a class='placeholder-button btn btn-xs btn-default' role='button' href='javascript:void(0)'>Delete</a></td>";
-                                    echo "</tr>";
                             }
+                            // This will be hidden by JavaScript
+                            echo "<tr id='empty-documents-row' class='document-row'>";
+                                echo "<td id='no-documents-filename'>", NO_USER_DOCS_FOUND_MSG, "</td>";
+                                echo "<td id='no-documents-datetime'>", NO_USER_DOCS_INFO_MSG, "</td>";
+                                echo "<td id='no-documents-size'>", NO_USER_DOCS_INFO_MSG, "</td>";
+                                echo "<td id='no-documents-delete'><a class='placeholder-button btn btn-xs btn-default' role='button' href='javascript:void(0)'>Delete</a></td>";
+                            echo "</tr>";
 ?>
                         </tbody>
                     </table>
                 </div><!-- documents-list -->
+                <div id='num-docs-found' hidden>$num_rows</div>
+
 <?php
             } // end if-!empty-cust_id
 ?>

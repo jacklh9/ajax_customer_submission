@@ -8,7 +8,12 @@ $(document).ready(function(){
 
     // SEE: startUpLoadTimer(), Submit Form section
     //       Document File Upload Count section
-    MY_GLOBALS.num_docs_uploading = 0; 
+    MY_GLOBALS.num_docs_uploading = 0;
+
+    // The initial number of document rows displayed
+    // We will subtract this number and at 0
+    // display the default #empty-documents-row.
+    MY_GLOBALS.num_docs_shown = $('#num-docs-found').val();
 
     ////// STANDARD GLOBALS
     var messageEnterValidEmail = "Enter valid email address";
@@ -20,6 +25,9 @@ $(document).ready(function(){
     // We begin by immediately disabling submit button
     // from processing so we can first do some validations.
     submit_disabled();
+
+    // Turn off empty documents
+    $('#empty-documents').hide();
 
     // What does the email field look like right now?
     var email = $('input#email').val();
@@ -121,7 +129,15 @@ $(document).ready(function(){
                     if($.trim(status) === "1"){
                         // Successfully deleted document
                         var profile_path = '<?php echo get_profile_pic_default(); ?>';
-                                                $('tr#doc-' + doc_id).hide();
+                        
+                        // hide deleted row
+                        $('tr#doc-' + doc_id).hide();
+                        MY_GLOBALS.num_docs_shown--;
+
+                        if(MY_GLOBALS.num_docs_shown <= 0){
+                            // unhide default placeholder row if all docs deleted
+                            $('tr#empty-documents-row').show();
+                        }
                         notifyUser("Successfully deleted document '" + filename + "'");
                     } else {
                         notifyUser("Error deleting document '" + filename + "': " + status);
