@@ -115,10 +115,16 @@ $(document).ready(function(){
     //////////////// BELOW IS GOING TO BE RE-ORDERED SOON /////
 
     // BUTTON CANCEL
-    $('#btn-cancel').on('click', function(){
+    $('#btn-cancel-enabled').on('click', function(){
+        btn_submit_disabled();
+        btn_delete_acct_disabled();
+
         if(confirm("Are you sure you wish to cancel changes?\nOnly CHANGES made in the form WILL BE LOST!\nAny previously saved data will remain untouched.")){
             notifyUser("Form data not submitted.");
             resetLogin();
+        } else {
+            btn_submit_enabled();
+            btn_delete_acct_enabled();
         }
     });
 
@@ -136,7 +142,7 @@ $(document).ready(function(){
     });
 
     // DELETE USER button
-    $('#btn-delete-user').on('click', function(){
+    $('#btn-delete-acct-enabled').on('click', function(){
         if(confirm("Are you sure you wish to DELETE this user?\nAll changes in the form AND any data already saved to the database WILL BE LOST!\nThis data cannot be recovered once deleted.")){
             var cust_id = $('#cust_id').val();
             if(cust_id >= 0){
@@ -244,6 +250,14 @@ $(document).ready(function(){
         $('#upload-user-form').hide();
         $('#upload-user-form')[0].reset();
         $('#login-user-form')[0].reset();
+
+
+        // prep these for next return
+        // (the parent containers are hidden anyway)
+        btn_submit_enabled();
+        btn_cancel_enabled();
+        btn_delete_acct_enabled();
+
         $('#login-user-form').show();
         show_registered_users();
     }
