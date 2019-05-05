@@ -123,7 +123,7 @@
     <!-- ************************ UPLOAD USER DOCUMENTS **************************************************************** -->    
     <div class="row" id="upload-documents-container">
         <div class="col-xs-12">
-            <div id='num-docs-uploading'></div>
+            <div id='num-docs-uploading' class="bg-info"></div>
             <div id='user-documents-selector-form-group' class="form-group">
                 <label for="document[]">Upload Documents:</label><br>
                 <input type="file" id="user-documents-selector" class="form-control" name="documents[]" accept="application/pdf" multiple>
