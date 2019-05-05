@@ -62,7 +62,7 @@
         <!-- ************* PROFILE PIC ********************* -->
         <div class="col-xs-3 text-center" id="profile-info">
             <br><br>
-            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' width="200" height="200">
+            <img id='profile-pic' src='<?php echo "{$profile_pic}"; ?>' class="image">
             <div class="form-group">
                 <input type="file" class="form-control" name="profile_pic" accept="image/*" onchange="document.getElementById('profile-pic').src = window.URL.createObjectURL(this.files[0])">
                 <label for="profile_pic" class="form-control">Update Profile Photo</label>
