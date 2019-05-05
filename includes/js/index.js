@@ -2,15 +2,25 @@ $(document).ready(function(){
 
     <?php include_once "includes/js/functions.js"; ?>
 
-    /* ************* LOGIN FORM ******************* */
+    /* 
 
-    $('#form-container').hide();
-    $('#notification-bar').hide();
-    $('#login-user-form').show();
-    $('#upload-user-form').hide();
-    $('#form-container').show();
-    show_registered_users();
+        ************* LOGIN FORM ******************* 
 
+     */
+
+    reset_page();
+
+    function reset_page(){
+        $('#form-container').hide();
+        $('#notification-bar').hide();
+        $('#login-user-form')[0].reset();
+        $('#login-user-form').show();
+        $('#upload-user-form').hide();
+        $('#form-container').show();
+        show_registered_users();
+    }
+
+    // Login | Register button on login page
     $('#login-user-form').submit(function(evt){
         evt.preventDefault();
     
@@ -26,8 +36,9 @@ $(document).ready(function(){
 
     });
 
+    // Reset button on login page
     $('#reset-email-login-input').on('click', function(){
-        $('#login-user-form')[0].reset();
+        reset_page();
     });
 
 });
