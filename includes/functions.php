@@ -323,7 +323,7 @@
         $ext = get_file_extension($file['name']);
         if (!preg_grep("/^$ext$/i", $valid_exts)){
             echo "ERROR: File '" . $file['name'] 
-                . "' has invalid extension of {$ext}. Must be in: " . implode( ", ", $valid_exts);
+                . "' has invalid extension of {$ext}. Must be of type: " . implode( ", ", $valid_exts);
             return FALSE;
         }
         return TRUE;

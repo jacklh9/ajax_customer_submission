@@ -4,6 +4,7 @@
     CONSTANTS
  */
 
+NOTIFICATIONS_DURATION = 60;  // seconds before user notifications are removed from view
 MAX_EMAIL_LEN = 255;
 
 
@@ -15,7 +16,7 @@ function show_registered_users(){
 }
 
 function notifyUser(response){
-    var notificationTextDurationSecs = 60;
+    var notificationTextDurationSecs = NOTIFICATIONS_DURATION;
 
     $('#notification-bar').text(response);
     $('#notification-bar').show();
