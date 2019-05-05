@@ -165,10 +165,10 @@ $(document).ready(function(){
         show_registered_users();
     }
 
-    function startUploadTimer(){
+    function startUploadTimer(num_docs){
         MY_GLOBALS.doc_save_interval_id = setInterval(function(){
             // On avg, we upload one doc per second
-            notifyUser("Uploading documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
+            notifyUser("Uploading and processing " + num_docs + " documents. Please wait ... " + MY_GLOBALS.num_docs_uploading);
             MY_GLOBALS.num_docs_uploading--;
             if(MY_GLOBALS.num_docs_uploading <= 0){
                 // kill thyself
@@ -226,7 +226,7 @@ $(document).ready(function(){
                     // of one doc per second
                     // per sleep_between_doc_saves constant
                     // in functions.php
-                    startUploadTimer();
+                    startUploadTimer(MY_GLOBALS.num_docs_uploading);
 
                     // email is available
                     // submit form data
