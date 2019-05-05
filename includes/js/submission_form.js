@@ -368,8 +368,13 @@ $(document).ready(function(){
     });
 
     // VALIDATE EMAIL not in use
+    // NOTE: Although we disable submission from the beginning,
+    // we continue to explicitly disable whenever we determine we 
+    // have a bad email as a matter of security in case
+    // another asynchronous task has momentarily enabled the submit button.
+    // Better safe (and overly verbose) than sorry.
     $('input#email').keyup(function(){
-        submit_disabled(); // We do this here to avoid race condition
+        btn_submit_disabled(); // We do this here to avoid race condition
         var email = $(this).val();
         var cust_id = $('#cust_id').val();
 
@@ -378,20 +383,20 @@ $(document).ready(function(){
             $.post("validate.php", {validate: 'email', email: email, cust_id: cust_id}, function(status){
                 if($.trim(status) === "1"){
                     // email is available
-                    submit_enabled();
+                    btn_submit_enabled();
                 } else {
                     // email address already in use
                     notifyUser("ERROR: Email address in use.");
-                    submit_disabled();
+                    btn_submit_disabled();
                 }
             })
             .fail(function(){
                 notifyUser("ERROR: Unable to communicate with the server.");
-                submit_enabled(); // Let user retry
+                btn_submit_enabled(); // Let user retry
             });
         } else {
             notifyUser(messageEnterValidEmail);
-            submit_disabled();
+            btn_submit_disabled(); // Sorry, bad email. User needs to correct before submitting allowed.
         }
     });
 
@@ -407,17 +412,6 @@ $(document).ready(function(){
     }
 
 
-    // ******************************** END VALIDATIONS ******************************************
-
-    
-    // // VIEW DOC link
-    // $('.link-view-doc').on('click', function(){
-    //     var doc_id = $(this).attr('rel');
-    //     var filename = $(this).text();
-    //     alert("Viewing of document '" + filename + "'\nnot yet implemented.\nClick any button to close this window.");
-    //     // if(confirm()){
-    //            //... 
-    //     // }
-    // });
+    // ******************************** END: VALIDATIONS ******************************************
 
 });
