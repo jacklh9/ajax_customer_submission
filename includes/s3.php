@@ -44,12 +44,10 @@
         $success = FALSE;
 
         try{
-            $cmd = $client->getCommand('GetObject', [
+            $result = $client->deleteObject([
                 'Bucket' => "{$bucket}",
                 'Key' => "{$remote_fullpath_destination}",
             ]);
-
-            $result = $client->deleteObject($cmd);
             if($result){
                 $success = TRUE;
             }
