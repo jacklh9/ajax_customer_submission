@@ -62,7 +62,7 @@
     }
 
     function convert_bytes_to_MB($bytes){
-        return sprintf("%1.1fMB", $bytes / MEGABYTE);
+        return sprintf("%1.2f MB", $bytes / MEGABYTE);
     }
 
     function debug_to_console( $data ) {
