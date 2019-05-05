@@ -100,18 +100,11 @@
         $doc = get_document($doc_id);
         $fullpath_doc = $doc['path'];
 
-        // Determine if S3 env
-        if(is_S3()){
-
-            // TODO: implement S3 purging
-            // don't forget success status
-            $success = FALSE;
-
-        } else {
-
-            // non-S3 filesystem
+            // Valid for local server FS
+            // or Amazon S3 storage.
+            // Remove DB doc reference
+            // and then physical file.
             $success = delete_document_from_db($doc_id)
-                // Delete profile pic
                 && purge_from_storage($fullpath_doc); 
         }
         return $success;
@@ -377,7 +370,7 @@
     }
 
     // $type = 'profile' | 'document'
-    // $datetime is optional (used for type 'document')
+    // $datetime (required only for type 'document')
     // update_db_doc_info(string $type, string $filename, int $cust_id, [datetime]):bool
     function update_db_doc_info(){
         $type = func_get_arg(0);
