@@ -75,12 +75,13 @@
     function S3_get_temp_file_url($remote_fullpath_destination){
         global $bucket;
         global $client;
+        $key = $remote_fullpath_destination;
       
         try{
             // Get a pre-signed URL for an Amazon S3 object valid for OBJECT_TIMEOUT minutes
             // > https://my-bucket.s3.amazonaws.com/data.txt?AWSAccessKeyId=[...]&Expires=[...]&Signature=[...]
-            $url = $client->getObjectUrl($bucket, $remote_fullpath_destination);
-            $request = $client->get($url); // get() returns a Guzzle\Http\Message\Request object
+            $request = $client->getObjectUrl($bucket, $key);
+            //$request = $client->get({$bucket}/{$key}); // get() returns a Guzzle\Http\Message\Request object
             $signedUrl = $client->createPresignedUrl($request, OBJECT_TIMEOUT);
         } catch(Exception $e) {
             echo $e->getResponse();
