@@ -69,7 +69,7 @@
             if($cust_id >= 0 && has_profile_pic($cust_id)){
 ?>
                 <div class="form-group">
-                    <input type="button" class="btn" id="btn-delete-profile-pic" value="Delete Pic">
+                    <input type="button" class="btn btn-xs btn-danger" id="btn-delete-profile-pic" value="Delete Pic">
                 </div>
 <?php
             }
@@ -154,7 +154,7 @@
                                 echo "  <td><a rel='{$doc['id']}' class='link-view-doc' target='_blank' href='" . $doc['tmp_url'] . "'>{$doc['filename']}</a></td>";
                                 echo "  <td>{$doc['datetime']}</td>";
                                 echo "  <td>", convert_bytes_to_MB($doc['size']) ,"</td>";
-                                echo "  <td><a rel='{$doc['id']}' class='link-del-doc' href='javascript:void(0)'>Delete</a></td>";
+                                echo "  <td class='delete-doc-container'><a rel='{$doc['id']}' class='link-del-doc btn btn-xs btn-danger' role='button' href='javascript:void(0)'>Delete</a></td>";
                                 echo "</tr>";
                             }
 ?>

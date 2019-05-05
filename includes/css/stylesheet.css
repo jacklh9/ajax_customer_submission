@@ -5,6 +5,10 @@ img.image-bounded {
     max-height: 200px;
 }
 
+td.delete-doc-container {
+    text-align: center;
+}
+
 /* div#profile-info { 
     width: 600px; 
 } */
