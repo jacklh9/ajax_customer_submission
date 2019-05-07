@@ -14,5 +14,6 @@ In addition, it's worth-noting all data files are stored on Amazon's S3 servers.
 
 
 [Video of the coding sessions here](https://www.youtube.com/playlist?list=PLdkvASC3LVIZ5vC6PdP3ZcdIjOInp95g4)
+
 NOTE: For any would-be hackers, all Host/DB/S3 passwords recorded during the video were immediately reset prior to uploading video. ;-)
 
